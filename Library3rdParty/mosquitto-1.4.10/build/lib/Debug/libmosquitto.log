@@ -1,0 +1,40 @@
+﻿  pthread.c
+  logging_mosq.c
+  memory_mosq.c
+  messages_mosq.c
+  mosquitto.c
+..\..\lib\mosquitto.c(901): warning C4018: '>': signed/unsigned 不相符
+..\..\lib\mosquitto.c(912): warning C4244: '=': 將 'time_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+  net_mosq.c
+  read_handle.c
+  read_handle_client.c
+  read_handle_shared.c
+  send_client_mosq.c
+..\..\lib\send_client_mosq.c(99): warning C4267: '函式': 將 'size_t' 轉換為 'uint16_t'，資料可能遺失
+..\..\lib\send_client_mosq.c(101): warning C4267: '函式': 將 'size_t' 轉換為 'uint16_t'，資料可能遺失
+..\..\lib\send_client_mosq.c(124): warning C4267: '函式': 將 'size_t' 轉換為 'uint16_t'，資料可能遺失
+..\..\lib\send_client_mosq.c(126): warning C4267: '函式': 將 'size_t' 轉換為 'uint16_t'，資料可能遺失
+..\..\lib\send_client_mosq.c(130): warning C4267: '函式': 將 'size_t' 轉換為 'uint16_t'，資料可能遺失
+..\..\lib\send_client_mosq.c(132): warning C4267: '函式': 將 'size_t' 轉換為 'uint16_t'，資料可能遺失
+..\..\lib\send_client_mosq.c(190): warning C4267: '函式': 將 'size_t' 轉換為 'uint16_t'，資料可能遺失
+..\..\lib\send_client_mosq.c(235): warning C4267: '函式': 將 'size_t' 轉換為 'uint16_t'，資料可能遺失
+  send_mosq.c
+..\..\lib\send_mosq.c(271): warning C4267: '函式': 將 'size_t' 轉換為 'uint16_t'，資料可能遺失
+  socks_mosq.c
+  srv_mosq.c
+  thread_mosq.c
+  time_mosq.c
+  tls_mosq.c
+..\..\lib\tls_mosq.c(52): warning C4996: 'WSAStringToAddressA': Use WSAStringToAddressW() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  C:\Program Files (x86)\Windows Kits\8.1\Include\um\winsock2.h(3623): note: 請參閱 'WSAStringToAddressA' 的宣告
+..\..\lib\tls_mosq.c(84): warning C4996: 'WSAAddressToStringA': Use WSAAddressToStringW() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  C:\Program Files (x86)\Windows Kits\8.1\Include\um\winsock2.h(3556): note: 請參閱 'WSAAddressToStringA' 的宣告
+  util_mosq.c
+  will_mosq.c
+  正在產生程式碼...
+     正在建立程式庫 D:\Workspace\GitHub\EI-Agent_Modify\Debug\libmosquitto.lib 和物件 D:\Workspace\GitHub\EI-Agent_Modify\Debug\libmosquitto.exp
+  libmosquitto.vcxproj -> D:\Workspace\GitHub\EI-Agent_Modify\Debug\libmosquitto.dll
+  libmosquitto.vcxproj -> D:\Workspace\GitHub\EI-Agent_Modify\Debug\libmosquitto.pdb (Full PDB)
+  D:\Workspace\GitHub\EI-Agent_Modify\Library3rdParty\openssl-1.0.1h.win32\bin\libeay32.dll
+  D:\Workspace\GitHub\EI-Agent_Modify\Library3rdParty\openssl-1.0.1h.win32\bin\ssleay32.dll
+  複製了         2 個檔案。

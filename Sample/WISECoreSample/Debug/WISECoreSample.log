@@ -1,0 +1,74 @@
+﻿  WISECoreSample.c
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(98): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: 請參閱 'sprintf' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(106): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(2254): note: 請參閱 'sscanf' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(108): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(2254): note: 請參閱 'sscanf' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(115): warning C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(346): note: 請參閱 'strncpy' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(132): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: 請參閱 'sprintf' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(133): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: 請參閱 'sprintf' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(134): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: 請參閱 'sprintf' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(142): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: 請參閱 'sprintf' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(143): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: 請參閱 'sprintf' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(218): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: 請參閱 'sprintf' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(219): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(90): note: 請參閱 'strcat' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(224): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: 請參閱 'sprintf' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(226): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(90): note: 請參閱 'strcat' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(227): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(90): note: 請參閱 'strcat' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(232): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: 請參閱 'sprintf' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(234): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(90): note: 請參閱 'strcat' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(235): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(90): note: 請參閱 'strcat' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(239): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: 請參閱 'sprintf' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(241): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(119): note: 請參閱 'strcpy' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(242): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(90): note: 請參閱 'strcat' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(270): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(90): note: 請參閱 'strcat' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(279): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(90): note: 請參閱 'strcat' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(280): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(90): note: 請參閱 'strcat' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(289): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(90): note: 請參閱 'strcat' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(290): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(90): note: 請參閱 'strcat' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(294): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: 請參閱 'sprintf' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(296): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(119): note: 請參閱 'strcpy' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(297): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(90): note: 請參閱 'strcat' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(317): warning C4477: 'printf' : 格式字串 '%s' 需要 'char *' 類型的引數，但 variadic 引數 2 的類型為 'const void *'
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(343): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(119): note: 請參閱 'strcpy' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(344): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(119): note: 請參閱 'strcpy' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(356): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(119): note: 請參閱 'strcpy' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(357): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(119): note: 請參閱 'strcpy' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(367): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(119): note: 請參閱 'strcpy' 的宣告
+d:\workspace\github\ei-agent_modify\sample\wisecoresample\wisecoresample.c(426): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: 請參閱 'sprintf' 的宣告
+WISECoreSample.obj : warning LNK4075: 忽略 '/EDITANDCONTINUE'，由於 '/SAFESEH' 規格
+     正在建立程式庫 D:\Workspace\GitHub\EI-Agent_Modify\Debug\WISECoreSample.lib 和物件 D:\Workspace\GitHub\EI-Agent_Modify\Debug\WISECoreSample.exp
+  WISECoreSample.vcxproj -> D:\Workspace\GitHub\EI-Agent_Modify\Debug\WISECoreSample.exe
+  WISECoreSample.vcxproj -> D:\Workspace\GitHub\EI-Agent_Modify\Debug\WISECoreSample.pdb (Full PDB)
