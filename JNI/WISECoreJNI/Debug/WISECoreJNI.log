@@ -1,2 +1,0 @@
-﻿  WISECoreJNI.c
-d:\workspace\github\ei-agent_modify\jni\wisecorejni\wisecorejni.c(1): fatal error C1083: 無法開啟包含檔案: 'jni.h': No such file or directory
