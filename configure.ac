@@ -14,7 +14,7 @@ m4_define([VERSION_REVISION],
 
 AC_INIT([CAgentIoT], [VERSION])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror subdir-objects])
-AC_CONFIG_SRCDIR([Include/susiaccess_def.h])
+AC_CONFIG_SRCDIR([Include/wisepaas_02_def.h])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 #AM_PROG_AR
@@ -124,28 +124,11 @@ AC_FUNC_STRERROR_R
 AC_CHECK_FUNCS([alarm clock_gettime dup2 fdatasync floor ftime ftruncate gethostbyaddr gethostbyname gethostname gethrtime getpagesize gettimeofday inet_ntoa isascii localtime_r memchr memmove memset mkdir pow select socket strcasecmp strchr strdup strerror strncasecmp strndup strpbrk strrchr strspn strstr strtol strtoul sysinfo uname utime])
 
 AC_CONFIG_FILES([Makefile
-		 Library/Log/Makefile
 		 Platform/Makefile
 		 Library/MosquittoCarrier/Makefile
 		 Library/MQTTConnector/Makefile
 		 Library/WISECore/Makefile
-		 Library/cJSON/Makefile
-		 Library/DES/Makefile
-		 Library/Base64/Makefile
-		 Library/SAClient/Makefile
-		 Library/SAConfig/Makefile
-		 Library/FtpHelper/Makefile
-		 Library/MD5/Makefile
-		 Library/MessageGenerator/Makefile
-		 Library/SAManager/Makefile
-		 Library/SAGeneralHandler/Makefile
-		 Library/SAHandlerLoader/Makefile
-	  	 Library/ReadINI/Makefile
-		 Library/HandlerKernel/Makefile
 		 Sample/MosquittoSample/Makefile
-		 Sample/SampleAgent/Makefile
-		 Sample/HandlerSample/Makefile
-		 Sample/ModbusSample/Makefile
 		 Sample/WISECoreSample/Makefile
 		])
 

@@ -10,13 +10,10 @@
 ## This Variables You Need Configure In Sometimes ##
 ####################################################
 # ${RUN_PKG_NEED} is specify the depend packages to execute RMM cagent.
-RUN_PKG_NEED="libxml2 libx11-6 libxext6 libxtst6 libmosquitto1 \
-sqlite3 xterm ethtool"
+RUN_PKG_NEED="libxml2 libmosquitto1"
 
 # ${DEVLE_PKG_NEED} is specify the depend packages to develop RMM cagent.
-DEVLE_PKG_NEED="gcc g++ make \
-libxml2-dev libcurl4-openssl-dev libx11-dev libxtst-dev libxext-dev \
-libmosquitto-dev autoconf autotools-dev build-essential libtool"
+DEVLE_PKG_NEED="gcc g++ make libxml2-dev libcurl4-openssl-dev libmosquitto-dev autoconf autotools-dev build-essential libtool"
 
 # Tell me how to import the source of mosquitto
 MOSQUITTO_SOURCE_IMPORT="add-apt-repository -y ppa:mosquitto-dev/mosquitto-ppa"
