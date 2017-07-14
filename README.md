@@ -1,75 +1,38 @@
-# EI-Agent
-IoT/EI-PaaS Agent framework for IoT/EI-PaaS server.
+# EI-Connect
+IoT/EI-PaaS Connection libraries for IoT/EI-PaaS client.
 
 ## DESCRIPTION
 ----
 
-EI-Agent – a software development framework to communicate between device and IoT/EI-PaaS Server.
-Advantech provides a software development framework to communicate and exchange information between a device and IoT/EI-PaaS Server, called a EI-Agent framework.
-The EI-Agent framework provides a rich set of user-friendly, intelligent and integrated interfaces, which speeds development, enhances security and makes agent application easier and simpler to communicate with IoT/EI-PaaS Server.
-The framework has three benefits:
+**EI-Connect** – the connection libraries to communicate between device and IoT/EI-PaaS Server.
+Advantech provides a software development libraries to communicate and exchange information between target device and IoT/EI-PaaS Server, called EI-Connect.
+The EI-Connect provides a rich set of user-friendly, intelligent and integrated interfaces, which speeds development, enhances security and makes agent application easier and simpler to communicate with IoT/EI-PaaS Server.
+The framework has several benefits:
 
-Standardization - The communication protocol is based on the MQTT protocol to communicate and exchange data with IoT/EI-PaaS Server. The IoT sensor data report format is following the IPSO Spec. in JSON format.
-Portability - Whole framework is written in C language and follow the ANSI C Standard, that C compilers are available for most systems and are often the first compiler provided for a new system.
-Scalability - The EI-Agent Framework is functional partitioning into discrete scalable, reusable modules, and plug & playable.
+* Standardization - The communication protocol is based on the MQTT protocol to communicate and exchange data with IoT/EI-PaaS Server. The IoT sensor data report format is following the IPSO Spec. in JSON format.
+* Portability - Whole framework is written in C language and follow the ANSI C Standard, that C compilers are available for most systems and are often the first compiler provided for a new system.
 
-For scalability, Advantech implements several Software Modules to access sensor data or control target device, we called Plugins (or Handlers we called before).
-
-Each plugin can be designed to handle specific jobs, such as:
-
-Sensor Plugin: the plugin access sensor data through Sensor driver or 3rd party library, or
-Remote Control Plugin:  the plugin execute remote command on target device.
-Based on those Plugins, Advantech also defined a set of APIs, called Plugin (Handler) APIs, to support custom plugins implementation.
-
-User can implement their own Handler with these Plugin (Handler) APIs to access their sensor data or control their devices and plugged by EI-Agent to communicate with IoT/EI-PaaS Server.
 
 ## OVERVIEW
 ----
 
- The EI-Agent includes:
+ The EI-Connect includes:
  
  Library:
   * libWISECore.so
-	- Core library of EI-Agent to handshake with IoT/EI-PaaS Server.
+  	- Core library of EI-Connect to handshake with IoT/EI-PaaS Server.
  
-  * libSAClient.so
-    - Manage the connection connected by WISE Core.
+  * libWISEConnector.so
+  	- Manage the MQTT connection.
 	 
-  * libSAManager.so
-    - Integrate whole EI-Agent library
-	 
-  * libSAHandlerLoader.so:
-    - Dynamic load and manage Handlers
-
 Application:     
-  * Sample\SampleClient
-    - Sample application for Windows only
-     
-  * Sample\SampleAgent
-    - Sample application for both Windows and Linux
-    
   * Sample\WISECoreSample:
-    - Lightweight agent sample application for both Windows and Linux.
-     
-Plugins:
- * Sample\HandlerSample:
-   - Sample Plugin to read a JSON file and upload to IoT/EI-PaaS Server for both Windows and Linux.
+  	- Lightweight agent sample application for both Windows and Linux.
 
- * Sample\SampleHandler:
-   - Sample Plugin to read a JSON file and upload to IoT/EI-PaaS Server for Windows only.
-	 
- * Sample\Modbus_Handler:
-   - Network Monitor Handler for network status report.
-	 
+  * Sample\MosquittoSample:
+  	- Sample application, implement based on EI-PaaS handshake protocol with MQTT library,for both Windows and Linux.
+     
 Decuments:
- * doc\IoT/EI-PaaS_Agent_Command_Format_DG_V1.1.pdf:
-   - document for EI-Agent Framework command format.
-	 
- * doc\IoT/EI-PaaS_Agent_DG_V1.0.pdf:
-   - document for EI-Agent Framework programming guide.
-	 
- * doc\IoT/EI-PaaS_Agent_UM.pdf
-   - document for EI-Agent User Manual. 
 	 
 ## PATENTS
 ----
@@ -77,25 +40,23 @@ Decuments:
 ## COMPILATION
 ----
  * Windows - Visual Studio 2008 
-   1. Open "WISEAgent.sln"
+   1. Open "EI-connect.sln"
    2. In Solution Explore, Set "WISECoreSample" project as Startup Project
    3. Rebuild all solution by click build->Rebuild Solution
    4. The executable binary file will be generated in Release folder. 
    
  * Linux - CentOS
    1. Execute pre-install-centos.sh as a super user 
-   2. Execute build-wiseagent.sh
+   2. Execute build-eiconnect.sh
    3. The executable binary file will be generated in Release folder. 
    
  * Linux - Ubuntu
    1. Execute pre-install-ubuntu.sh as a super user 
-   2. Execute build-wiseagent.sh
+   2. Execute build-eiconnect.sh
    3. The executable binary file will be generated in Release folder. 
   
  * To compile this package under other Unix systems, user need install or pre-compile the following libraries:
-   - libXml2-2.7.8
    - openssl-1.0.1h
-   - curl-7.37.1
    - mosquitto-1.3.2
    - autoconf
    - automake
@@ -117,6 +78,8 @@ Decuments:
 
  * Linux
    - Ubuntu ( 14.04.2 X64)
+   - CentOS (6.5 X86)
+   - Yocto
  
 ## PROBLEMS
 ----
