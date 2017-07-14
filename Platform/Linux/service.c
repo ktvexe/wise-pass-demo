@@ -6,7 +6,6 @@
 #include <string.h>
 #include <unistd.h>
 #include "service.h"
-#include "Log.h"
 
 #define MAX_PATH 260
 #define FILE_SEPARATOR   '/'
@@ -22,12 +21,6 @@ pthread_mutex_t srvcStopMux;
 
 APP_START_CB m_pStart = NULL;
 APP_STOP_CB m_pStop = NULL;
-
-char srvcLogPath[MAX_PATH] = {0};
-LOGHANDLE g_logHandle = NULL;
-#define DEF_SRVC_LOG_MODE    (LOG_MODE_CONSOLE_OUT|LOG_MODE_FILE_OUT)
-#define SrvcLog(level, fmt, ...)  do { if (g_logHandle != NULL)   \
-   WriteIndividualLog(g_logHandle, "service", DEF_SRVC_LOG_MODE, level, fmt, ##__VA_ARGS__); } while(0)
 
 static bool OnRun();
 static bool OnStop();
@@ -49,8 +42,6 @@ int ServiceInit(char * pSrvcName, char * pVersion, APP_START_CB pStart, APP_STOP
    
    if(pVersion) memcpy(srvcVersion, pVersion, strlen(pVersion)+1);
 
-   g_logHandle = loghandle;
-
 #ifndef ANDROID
    sprintf(pidPath, "%s%c%s.pid", FILE_APPRUNDIR, FILE_SEPARATOR, srvcName);
     if(access( pidPath, F_OK ) != -1)
@@ -65,7 +56,7 @@ int ServiceInit(char * pSrvcName, char * pVersion, APP_START_CB pStart, APP_STOP
 				int pid = atoi(spid);
 				if(kill(pid,0)==0)
 				{
-					SrvcLog(Error, "Service is running.!");     
+					printf("Service is running.!");     
 					fclose(stream);
 					return iRet;
 				}
@@ -81,7 +72,7 @@ int ServiceInit(char * pSrvcName, char * pVersion, APP_START_CB pStart, APP_STOP
    memset (&act, '\0', sizeof(act));
    act.sa_handler = &hdl;
    if (sigaction(SIGTERM, &act, NULL) < 0) {
-	   SrvcLog(Error, "sigaction error!");                                                                                                                                                                                                                                                 
+	   printf("sigaction error!");                                                                                                                                                                                                                                                 
 	   return iRet;
    }
 
@@ -91,7 +82,7 @@ int ServiceInit(char * pSrvcName, char * pVersion, APP_START_CB pStart, APP_STOP
    if(rcCond != 0 || rcMux != 0)
    {
 	iRet = -1;
-	SrvcLog(Error, "Event Create failed");  
+	printf("Event Create failed");  
    }
    else
    {
@@ -102,12 +93,12 @@ int ServiceInit(char * pSrvcName, char * pVersion, APP_START_CB pStart, APP_STOP
 	fp = fopen(pidPath, "w");
 	if (fp == NULL)
 	{
-		SrvcLog(Error, "Couldn't open %s for writing.\n", pidPath);
+		printf("Couldn't open %s for writing.\n", pidPath);
 	}
 	snprintf(buf, sizeof(buf), "%ld\n", (long) getpid());
 	fputs(buf, fp);
 	fclose(fp);
-	SrvcLog(Normal, "Create pid file: %s!", pidPath);
+	printf("Create pid file: %s!", pidPath);
 #endif // ANDROID
 	iRet = 0;
    }
@@ -125,9 +116,9 @@ int ServiceUninit()
 
    if( access( pidPath, F_OK ) != -1 ) {
    	remove(pidPath);
-	SrvcLog(Normal, "Remove pid file: %s!", pidPath);
+	printf("Remove pid file: %s!", pidPath);
    } else {
-    SrvcLog(Normal, "pid file %s not found!", pidPath);
+    printf("pid file %s not found!", pidPath);
    }
    
    //if(g_logHandle) UninitLog(g_logHandle);
@@ -142,12 +133,12 @@ int LaunchService()
 
    if(bRet)
    {
-      SrvcLog(Normal, "%s Start successfully!", srvcName);
+      printf("%s Start successfully!", srvcName);
       iRet = 0;
    }
    else
    {
-      SrvcLog(Error, "%s Start failed!", srvcName);
+      printf("%s Start failed!", srvcName);
 	  iRet = -1;
    }
 
@@ -245,11 +236,11 @@ static bool OnRun()
    pthread_mutex_unlock(&srvcStopMux);
    while(bRet)
    {
-      SrvcLog(Normal, "%s is running!", srvcName);
+      printf("%s is running!", srvcName);
       pthread_mutex_lock(&srvcStopMux);
       pthread_cond_wait(&srvcStopEvent, &srvcStopMux);
       pthread_mutex_unlock(&srvcStopMux);
-      SrvcLog(Normal, "%s is get stop signal!", srvcName);
+      printf("%s is get stop signal!", srvcName);
       break;
    }
    return bRet;
@@ -262,7 +253,7 @@ static bool OnStop()
    if(isSrvRun)
    	bRet = UserStop();
    isSrvRun = false;
-   SrvcLog(Normal, "%s is send stop signal!", srvcName);
+   printf("%s is send stop signal!", srvcName);
    pthread_cond_signal(&srvcStopEvent);
    pthread_mutex_unlock(&srvcStopMux);
    return bRet;
