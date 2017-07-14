@@ -88,7 +88,7 @@ Decuments:
 ----
 
  * [Advantech IoT Developer Forum](http://iotforum.advantech.com/)
- * [WIKI Documents](http://ess-wiki.advantech.com.tw/view/WISE-PaaS_2.0)
+ * [EI-PaaS Documents](http://ei-paas-documentation.docs.wise-paas.com/Documentation/#!index.md)
  
 ## License
 ----
