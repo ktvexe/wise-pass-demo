@@ -6,7 +6,6 @@
 /* Reference    : None														*/
 /****************************************************************************/
 #include "network.h"
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -20,11 +19,18 @@
 
 #define SENSOR_DATA "{\"opTS\":{\"$date\":%lld},\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"data1\",\"v\":%d},{\"n\":\"data2\",\"v\":%d},{\"n\":\"data3\",\"v\":%d}]}}}"
 
-char g_strServerIP[64] = "wise-msghub.eastasia.cloudapp.azure.com";
+//char g_strServerIP[64] = "wise-msghub.eastasia.cloudapp.azure.com";
+//int g_iPort = 1883;
+//char g_strConnID[256] = "0e95b665-3748-46ce-80c5-bdd423d7a8a5:631476df-31a5-4b66-a4c6-bd85228b9d27";
+//char g_strConnPW[64] = "f3a2342t4oejbefc78cgu080ia";
+//char g_strDeviceID[37] = "00000001-0000-0000-0000-305A3A770020";
+
+char g_strServerIP[64] = "172.22.12.16";
 int g_iPort = 1883;
-char g_strConnID[256] = "0e95b665-3748-46ce-80c5-bdd423d7a8a5:631476df-31a5-4b66-a4c6-bd85228b9d27";
-char g_strConnPW[64] = "f3a2342t4oejbefc78cgu080ia";
-char g_strDeviceID[37] = "00000001-0000-0000-0000-305A3A770020";
+char g_strConnID[256] = "admin";
+char g_strConnPW[64] = "05155853";
+char g_strDeviceID[37] = "0000305A3A770020";
+
 char g_strTenantID[37] = "general";
 char g_strHostName[16] = "WISECoreSample";
 char g_strProductTag[37] = "device";
@@ -130,7 +136,11 @@ void sendReportData(long long curTime)
 	char strTopic[256] = {0};
 	char temp[512] = {0};
 	sprintf(temp, SENSOR_DATA, curTime, "MySensor", "SensorGroup", "SensorGroup", g_iSensor[0], g_iSensor[1], g_iSensor[2]);
+#ifdef _WISEPAAS_02_DEF_H_
 	sprintf(strTopic, DEF_AGENTREPORT_TOPIC, g_strTenantID, g_strDeviceID);
+#else
+	sprintf(strTopic, DEF_AGENTREPORT_TOPIC, g_strDeviceID);
+#endif
 	sprintf(strBuffer, DEF_AUTOREPORT_JSON, g_strDeviceID, temp, curTime); //device ID
 	core_publish(strTopic, strBuffer, strlen(strBuffer), 0, 0);
 }
@@ -139,7 +149,11 @@ void sendResponse(int cmdID, char* handerlName, char* data, long long curTime)
 {
 	char strBuffer[1024] = {0};
 	char strTopic[256] = {0};
-	sprintf(strTopic, DEF_AGENTREPORT_TOPIC, g_strTenantID, g_strDeviceID);
+#ifdef _WISEPAAS_02_DEF_H_
+	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strTenantID, g_strDeviceID);
+#else
+	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strDeviceID);
+#endif
 	sprintf(strBuffer, DEF_ACTION_RESPONSE_JSON, g_strDeviceID, cmdID, handerlName, data, curTime); //device ID
 	core_publish(strTopic, strBuffer, strlen(strBuffer), 0, 0);
 }
@@ -423,8 +437,12 @@ void on_heartbeatrate_update(const int heartbeatrate, const char* sessionid, con
 void SubscribeTopic()
 {
 	char topic[256] = {0};
+	
+#ifdef _WISEPAAS_02_DEF_H_
 	sprintf(topic, DEF_CALLBACKREQ_TOPIC, g_strTenantID, g_strProductTag, g_strDeviceID);
-
+#else
+	sprintf(topic, DEF_CALLBACKREQ_TOPIC, g_strDeviceID);
+#endif
 	core_subscribe(topic, 0);
 }
 
