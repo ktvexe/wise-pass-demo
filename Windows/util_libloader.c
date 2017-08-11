@@ -46,7 +46,7 @@ WISEPLATFORM_API char* util_dlerror()
 	return dlerror();
 }
 
-WISEPLATFORM_API char* util_dlfree_error(char* err)
+WISEPLATFORM_API void util_dlfree_error(char* err)
 {
 	free(err);
 }
