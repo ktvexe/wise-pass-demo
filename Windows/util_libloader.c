@@ -46,6 +46,11 @@ WISEPLATFORM_API char* util_dlerror()
 	return dlerror();
 }
 
+WISEPLATFORM_API char* util_dlfree_error(char* err)
+{
+	free(err);
+}
+
 WISEPLATFORM_API void* util_dlsym( void * handle, const char *name )
 {
 	return dlsym(handle, name); 
