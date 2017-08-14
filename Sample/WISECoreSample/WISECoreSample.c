@@ -19,17 +19,11 @@
 
 #define SENSOR_DATA "{\"opTS\":{\"$date\":%lld},\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"data1\",\"v\":%d},{\"n\":\"data2\",\"v\":%d},{\"n\":\"data3\",\"v\":%d}]}}}"
 
-//char g_strServerIP[64] = "wise-msghub.eastasia.cloudapp.azure.com";
-//int g_iPort = 1883;
-//char g_strConnID[256] = "0e95b665-3748-46ce-80c5-bdd423d7a8a5:631476df-31a5-4b66-a4c6-bd85228b9d27";
-//char g_strConnPW[64] = "f3a2342t4oejbefc78cgu080ia";
-//char g_strDeviceID[37] = "00000001-0000-0000-0000-305A3A770020";
-
-char g_strServerIP[64] = "172.22.12.16";
+char g_strServerIP[64] = "wise-msghub.eastasia.cloudapp.azure.com";
 int g_iPort = 1883;
-char g_strConnID[256] = "admin";
-char g_strConnPW[64] = "05155853";
-char g_strDeviceID[37] = "0000305A3A770020";
+char g_strConnID[256] = "0e95b665-3748-46ce-80c5-bdd423d7a8a5:631476df-31a5-4b66-a4c6-bd85228b9d27";
+char g_strConnPW[64] = "f3a2342t4oejbefc78cgu080ia";
+char g_strDeviceID[37] = "00000001-0000-0000-0000-305A3A770020";
 
 char g_strTenantID[37] = "general";
 char g_strHostName[16] = "WISECoreSample";
