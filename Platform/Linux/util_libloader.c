@@ -52,6 +52,12 @@ char* util_dlerror()
 	return error;
 }
 
+void util_dlfree_error(char* err)
+{
+	if(err != NULL)
+		free(err);
+}
+
 void* util_dlsym( void * handle, const char *name )
 {
 	return dlsym(handle, name); 
