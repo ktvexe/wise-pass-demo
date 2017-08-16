@@ -14,7 +14,7 @@ m4_define([VERSION_REVISION],
 
 AC_INIT([CAgentIoT], [VERSION])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror subdir-objects])
-AC_CONFIG_SRCDIR([Include/wisepaas_02_def.h])
+AC_CONFIG_SRCDIR([Include/wise/wisepaas_02_def.h])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 #AM_PROG_AR
