@@ -9,7 +9,7 @@
 #ifndef _WISEPAAS_01_DEF_H_
 #define _WISEPAAS_01_DEF_H_
 
-#include "wisepase_base_def.h"
+#include "wise/wisepase_base_def.h"
 
 #define DEF_GENERAL_HANDLER					"\"handlerName\":\"general\""
 #define DEF_SERVERREDUNDANCY_HANDLER		"\"handlerName\":\"ServerRedundancy\""
