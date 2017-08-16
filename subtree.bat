@@ -26,5 +26,5 @@ git subtree %cmd% --prefix=Library/WISECore https://github.com/ADVANTECH-Corp/WI
 echo git subtree %cmd% --prefix=Platform https://github.com/ADVANTECH-Corp/EI-Platform.git %branch%
 git subtree %cmd% --prefix=Platform https://github.com/ADVANTECH-Corp/EI-Platform.git %branch%
 
-echo git subtree %cmd% --prefix=Include\wise https://github.com/ADVANTECH-Corp/WISEPredefine.git %branch%
-git subtree %cmd% --prefix=Include\wise https://github.com/ADVANTECH-Corp/WISEPredefine.git %branch%
+echo git subtree %cmd% --prefix=Include/wise https://github.com/ADVANTECH-Corp/WISEPredefine.git %branch%
+git subtree %cmd% --prefix=Include/wise https://github.com/ADVANTECH-Corp/WISEPredefine.git %branch%
