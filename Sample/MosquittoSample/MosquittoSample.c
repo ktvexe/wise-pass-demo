@@ -10,7 +10,7 @@
 #include "mosquitto.h"
 #include "util_path.h"
 #include "WISEPlatform.h"
-#include "wisepaas_02_def.h"
+#include "wise/wisepaas_02_def.h"
 
 //-------------------------Memory leak check define--------------------------------
 #ifdef MEM_LEAK_CHECK
