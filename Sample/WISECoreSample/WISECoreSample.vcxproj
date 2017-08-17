@@ -55,7 +55,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)Library\WISECore;$(SolutionDir)Include;$(SolutionDir)Platform;$(SolutionDir)Platform\Windows;$(SolutionDir)Library\MessageGenerator;$(SolutionDir)Library\HandlerKernel;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Lib_EI\WISECore;$(SolutionDir)Include;$(SolutionDir)Platform;$(SolutionDir)Platform\Windows;$(SolutionDir)Library\MessageGenerator;$(SolutionDir)Library\HandlerKernel;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -74,7 +74,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Library\WISECore;$(SolutionDir)Include;$(SolutionDir)Platform;$(SolutionDir)Platform\Windows;$(SolutionDir)Library\MessageGenerator;$(SolutionDir)Library\HandlerKernel;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Lib_EI\WISECore;$(SolutionDir)Include;$(SolutionDir)Platform;$(SolutionDir)Platform\Windows;$(SolutionDir)Library\MessageGenerator;$(SolutionDir)Library\HandlerKernel;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -94,7 +94,7 @@
     <ClCompile Include="WISECoreSample.c" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Library\WISECore\WISECore.vcxproj">
+    <ProjectReference Include="..\..\Lib_EI\WISECore\WISECore.vcxproj">
       <Project>{ba2b04d2-cbf7-42f5-a1e8-982fdc93e35d}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\Platform\WISEPlatform.vcxproj">
