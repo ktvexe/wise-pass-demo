@@ -10,6 +10,14 @@ IF "%1" == "add" (
 IF "%1" == "pull" (
 	set cmd=%1
 )
+
+IF "%1" == "checkout" (
+	set cmd=add
+	rmdir Lib_EI /s
+	rmdir Platform /s
+	rmdir Include/wise /s
+)
+
 IF "%2" == "" (
 	set branch=master
 )
