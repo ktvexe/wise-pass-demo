@@ -125,9 +125,9 @@ AC_CHECK_FUNCS([alarm clock_gettime dup2 fdatasync floor ftime ftruncate gethost
 
 AC_CONFIG_FILES([Makefile
 		 Platform/Makefile
-		 Library/MosquittoCarrier/Makefile
-		 Library/MQTTConnector/Makefile
-		 Library/WISECore/Makefile
+		 Lib_EI/MosquittoCarrier/Makefile
+		 Lib_EI/MQTTConnector/Makefile
+		 Lib_EI/WISECore/Makefile
 		 Sample/MosquittoSample/Makefile
 		 Sample/WISECoreSample/Makefile
 		])

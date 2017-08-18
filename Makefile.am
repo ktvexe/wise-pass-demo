@@ -1,7 +1,7 @@
 SUBDIRS = Platform \
-	  Library/MosquittoCarrier \
-	  Library/MQTTConnector \
-	  Library/WISECore \
+	  Lib_EI/MosquittoCarrier \
+	  Lib_EI/MQTTConnector \
+	  Lib_EI/WISECore \
 	  Sample/MosquittoSample \
 	  Sample/WISECoreSample
 	 
