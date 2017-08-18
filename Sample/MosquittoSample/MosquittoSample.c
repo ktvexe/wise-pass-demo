@@ -18,23 +18,25 @@
 _CrtMemState memStateStart, memStateEnd, memStateDiff;
 #endif
 //---------------------------------------------------------------------------------
-
+//Sensor data JSON format, it contain 3 sensor data: data1~3
 #define SENSOR_DATA "{\"opTS\":{\"$date\":%lld},\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"data1\",\"v\":%d},{\"n\":\"data2\",\"v\":%d},{\"n\":\"data3\",\"v\":%d}]}}}"
 
 struct mosquitto *g_mosq = NULL;
 
-char g_strServerIP[64] = "wise-msghub.eastasia.cloudapp.azure.com";
-int g_iPort = 1883;
-char g_strConnID[256] = "0e95b665-3748-46ce-80c5-bdd423d7a8a5:631476df-31a5-4b66-a4c6-bd85228b9d27";
-char g_strConnPW[64] = "f3a2342t4oejbefc78cgu080ia";
-char g_strDeviceID[37] = "00000001-0000-0000-0000-305A3A770000";
-char g_strTenantID[37] = "general";
-char g_strHostName[16] = "MQTTSample";
-char g_strProductTag[37] = "device";
-char g_strTLCertSPW[37] = "05155853";
-void* g_pHandler = NULL;
-int g_iSensor[3] = {0};
-bool g_bConnected = false;
+/*User can update g_strServerIP, g_iPort, g_strConnID, g_strConnPW and g_strDeviceID to connect to specific broker*/
+char g_strServerIP[64] = "wise-msghub.eastasia.cloudapp.azure.com"; // MQTT broker URL or IP
+int g_iPort = 1883; // MQTT broker listen port, keep 1883 as default port.
+char g_strConnID[256] = "0e95b665-3748-46ce-80c5-bdd423d7a8a5:631476df-31a5-4b66-a4c6-bd85228b9d27"; //broker connection ID
+char g_strConnPW[64] = "f3a2342t4oejbefc78cgu080ia"; //MQTT broker connection password
+char g_strDeviceID[37] = "00000001-0000-0000-0000-305A3A770020"; //Target device unique ID
+
+char g_strTenantID[37] = "general"; //EI-PaaS pre-defined tenant ID
+char g_strHostName[16] = "MQTTSample"; //the HostName will show on renote server device list as device name, user can customize the host name.
+char g_strProductTag[37] = "device"; // for common server the product tag default is "device", but user can change to their own product, such as "RMM", "SCADA"
+char g_strTLCertSPW[37] = "05155853"; // SSL/TLS provate key or pre-shared-key
+
+int g_iSensor[3] = {0}; //integer array for randomized sensor data
+bool g_bConnected = false; //global flag for connection status
 pthread_t g_reconnthr = 0;
 
 long long GetTimeTick()
@@ -68,6 +70,8 @@ void GenerateAgentInfo(char* strBuffer, int status)
 			GetTimeTick()); //time tick
 }
 
+// Sensor data access thread body.
+// User can implement functions to access dirver or library to get sensor data.
 void* threadaccessdata(void* args)
 {
 	while(true)
@@ -85,6 +89,7 @@ void* threadaccessdata(void* args)
 	return NULL;
 }
 
+// Create a thread to access sensor data with your driver or library.
 pthread_t StartAccessData()
 {
 	pthread_t thread = 0;
@@ -93,6 +98,7 @@ pthread_t StartAccessData()
 	return thread;
 }
 
+// Stop data access thread
 void StopAccessData(pthread_t thread)
 {
 	if(thread != 0)
@@ -102,6 +108,7 @@ void StopAccessData(pthread_t thread)
 	}
 }
 
+// Connect thread body
 void* threadconnect(void* args)
 {
 	char strTopic[256] = {0};
@@ -161,6 +168,7 @@ void* threadconnect(void* args)
 	return NULL;
 }
 
+// Reconnect thread body
 void* thread_reconnect(void* args)
 {
 	struct mosquitto *mosq = NULL;
@@ -182,6 +190,7 @@ void* thread_reconnect(void* args)
 	return 0;
 }
 
+// Connected event callback function
 void on_connect_callback(struct mosquitto *mosq, void *userdata, int rc)
 {
 	if(g_reconnthr)
@@ -207,6 +216,7 @@ void on_connect_callback(struct mosquitto *mosq, void *userdata, int rc)
 	}
 }
 
+// Disconnect event callback function
 void on_disconnect_callback(struct mosquitto *mosq, void *userdata, int rc)
 {
 	if(g_reconnthr)
@@ -228,9 +238,14 @@ void on_disconnect_callback(struct mosquitto *mosq, void *userdata, int rc)
 	}
 }
 
+//Callback function to handle received command from server.
 void on_message_recv_callback(struct mosquitto *mosq, void *userdata, const struct mosquitto_message *msg)
 {	
 	printf("Received topic: %s\n message: %s\n", msg->topic, (char*)msg->payload);
+
+	//commCmd 523 and 525 is defined in RMM product to get and set sensor data.
+	//user cand customize the command id to trigger function.
+
 	if(strstr((char*)msg->payload, "\"commCmd\":523")!=0)
 	{
 		/*TODO: Get Sensor Data*/
@@ -243,6 +258,7 @@ void on_message_recv_callback(struct mosquitto *mosq, void *userdata, const stru
 	}
 }
 
+// password check callback function to handle SSL/TLS private password 
 int on_password_check(char *buf, int size, int rwflag, void *userdata)
 {
 	int length = 0;
@@ -279,9 +295,13 @@ int main(int argc, char *argv[])
 #endif
 	srand((int) time(0)); //setup random seed.
 
+	// Create a thread to access sensor data with your driver or library.
 	threaddataaccess = StartAccessData();
 
+	// initialize mosquitto library
 	mosquitto_lib_init();
+
+	// Create a modquitto handle
 	mosq = mosquitto_new(g_strDeviceID, true, NULL);
 	if (!mosq)
 	{
@@ -297,7 +317,16 @@ int main(int argc, char *argv[])
 	//mosquitto_publish_callback_set(mosq, MQTT_publish_callback);
 
 
-	/*Setup TLS/SSL on MQTT if needed*/
+	// Setup WISECore connection SSL/TLS, 
+	//   SSLMode=0 disable the SSL/TLS.
+	//   SSLMode=1 certificate based SSL/TLS.
+	//     If the server you are connecting to requires clients to provide a
+	//     certificate, define certfile and keyfile with your client certificate and
+	//     private key. If your private key is encrypted, provide a password callback
+	//     function or you will have to enter the password at the command line.
+	//   SSLMode=2  pre-shared-key based TLS.
+	//      If the server you are connecting to provide a pre-shared-key, define the pre-shared-key and an ID with your client.
+	//     private key.
 	if(SSLMode == 1)
 	{
 		mosquitto_tls_insecure_set(mosq, true);
@@ -308,12 +337,14 @@ int main(int argc, char *argv[])
 		mosquitto_tls_psk_set(mosq, g_strTLCertSPW, g_strDeviceID, NULL);
 	}
 
+	// Setup MQTT connection ID and Password
 	if( strlen(g_strConnID)>0 && strlen(g_strConnPW)>0)
 		mosquitto_username_pw_set(mosq, g_strConnID, g_strConnPW);
 
 	/*reset will message*/
 	mosquitto_will_clear(mosq);
 
+	//Create MQTT Will message format and topic and register to broker
 	sprintf(strWillTopic, DEF_WILLMSG_TOPIC, g_strTenantID, g_strDeviceID);
 	GenerateAgentInfo(strWillPayload, 0);
 	mosquitto_will_set(mosq, strWillTopic ,strlen(strWillPayload) ,strWillPayload, 0, false);
@@ -333,6 +364,7 @@ EXIT:
 	printf("Click enter to exit\n");
 	fgetc(stdin);
 
+	// stop data access thread.
 	StopAccessData(threaddataaccess);
 
 	if(mosq)

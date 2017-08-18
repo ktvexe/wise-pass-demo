@@ -17,23 +17,25 @@
 #include "WISEPlatform.h"
 #include "liteparse.h"
 
+//Sensor data JSON format, it contain 3 sensor data: data1~3
 #define SENSOR_DATA "{\"opTS\":{\"$date\":%lld},\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"data1\",\"v\":%d},{\"n\":\"data2\",\"v\":%d},{\"n\":\"data3\",\"v\":%d}]}}}"
 
-char g_strServerIP[64] = "wise-msghub.eastasia.cloudapp.azure.com";
-int g_iPort = 1883;
-char g_strConnID[256] = "0e95b665-3748-46ce-80c5-bdd423d7a8a5:631476df-31a5-4b66-a4c6-bd85228b9d27";
-char g_strConnPW[64] = "f3a2342t4oejbefc78cgu080ia";
-char g_strDeviceID[37] = "00000001-0000-0000-0000-305A3A770020";
+/*User can update g_strServerIP, g_iPort, g_strConnID, g_strConnPW and g_strDeviceID to connect to specific broker*/
+char g_strServerIP[64] = "wise-msghub.eastasia.cloudapp.azure.com"; // MQTT broker URL or IP
+int g_iPort = 1883; // MQTT broker listen port, keep 1883 as default port.
+char g_strConnID[256] = "0e95b665-3748-46ce-80c5-bdd423d7a8a5:631476df-31a5-4b66-a4c6-bd85228b9d27"; //broker connection ID
+char g_strConnPW[64] = "f3a2342t4oejbefc78cgu080ia"; //MQTT broker connection password
+char g_strDeviceID[37] = "00000001-0000-0000-0000-305A3A770020"; //Target device unique ID
 
-char g_strTenantID[37] = "general";
-char g_strHostName[16] = "WISECoreSample";
-char g_strProductTag[37] = "device";
-char g_strTLCertSPW[37] = "05155853";
+char g_strTenantID[37] = "general"; //EI-PaaS pre-defined tenant ID
+char g_strHostName[16] = "WISECoreSample"; //the HostName will show on renote server device list as device name, user can customize the host name.
+char g_strProductTag[37] = "device"; // for common server the product tag default is "device", but user can change to their own product, such as "RMM", "SCADA"
+char g_strTLCertSPW[37] = "05155853"; // SSL/TLS provate key or pre-shared-key
 
-bool g_bReportData = true;
-int g_iReportInterval = 60; //sec.
-int g_iHeartbeatRate = 60; //min.
-int g_iSensor[3] = {0};
+bool g_bReportData = true; // Report data flag, true: send sensor data after connected.
+int g_iReportInterval = 60; //Send sensor data every 60 sec.
+int g_iHeartbeatRate = 60; //Send heartbeat packet every min.
+int g_iSensor[3] = {0}; //integer array for randomized sensor data
 
 typedef struct
 {
@@ -54,6 +56,7 @@ void SubscribeTopic();
 
 #ifdef WIN32
 #include "sys/time.h"
+//function to get current timestamp 
 int gettimeofday(struct timeval *tv, struct timezone *tz)
 {
     time_t clock;
@@ -76,6 +79,7 @@ int gettimeofday(struct timeval *tv, struct timezone *tz)
 }
 #endif
 
+//Callback function to get current timestamp.
 long long get_timetick(void* userdata)
 {
 	long long tick = 0;
@@ -85,6 +89,7 @@ long long get_timetick(void* userdata)
 	return tick;
 }
 
+//function to parse recoved command
 bool value_parse(const char* strCmd, const char* strTag, char* value, int length)
 {
 	char *contents = NULL; 
@@ -124,6 +129,7 @@ bool value_parse(const char* strCmd, const char* strTag, char* value, int length
 	return bFound;
 }
 
+//function to send snesor data in EI-PaaS handshake protocol
 void sendReportData(long long curTime)
 {
 	char strBuffer[1024] = {0};
@@ -139,6 +145,7 @@ void sendReportData(long long curTime)
 	core_publish(strTopic, strBuffer, strlen(strBuffer), 0, 0);
 }
 
+//function to send response message in EI-PaaS handshake protocol
 void sendResponse(int cmdID, char* handerlName, char* data, long long curTime)
 {
 	char strBuffer[1024] = {0};
@@ -152,6 +159,7 @@ void sendResponse(int cmdID, char* handerlName, char* data, long long curTime)
 	core_publish(strTopic, strBuffer, strlen(strBuffer), 0, 0);
 }
 
+// Connect thread body
 void* threadconnect(void* args)
 {
 	char strRecvTopic[256] = {0};
@@ -194,6 +202,7 @@ void* threadconnect(void* args)
 	return NULL;
 }
 
+// Connected event callback function
 void on_connect_cb(void* userdata)
 {
 	pthread_t conn = 0;
@@ -201,17 +210,20 @@ void on_connect_cb(void* userdata)
 		pthread_detach(conn);
 }
 
+// Lostconnect event callback function
 void on_lostconnect_cb(void* userdata)
 {
 	printf("CB_Lostconnect %s\n", core_error_string_get());
 	/*WISEConnector will reconnect automatically*/
 }
 
+// Disconnect event callback function
 void on_disconnect_cb(void* userdata)
 {
 	printf("CB_Disconnect \n");
 }
 
+// Sensor Get thread body to handle get command
 void* threadget(void* args)
 {
 	char strBuffer[2048] = "{\"sensorIDList\":{\"e\":[";
@@ -260,6 +272,7 @@ GET_EXIT:
 	return NULL;
 }
 
+// Data Set thread body to handle set command
 void* threadset(void* args)
 {
 	char strBuffer[2048] = "{\"sensorIDList\":{\"e\":[";
@@ -315,6 +328,7 @@ SET_EXIT:
 	return NULL;
 }
 
+//Callback function to handle received command from server.
 void on_msgrecv(const char* topic, const void *pkt, const long pktlength, void* userdata)
 {
 	int cmdID = 0;
@@ -341,6 +355,8 @@ void on_msgrecv(const char* topic, const void *pkt, const long pktlength, void* 
 	else
 		return;
 
+	//command id 523 and 525 is defined in RMM product to get and set sensor data.
+	//user cand customize the command id to trigger function.
 	if(cmdID == 523)
 	{
 		/*TODO: Get Sensor Data*/
@@ -369,6 +385,7 @@ void on_msgrecv(const char* topic, const void *pkt, const long pktlength, void* 
 	}	
 }
 
+//Callback function to handle rename command.
 void on_rename(const char* name, const int cmdid, const char* sessionid, const char* tenantid, const char* devid, void* userdata)
 {
 	printf("rename to: %s\n", name);
@@ -377,6 +394,9 @@ void on_rename(const char* name, const int cmdid, const char* sessionid, const c
 	return;
 }
 
+//Callback function to handle update command.
+// the message brings the file transfer server's IP, Port, ID, Password file path and the md5.
+// client can based on these data to download file.
 void on_update(const char* loginID, const char* loginPW, const int port, const char* path, const char* md5, const int cmdid, const char* sessionid, const char* tenantid, const char* devid, void* userdata)
 {
 	printf("Update: %s, %s, %d, %s, %s\n", loginID, loginPW, port, path, md5);
@@ -385,12 +405,15 @@ void on_update(const char* loginID, const char* loginPW, const int port, const c
 	return;
 }
 
+//Callback function to handle reconnect command.
 void on_server_reconnect(const char* tenantid, const char* devid, void* userdata)
 {
 	if(!strcmp(g_strDeviceID, devid))
 		core_device_register();
 }
 
+//Callback function to handle IoT get capability command.
+//User can describe full capability of this device in IPSO json format.
 void on_get_capability(const void *pkt, const long pktlength, const char* tenantid, const char* devid, void* userdata)
 {
 	/*TODO: send whole capability, no need on common server*/
@@ -398,6 +421,8 @@ void on_get_capability(const void *pkt, const long pktlength, const char* tenant
 	sendReportData(curTime);
 }
 
+// Callback function to handle IoT start report command
+// parse the command to get the report interval and set to global variable
 void on_start_report(const void *pkt, const long pktlength, const char* tenantid, const char* devid, void* userdata)
 {
 	/*TODO: start report sensor data*/
@@ -409,17 +434,21 @@ void on_start_report(const void *pkt, const long pktlength, const char* tenantid
 	}	
 }
 
+// Callback function to handle IoT stop report command
+// using a global flag to skip send data function (MQTT publish)
 void on_stop_report(const void *pkt, const long pktlength, const char* tenantid, const char* devid, void* userdata)
 {
 	/*TODO: stop report sensor data*/
 	g_bReportData = false;
 }
 
+// Callback function to handle heartbet rate query
 void on_heartbeatrate_query(const char* sessionid,const char* tenantid,const char* devid, void* userdata)
 {
 	core_heartbeatratequery_response(g_iHeartbeatRate,sessionid, tenantid, devid);
 }
 
+// Callback function to handle heartbet rate update command
 void on_heartbeatrate_update(const int heartbeatrate, const char* sessionid, const char* tenantid, const char* devid, void* userdata)
 {
 	printf("Heartbeat Rate Update: %d, %s, %s\n", heartbeatrate, sessionid, devid);
@@ -428,6 +457,7 @@ void on_heartbeatrate_update(const int heartbeatrate, const char* sessionid, con
 	return;
 }
 
+// subscribe a specific topic to receive the server command message.
 void SubscribeTopic()
 {
 	char topic[256] = {0};
@@ -440,6 +470,8 @@ void SubscribeTopic()
 	core_subscribe(topic, 0);
 }
 
+// Sensor data access thread body.
+// User can implement functions to access dirver or library to get sensor data.
 void* threadaccessdata(void* args)
 {
 	srand((int) time(0)); //setup random seed.
@@ -459,6 +491,7 @@ void* threadaccessdata(void* args)
 	return NULL;
 }
 
+// Create a thread to access sensor data with your driver or library.
 pthread_t StartAccessData()
 {
 	pthread_t thread = 0;
@@ -467,6 +500,7 @@ pthread_t StartAccessData()
 	return thread;
 }
 
+// Stop data access thread
 void StopAccessData(pthread_t thread)
 {
 	if(thread != 0)
@@ -484,9 +518,10 @@ int main(int argc, char *argv[])
 	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF ); 
 	_CrtMemCheckpoint( &memStateStart);
 #endif
-	
+	// Create a thread to access sensor data with your driver or library.
 	threaddataaccess = StartAccessData();
 
+	// Initialize WISECore and set "305A3A77B1CC" as identity.
 	if(!core_initialize(g_strTenantID, g_strDeviceID, g_strHostName, "305A3A77B1CC", NULL))
 	{
 		printf("Unable to initialize AgentCore.\n");
@@ -494,27 +529,46 @@ int main(int argc, char *argv[])
 	}
 	printf("Agent Initialized\n");
 
+	// Setup WISECore connection event callback function.
 	core_connection_callback_set(on_connect_cb, on_lostconnect_cb, on_disconnect_cb, on_msgrecv);
 
+	// Setup WISECore action command callback function.
 	core_action_callback_set(on_rename, on_update);
 
+	// Setup WISECore reconnect command callback function.
 	core_server_reconnect_callback_set(on_server_reconnect);
 
+	// Setup WISECore iot command callback function.
 	core_iot_callback_set(on_get_capability, on_start_report, on_stop_report);
 
+	// Setup WISECore timetick callback function to apply timestamp on reply message.
 	core_time_tick_callback_set(get_timetick);
 
+	// Setup WISECore heartbeat command callback function.
 	core_heartbeat_callback_set(on_heartbeatrate_query, on_heartbeatrate_update);
 
+	// Setup production tag let server can idebtify the agent type or supported function set.
 	core_tag_set(g_strProductTag);
 
+	// Setup basic agent product info. include: SN, parent ID (keep NULL if not any), software version, agent type (keep IPC if you don't know), product name and manufacturer name.
 	core_product_info_set("305A3A77B1CC", NULL, "1.0.1", "IPC", "Sample", "Sample");
 
+	// Setup WISECore connection SSL/TLS, 
+	//   SSLMode=0 disable the SSL/TLS.
+	//   SSLMode=1 certificate based SSL/TLS.
+	//     If the server you are connecting to requires clients to provide a
+	//     certificate, define certfile and keyfile with your client certificate and
+	//     private key. If your private key is encrypted, provide a password callback
+	//     function or you will have to enter the password at the command line.
+	//   SSLMode=2  pre-shared-key based TLS.
+	//      If the server you are connecting to provide a pre-shared-key, define the pre-shared-key and an ID with your client.
+	//     private key.
 	if(SSLMode == 1)
 		core_tls_set( "server.crt", NULL, "ca.crt", "ca.key", g_strTLCertSPW);
 	else if(SSLMode == 2)
 		core_tls_psk_set(g_strTLCertSPW, g_strDeviceID, NULL);
 
+	// connect to remote server(broker)
 	if(!core_connect(g_strServerIP, g_iPort, g_strConnID, g_strConnPW)){
 		printf("Unable to connect to broker. %s\n", core_error_string_get());
 		goto EXIT;
@@ -526,10 +580,14 @@ EXIT:
 	printf("Click enter to exit\n");
 	fgetc(stdin);
 
+	// stop data access thread.
 	StopAccessData(threaddataaccess);
 
+	// disconnect from remote server
 	core_disconnect(true);
 	printf("Send Client Info: disconnect\n");
+
+	// release WISECore library
 	core_uninitialize();
 #ifdef MEM_LEAK_CHECK
 	_CrtMemCheckpoint( &memStateEnd );

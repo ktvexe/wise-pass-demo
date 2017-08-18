@@ -11,11 +11,11 @@
 #define _WISECORE_VERSION_H_
 
 #if !defined(SVN_REVISION)
-#include "../../Include/svnversion.h"
+#include "../../Include/wise/svnversion.h"
 #endif
 
-#define VER_MAJOR	2
-#define VER_MINOR	0
+#define VER_MAJOR	MAIN_VERSION
+#define VER_MINOR	SUB_VERSION
 #define VER_BUILD	BUILD_VERSION
 #define VER_FIX		SVN_REVISION
 
