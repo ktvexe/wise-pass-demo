@@ -11,7 +11,7 @@
 #define _SUSIACCESSAGENT_VERSION_H_
 
 #if !defined(SVN_REVISION)
-#include "../Include/svnversion.h"
+#include "../Include/wise/svnversion.h"
 #endif
 
 #define VER_MAJOR	MAIN_VERSION
