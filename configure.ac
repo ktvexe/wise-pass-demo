@@ -3,14 +3,12 @@
 
 AC_PREREQ([2.63])
 
-m4_define([VERSION_MAJOR], 
-	m4_esyscmd([cut -d'.' -f1 VERSION | tr -d '\n']))
-m4_define([VERSION_MINOR], 
-	m4_esyscmd([cut -d'.' -f2 VERSION | tr -d '\n']))
-m4_define([VERSION_PATCH], 
-	m4_esyscmd([cut -d'.' -f3 VERSION | tr -d '\n']))
-m4_define([VERSION_REVISION], 
-	m4_esyscmd([cut -d'.' -f4 VERSION | tr -d '\n']))
+#m4_define([VERSION_MAJOR], m4_esyscmd([cut -d'.' -f1 VERSION | tr -d '\n']))
+#m4_define([VERSION_MINOR], m4_esyscmd([cut -d'.' -f2 VERSION | tr -d '\n']))
+#m4_define([VERSION_PATCH], m4_esyscmd([cut -d'.' -f3 VERSION | tr -d '\n']))
+#m4_define([VERSION_REVISION], m4_esyscmd([cut -d'.' -f4 VERSION | tr -d '\n']))
+m4_define([VERSION_EI], m4_esyscmd([cat Lib_EI/Include/VERSION | tr -d '\n']))
+m4_define([VERSION_PLATFORM], m4_esyscmd([cat Platform/VERSION | tr -d '\n']))
 
 AC_INIT([CAgentIoT], [VERSION])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror subdir-objects])
@@ -132,9 +130,11 @@ AC_CONFIG_FILES([Makefile
 		 Sample/WISECoreSample/Makefile
 		])
 
-AC_SUBST([PACKAGE_VERSION_MAJOR],[VERSION_MAJOR])
-AC_SUBST([PACKAGE_VERSION_MINOR],[VERSION_MINOR])
-AC_SUBST([PACKAGE_VERSION_PATCH],[VERSION_PATCH])
-AC_SUBST([PACKAGE_VERSION_REVISION],[VERSION_REVISION])
+#AC_SUBST([PACKAGE_VERSION_MAJOR],[VERSION_MAJOR])
+#AC_SUBST([PACKAGE_VERSION_MINOR],[VERSION_MINOR])
+#AC_SUBST([PACKAGE_VERSION_PATCH],[VERSION_PATCH])
+#AC_SUBST([PACKAGE_VERSION_REVISION],[VERSION_REVISION])
+AC_SUBST([PACKAGE_VERSION_EI],[VERSION_EI])
+AC_SUBST([PACKAGE_VERSION_PLATFORM],[VERSION_PLATFORM])
 AC_OUTPUT
 
