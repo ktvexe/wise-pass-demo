@@ -36,8 +36,7 @@ extern "C" {
  * Initialize the client instance.
  *
  * Parameters:
- * 	devid -			String to use as the client id. If NULL, a random client id
- * 	                will be generated. If id is NULL, clean_session must be true.
+ * 	devid -			String to use as the client id. If NULL, a random client id will be generated.
  * 	userdata -		A user pointer that will be passed as an argument to any
  *                  callbacks that are specified.
  *
