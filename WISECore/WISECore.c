@@ -264,7 +264,7 @@ void _on_lostconnect_cb(void *pUserData)
 		pHandle->pSocketfd = -1;
 		pHandle->iStatus = core_offline;
 	}
-
+	g_iErrorCode = core_internal_error;
 	if(g_on_lostconnect_cb)
 		g_on_lostconnect_cb(pHandle->userdata);
 }
