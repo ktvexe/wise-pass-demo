@@ -22,11 +22,11 @@ IF "%2" == "" (
 	set branch=master
 )
 
-echo git subtree %cmd%--prefix=Lib_EI https://github.com/ADVANTECH-Corp/EI-Lib.git %branch%
-git subtree %cmd% --prefix=Lib_EI https://github.com/ADVANTECH-Corp/EI-Lib.git %branch%
+echo git subtree %cmd%--prefix=Lib_EI http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Lib.git %branch%
+git subtree %cmd% --prefix=Lib_EI http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Lib.git %branch%
 
-echo git subtree %cmd% --prefix=Platform https://github.com/ADVANTECH-Corp/EI-Platform.git %branch%
-git subtree %cmd% --prefix=Platform https://github.com/ADVANTECH-Corp/EI-Platform.git %branch%
+echo git subtree %cmd% --prefix=Platform http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Platform.git %branch%
+git subtree %cmd% --prefix=Platform http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Platform.git %branch%
 
-echo git subtree %cmd% --prefix=Include/wise https://github.com/ADVANTECH-Corp/WISEPredefine.git %branch%
-git subtree %cmd% --prefix=Include/wise https://github.com/ADVANTECH-Corp/WISEPredefine.git %branch%
+echo git subtree %cmd% --prefix=Include/wise http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Predefine.git %branch%
+git subtree %cmd% --prefix=Include/wise http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Predefine.git %branch%
