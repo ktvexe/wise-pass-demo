@@ -150,11 +150,6 @@ WISE_CONNECTOR_API bool wc_unsubscribe(const char* topic)
 
 }
 
-WISE_CONNECTOR_API bool wc_address_get(char *address)
-{
-	return WiCar_MQTT_GetLocalIP(address);
-}
-
 WISE_CONNECTOR_API const char* wc_current_error_string_get()
 {
 	return WiCar_MQTT_GetCurrentErrorString();

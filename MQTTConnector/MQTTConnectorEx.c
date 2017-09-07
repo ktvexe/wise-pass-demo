@@ -226,17 +226,6 @@ WISE_CONNECTOR_API bool wc_ex_unsubscribe(WiConn_t conn, const char* topic)
 		return false;
 }
 
-WISE_CONNECTOR_API bool wc_ex_address_get(WiConn_t conn, char *address)
-{
-	if(conn)
-	{
-		mosq_conn_t* pmosq = (mosq_conn_t*)conn;
-		return WiCarEx_MQTT_GetLocalIP(pmosq->mosq, address);
-	}
-	else
-		return false;
-}
-
 WISE_CONNECTOR_API const char* wc_ex_current_error_string_get(WiConn_t conn)
 {
 	if(conn)

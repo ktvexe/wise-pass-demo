@@ -289,20 +289,6 @@ WISE_CARRIER_API bool WiCarEx_MQTT_Subscribe(WiCar_t pmosq, const char* topic, i
  *  boolean value for success or not.
  */
 WISE_CARRIER_API bool WiCarEx_MQTT_UnSubscribe(WiCar_t pmosq, const char* topic);
-/*
- * Function: WiCarEx_MQTT_GetLocalIP
- *
- * Get local IP address. 
- *
- * Parameters:
- * 	pmosq		-	pointer of WISE Carrier Object.
- * 	address 	-	to get local IP address.
- *
- * Returns:
- *  boolean value for success or not.
- */
-
-WISE_CARRIER_API bool WiCarEx_MQTT_GetLocalIP(WiCar_t pmosq, char *address);
 
 //error
 /*

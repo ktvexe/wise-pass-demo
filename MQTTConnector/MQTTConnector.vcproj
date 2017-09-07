@@ -200,11 +200,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\Include\WISEConnector.h"
+				RelativePath=".\WISEConnector.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\Include\WISEConnectorEx.h"
+				RelativePath=".\WISEConnectorEx.h"
 				>
 			</File>
 		</Filter>

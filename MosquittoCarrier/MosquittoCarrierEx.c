@@ -5,7 +5,6 @@
 /* Abstract     : Mosquitto Carrier Extend API definition					*/
 /* Reference    : None														*/
 /****************************************************************************/
-#include "network.h"
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -779,29 +778,6 @@ WISE_CARRIER_API bool WiCarEx_MQTT_UnSubscribe(WiCar_t pmosq, const char* topic)
 
 	mosq->iErrorCode = result;
 	return result==MOSQ_ERR_SUCCESS?true:false;
-}
-
-WISE_CARRIER_API bool WiCarEx_MQTT_GetLocalIP(WiCar_t pmosq, char *address)
-{
-	mosq_car_t* mosq = NULL;
-	int sockfd = -1;
-	char strAddr[16] = {0};
-	if(!pmosq)
-		return false;
-	mosq = (mosq_car_t*)pmosq;
-	sockfd = mosquitto_socket(mosq->mosq);
-
-	if(network_local_ip_get(sockfd, strAddr, sizeof(strAddr))==0)
-	{
-		mosq->iErrorCode = mc_err_success;
-		strncpy(address, strAddr, sizeof(strAddr));
-		return true;
-	}
-	else
-	{
-		mosq->iErrorCode = mc_err_no_connect;
-		return false; 
-	}
 }
 
 WISE_CARRIER_API const char *WiCarEx_MQTT_GetCurrentErrorString(WiCar_t pmosq)

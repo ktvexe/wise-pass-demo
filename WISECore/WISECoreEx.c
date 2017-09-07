@@ -21,7 +21,6 @@
 typedef struct{
 	/*clinet info, user must define*/
 	char strClientID[DEF_DEVID_LENGTH];
-	char strTenantID[DEF_DEVID_LENGTH];
 	char strHostName[DEF_HOSTNAME_LENGTH];
 	char strMAC[DEF_MAC_LENGTH];
 
@@ -64,34 +63,6 @@ typedef struct{
 	long long tick;
 	void* userdata;
 }core_contex_t;
-
-typedef enum{
-	wise_unknown_cmd = 0,
-	wise_agentinfo_cmd = 21,
-	//--------------------------Global command define(101--130)--------------------------------
-	wise_update_cagent_req = 111,
-	wise_update_cagent_rep,
-	wise_cagent_rename_req = 113,
-	wise_cagent_rename_rep,
-	wise_cagent_osinfo_rep = 116,
-	wise_server_control_req = 125,
-	wise_server_control_rep,
-
-	wise_heartbeatrate_query_req = 127,
-	wise_heartbeatrate_query_rep = 128,
-	wise_heartbeatrate_update_req = 129,
-	wise_heartbeatrate_update_rep = 130,
-
-	wise_error_rep = 600,
-
-	wise_info_spec_req = 2051,
-	wise_info_spec_rep = 2052,
-	wise_start_auto_upload_req = 2053,
-	wise_start_auto_upload_rep = 2054,
-	wise_info_upload_rep = 2055,
-	wise_stop_auto_upload_req = 2056,
-	wise_stop_auto_upload_rep = 2057,
-}wise_comm_cmd_t;
 
 typedef enum {
 	core_success = 0,               // No error.
@@ -182,11 +153,8 @@ bool _ex_send_agent_connect(core_contex_t* pHandle)
 
 	if(!_ex_get_agentinfo_string(pHandle, core_online, pHandle->strPayloadBuff, sizeof(pHandle->strPayloadBuff)))
 		return false;
-#ifdef _WISEPAAS_02_DEF_H_
-	sprintf(pHandle->strTopicBuff, DEF_INFOACK_TOPIC, pHandle->strTenantID, pHandle->strClientID);
-#else
+
 	sprintf(pHandle->strTopicBuff, DEF_INFOACK_TOPIC, pHandle->strClientID);
-#endif
 	
 	if(wc_ex_publish(pHandle->conn, (char *)pHandle->strTopicBuff, pHandle->strPayloadBuff, strlen(pHandle->strPayloadBuff), false, 0))
 	{
@@ -213,11 +181,7 @@ bool _ex_send_agent_disconnect(core_contex_t* pHandle)
 
 	if(!_ex_get_agentinfo_string(pHandle, core_offline, pHandle->strPayloadBuff, sizeof(pHandle->strPayloadBuff)))
 		return false;
-#ifdef _WISEPAAS_02_DEF_H_
-	sprintf(pHandle->strTopicBuff, DEF_INFOACK_TOPIC, pHandle->strTenantID, pHandle->strClientID);
-#else
 	sprintf(pHandle->strTopicBuff, DEF_INFOACK_TOPIC, pHandle->strClientID);
-#endif
 	if(wc_ex_publish(pHandle->conn, (char *)pHandle->strTopicBuff, pHandle->strPayloadBuff, strlen(pHandle->strPayloadBuff), false, 0))
 	{
 		pHandle->iErrorCode = core_success;
@@ -259,6 +223,7 @@ void _ex_on_lostconnect_cb(void *pUserData)
 	{
 		pHandle->pSocketfd = -1;
 		pHandle->iStatus = core_offline;
+		pHandle->iErrorCode = core_internal_error;
 	}
 
 	if(pHandle->on_lostconnect_cb)
@@ -283,7 +248,7 @@ void _ex_on_disconnect_cb(void *pUserData)
 		pHandle->on_disconnect_cb(pHandle->userdata);
 }
 
-void _ex_on_rename(core_contex_t* pHandle, char* cmd, const char* strTenantID, const char* strClientID)
+void _ex_on_rename(core_contex_t* pHandle, char* cmd, const char* strClientID)
 {
 	// {"commCmd":113,"catalogID":4,"handlerName":"general","sessionID":"0BD843BFB2A34E60A56C3B686BB41C90", "devName":"TestClient_123"}
 	char strName[DEF_HOSTNAME_LENGTH] = {0};
@@ -298,10 +263,10 @@ void _ex_on_rename(core_contex_t* pHandle, char* cmd, const char* strTenantID, c
 	strncpy(pHandle->strHostName, strName, sizeof(pHandle->strHostName));
 
 	if(pHandle->on_rename_cb)
-		pHandle->on_rename_cb(strName, wise_cagent_rename_rep, strSessionID, strTenantID, strClientID, pHandle->userdata);
+		pHandle->on_rename_cb(strName, wise_cagent_rename_rep, strSessionID, strClientID, pHandle->userdata);
 }
 
-void _ex_on_update(core_contex_t* pHandle, char* cmd, const char* strTenantID, const char* strClientID)
+void _ex_on_update(core_contex_t* pHandle, char* cmd, const char* strClientID)
 {
 	/*{"commCmd":111,"catalogID":4,"requestID":16,"params":{"userName":"sa30Read","pwd":"sa30Read","port":2121,"path":"/upgrade/SA30Agent_V3.0.15.exe","md5":"758C9D0A8654A93D09F375D33E262507"}}*/
 	char strUserName[DEF_USER_PASS_LENGTH] = {0};
@@ -326,10 +291,10 @@ void _ex_on_update(core_contex_t* pHandle, char* cmd, const char* strTenantID, c
 	}
 
 	if(pHandle->on_update_cb)
-		pHandle->on_update_cb(strUserName, strPwd, iPort, strPath, strMD5, wise_update_cagent_rep, strSessionID, strTenantID, strClientID, pHandle->userdata);
+		pHandle->on_update_cb(strUserName, strPwd, iPort, strPath, strMD5, wise_update_cagent_rep, strSessionID, strClientID, pHandle->userdata);
 }
 
-void _ex_on_heartbeatrate_query(core_contex_t* pHandle, char* cmd, const char* strTenantID, const char* strClientID)
+void _ex_on_heartbeatrate_query(core_contex_t* pHandle, char* cmd, const char* strClientID)
 {
 	// {"commCmd":127,"catalogID":4,"handlerName":"general","sessionID":"0BD843BFB2A34E60A56C3B686BB41C90"}
 	char strSessionID[33] = {0};
@@ -339,10 +304,10 @@ void _ex_on_heartbeatrate_query(core_contex_t* pHandle, char* cmd, const char* s
 	lp_value_get(cmd, "sessionID", strSessionID, sizeof(strSessionID));
 
 	if(pHandle->on_query_heartbeatrate)
-		pHandle->on_query_heartbeatrate(strSessionID, strTenantID, strClientID, pHandle->userdata);
+		pHandle->on_query_heartbeatrate(strSessionID, strClientID, pHandle->userdata);
 }
 
-void _ex_on_heartbeatrate_update(core_contex_t* pHandle, char* cmd, const char* strTenantID, const char* strClientID)
+void _ex_on_heartbeatrate_update(core_contex_t* pHandle, char* cmd, const char* strClientID)
 {
 	// {"commCmd":129,"catalogID":4,"handlerName":"general","sessionID":"0BD843BFB2A34E60A56C3B686BB41C90", "heartbeatrate":60}
 	char strRate[33] = {0};
@@ -354,22 +319,22 @@ void _ex_on_heartbeatrate_update(core_contex_t* pHandle, char* cmd, const char* 
 	lp_value_get(cmd, "heartbeatrate", strRate, sizeof(strRate));
 	iRate = atoi(strRate);
 	if(pHandle->on_update_heartbeatrate)
-		pHandle->on_update_heartbeatrate(iRate, strSessionID, strTenantID, strClientID, pHandle->userdata);
+		pHandle->on_update_heartbeatrate(iRate, strSessionID, strClientID, pHandle->userdata);
 }
 
-void _ex_on_server_reconnect(core_contex_t* pHandle, const char* strTenantID, const char* strClientID)
+void _ex_on_server_reconnect(core_contex_t* pHandle, const char* strClientID)
 {
 	if(!pHandle)
 		return;
 	if(pHandle->on_server_reconnect)
-		pHandle->on_server_reconnect(strTenantID, strClientID, pHandle->userdata);
+		pHandle->on_server_reconnect(strClientID, pHandle->userdata);
 }
 
 void _ex_get_devid(const char* topic, char* devid)
 {
 	char *start = NULL, *end = NULL;
 #ifdef _WISEPAAS_02_DEF_H_
-	int pos = 4;
+	int pos = 3;
 	if(topic == NULL) return;
 	if(devid == NULL) return;
 	start = strstr(topic, "/wisepaas/"); //verify support topic start with "/wisepaas/"
@@ -400,13 +365,13 @@ void _ex_get_devid(const char* topic, char* devid)
 #endif
 }
 
-void _ex_get_tenantid(const char* topic, char* tenantid)
+void _ex_get_custom(const char* topic, char* custom)
 {
 #ifdef _WISEPAAS_02_DEF_H_
 	int pos = 2;
 	char *start = NULL, *end = NULL;
 	if(topic == NULL) return;
-	if(tenantid == NULL) return;
+	if(custom == NULL) return;
 	start = strstr(topic, "/wisepaas/"); //verify support topic start with "/wisepaas/"
 	if(start)
 	{
@@ -419,10 +384,10 @@ void _ex_get_tenantid(const char* topic, char* tenantid)
 		}
 		end = strstr(start, "/");
 		if(end)
-			strncpy(tenantid, start, end-start);
+			strncpy(custom, start, end-start);
 	}
 #else
-	strcpy(tenantid, "");
+	strcpy(custom, "");
 #endif
 }
 
@@ -435,7 +400,7 @@ bool _ex_check_cmd(char *payload, char *fmt, wise_comm_cmd_t comm) {
 void _ex_on_message_recv(const char* topic, const void* payload, const int payloadlen, void *pUserData)
 {
 	char devID[DEF_DEVID_LENGTH] = {0};
-	char tenantID[DEF_DEVID_LENGTH] = {0};
+	char customID[DEF_DEVID_LENGTH] = {0};
 	core_contex_t* pHandle = NULL;
 	
 	if(!pUserData)
@@ -443,51 +408,51 @@ void _ex_on_message_recv(const char* topic, const void* payload, const int paylo
 	pHandle = (core_contex_t*)pUserData;
 
 	_ex_get_devid(topic, devID);
-	_ex_get_tenantid(topic, tenantID);
+	_ex_get_custom(topic, customID);
 
 	if(strstr((char*)payload, DEF_GENERAL_HANDLER))
 	{
 		if(pHandle->on_rename_cb && _ex_check_cmd(payload, DEF_WISE_COMMAND, wise_cagent_rename_req))
 		{
-			_ex_on_rename(pHandle, (char*)payload, tenantID, devID);
+			_ex_on_rename(pHandle, (char*)payload, devID);
 			return;
 	    }
 		if(pHandle->on_update_cb && _ex_check_cmd(payload, DEF_WISE_COMMAND, wise_update_cagent_req))
 		{
-			_ex_on_update(pHandle, (char*)payload, tenantID, devID);
+			_ex_on_update(pHandle, (char*)payload, devID);
 			return;
 	    }
 		if(_ex_check_cmd(payload, DEF_WISE_COMMAND, wise_server_control_req))
 		{
 			if(_ex_check_cmd(payload, DEF_SERVERCTL_STATUS, 4)) //server reconnect.
 			{
-				_ex_on_server_reconnect(pHandle, tenantID, devID);
+				_ex_on_server_reconnect(pHandle, devID);
 				return;
 			}
 		}
 		if(_ex_check_cmd(payload, DEF_WISE_COMMAND, wise_heartbeatrate_query_req))
 		{
-			_ex_on_heartbeatrate_query(pHandle, (char*)payload, tenantID, devID);
+			_ex_on_heartbeatrate_query(pHandle, (char*)payload, devID);
 			return;
 		}
 		if(_ex_check_cmd(payload, DEF_WISE_COMMAND, wise_heartbeatrate_update_req))
 		{
-			_ex_on_heartbeatrate_update(pHandle, (char*)payload, tenantID, devID);
+			_ex_on_heartbeatrate_update(pHandle, (char*)payload, devID);
 			return;
 		}
-		if(pHandle->on_get_capability && _ex_check_cmd(payload, DEF_WISE_COMMAND, wise_info_spec_req))
+		if(pHandle->on_get_capability && _ex_check_cmd(payload, DEF_WISE_COMMAND, wise_get_capability_req))
 		{
-			pHandle->on_get_capability(payload, payloadlen, tenantID, devID, pHandle->userdata);
+			pHandle->on_get_capability(payload, payloadlen, devID, pHandle->userdata);
 			return;
 		}
-		if(pHandle->on_start_report && _ex_check_cmd(payload, DEF_WISE_COMMAND, wise_start_auto_upload_req))
+		if(pHandle->on_start_report && _ex_check_cmd(payload, DEF_WISE_COMMAND, wise_start_report_req))
 		{
-			pHandle->on_start_report(payload, payloadlen, tenantID, devID, pHandle->userdata);
+			pHandle->on_start_report(payload, payloadlen, devID, pHandle->userdata);
 			return;
 		}
-		if(pHandle->on_stop_report && _ex_check_cmd(payload, DEF_WISE_COMMAND, wise_stop_auto_upload_req))
+		if(pHandle->on_stop_report && _ex_check_cmd(payload, DEF_WISE_COMMAND, wise_stop_report_req))
 		{
-			pHandle->on_stop_report(payload, payloadlen, tenantID, devID, pHandle->userdata);
+			pHandle->on_stop_report(payload, payloadlen, devID, pHandle->userdata);
 			return;
 		}
 	}
@@ -497,7 +462,7 @@ void _ex_on_message_recv(const char* topic, const void* payload, const int paylo
 		{
 			if(_ex_check_cmd(payload, DEF_SERVERCTL_STATUS, 4)) //server reconnect.
 			{
-				_ex_on_server_reconnect(pHandle, tenantID, devID);
+				_ex_on_server_reconnect(pHandle, devID);
 				return;
 	        }
         }
@@ -508,7 +473,7 @@ void _ex_on_message_recv(const char* topic, const void* payload, const int paylo
 }
 
 
-WISECORE_API WiCore_t core_ex_initialize(char* strTenantID, char* strClientID, char* strHostName, char* strMAC, void* userdata)
+WISECORE_API WiCore_t core_ex_initialize(char* strClientID, char* strHostName, char* strMAC, void* userdata)
 {
 	core_contex_t* tHandleCtx = NULL;
 	WiConn_t conn = NULL;
@@ -526,7 +491,6 @@ WISECORE_API WiCore_t core_ex_initialize(char* strTenantID, char* strClientID, c
 
 	tHandleCtx->tick = 0;
 	strncpy(tHandleCtx->strClientID, strClientID, sizeof(tHandleCtx->strClientID));
-	strncpy(tHandleCtx->strTenantID, strTenantID, sizeof(tHandleCtx->strTenantID));
 	strncpy(tHandleCtx->strHostName, strHostName, sizeof(tHandleCtx->strHostName));
 	strncpy(tHandleCtx->strMAC, strMAC, sizeof(tHandleCtx->strMAC));
 
@@ -734,11 +698,7 @@ WISECORE_API bool core_ex_connect(WiCore_t core, char* strServerIP, int iServerP
 
 	if(!_ex_get_agentinfo_string(tHandleCtx, core_offline, tHandleCtx->strPayloadBuff, sizeof(tHandleCtx->strPayloadBuff)))
 		return false;
-#ifdef _WISEPAAS_02_DEF_H_
-	sprintf(tHandleCtx->strTopicBuff, DEF_WILLMSG_TOPIC, tHandleCtx->strTenantID, tHandleCtx->strClientID);
-#else
 	sprintf(tHandleCtx->strTopicBuff, DEF_WILLMSG_TOPIC, tHandleCtx->strClientID);
-#endif
 	if(wc_ex_connect(tHandleCtx->conn, strServerIP, iServerPort, strConnID, strConnPW, 120, tHandleCtx->strTopicBuff, tHandleCtx->strPayloadBuff, strlen(tHandleCtx->strPayloadBuff)))
 	{
 		tHandleCtx->iErrorCode = core_success;
@@ -814,7 +774,7 @@ WISECORE_API bool core_ex_action_callback_set(WiCore_t core, CORE_RENAME_CALLBAC
 	return true;
 }
 
-WISECORE_API bool core_ex_action_response(WiCore_t core, const int cmdid, const char * sessoinid, bool success, const char* tenantid, const char* clientid)
+WISECORE_API bool core_ex_action_response(WiCore_t core, const int cmdid, const char * sessoinid, bool success, const char* clientid)
 {
 	core_contex_t* tHandleCtx = NULL;
 	long long tick = 0;
@@ -848,7 +808,7 @@ WISECORE_API bool core_ex_action_response(WiCore_t core, const int cmdid, const 
 	else
 		snprintf(tHandleCtx->strPayloadBuff, sizeof(tHandleCtx->strPayloadBuff), DEF_ACTION_RESULT_JSON, clientid?clientid:tHandleCtx->strClientID, cmdid, success?"SUCCESS":"FALSE", tick);
 #ifdef _WISEPAAS_02_DEF_H_
-	sprintf(tHandleCtx->strTopicBuff, DEF_AGENTACT_TOPIC, tenantid?tenantid:tHandleCtx->strTenantID, DEF_PRESERVE_PRODUCT_NAME, clientid?clientid:tHandleCtx->strClientID);
+	sprintf(tHandleCtx->strTopicBuff, DEF_AGENTACT_TOPIC, DEF_PRESERVE_PRODUCT_NAME, clientid?clientid:tHandleCtx->strClientID);
 #else
 	sprintf(tHandleCtx->strTopicBuff, DEF_AGENTACT_TOPIC, clientid?clientid:tHandleCtx->strClientID);
 #endif
@@ -942,7 +902,7 @@ WISECORE_API bool core_ex_heartbeat_callback_set(WiCore_t core, CORE_QUERY_HEART
 	return true;
 }
 
-WISECORE_API bool core_ex_heartbeatratequery_response(WiCore_t core, const int heartbeatrate, const char * sessoinid, const char* tenantid, const char* clientid)
+WISECORE_API bool core_ex_heartbeatratequery_response(WiCore_t core, const int heartbeatrate, const char * sessoinid, const char* clientid)
 {
 	core_contex_t* tHandleCtx = NULL;
 	long long tick = 0;
@@ -973,7 +933,7 @@ WISECORE_API bool core_ex_heartbeatratequery_response(WiCore_t core, const int h
 
 	sprintf(tHandleCtx->strPayloadBuff, DEF_HEARTBEATRATE_RESPONSE_SESSION_JSON, clientid, wise_heartbeatrate_query_rep, heartbeatrate, sessoinid, tick);
 #ifdef _WISEPAAS_02_DEF_H_
-	sprintf(tHandleCtx->strTopicBuff, DEF_AGENTACT_TOPIC, tenantid, DEF_PRESERVE_PRODUCT_NAME, clientid);
+	sprintf(tHandleCtx->strTopicBuff, DEF_AGENTACT_TOPIC, DEF_PRESERVE_PRODUCT_NAME, clientid);
 #else
 	sprintf(tHandleCtx->strTopicBuff, DEF_AGENTACT_TOPIC, clientid);
 #endif
@@ -1051,7 +1011,7 @@ WISECORE_API bool core_ex_device_register(WiCore_t core)
 		return false;
 	}
 #ifdef _WISEPAAS_02_DEF_H_
-	sprintf(tHandleCtx->strTopicBuff, DEF_CALLBACKREQ_TOPIC, tHandleCtx->strTenantID, DEF_PRESERVE_PRODUCT_NAME, tHandleCtx->strClientID);
+	sprintf(tHandleCtx->strTopicBuff, DEF_CALLBACKREQ_TOPIC, DEF_PRESERVE_PRODUCT_NAME, tHandleCtx->strClientID);
 #else
 	sprintf(tHandleCtx->strTopicBuff, DEF_CALLBACKREQ_TOPIC, tHandleCtx->strClientID);
 #endif
@@ -1084,11 +1044,7 @@ WISECORE_API bool core_ex_heartbeat_send(WiCore_t core)
 		return false;
 	}
 	sprintf(tHandleCtx->strPayloadBuff, DEF_HEARTBEAT_MESSAGE_JSON, tHandleCtx->strClientID);
-#ifdef _WISEPAAS_02_DEF_H_
-	sprintf(tHandleCtx->strTopicBuff, DEF_HEARTBEAT_TOPIC, tHandleCtx->strTenantID, tHandleCtx->strClientID);
-#else
 	sprintf(tHandleCtx->strTopicBuff, DEF_HEARTBEAT_TOPIC, tHandleCtx->strClientID);
-#endif
 	if(wc_ex_publish(tHandleCtx->conn, (char *)tHandleCtx->strTopicBuff, tHandleCtx->strPayloadBuff, strlen(tHandleCtx->strPayloadBuff), false, 0))
 	{
 		tHandleCtx->iErrorCode = core_success;
@@ -1162,38 +1118,6 @@ WISECORE_API bool core_ex_unsubscribe(WiCore_t core, char const * topic)
 		tHandleCtx->iErrorCode = core_internal_error;
 		return false;
 	}
-}
-
-WISECORE_API bool core_ex_address_get(WiCore_t core, char *address)
-{
-	core_contex_t* tHandleCtx = NULL;
-	if(core == NULL)
-		return false;
-	tHandleCtx = (core_contex_t*) core;
-
-	if(!tHandleCtx->bInited)
-	{
-		tHandleCtx->iErrorCode = core_no_init;
-		return false;
-	}
-
-	if(tHandleCtx->iStatus != core_online)
-	{
-		tHandleCtx->iErrorCode = core_no_connnect;
-		return false;
-	}
-
-	if(wc_ex_address_get(tHandleCtx->conn, address))
-	{
-		tHandleCtx->iErrorCode = core_success;
-		return true;
-	}
-	else
-	{
-		tHandleCtx->iErrorCode = core_internal_error;
-		return false;
-	}
-
 }
 
 WISECORE_API const char* core_ex_error_string_get(WiCore_t core)
