@@ -89,7 +89,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy &quot;$(SolutionDir)Library3rdParty\openssl-1.0.1h.win32\bin\*.dll&quot; &quot;$(TargetDir)&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\bin\*.dll&quot; &quot;$(TargetDir)&quot;"
+				CommandLine="copy &quot;$(SolutionDir)Library3rdParty\openssl-1.0.1h.win32\bin\*.dll&quot; &quot;$(TargetDir)&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\bin\*.dll&quot; &quot;$(TargetDir)&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -168,7 +168,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy &quot;$(SolutionDir)Library3rdParty\openssl-1.0.1h.win32\bin\*.dll&quot; &quot;$(TargetDir)&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\bin\*.dll&quot; &quot;$(TargetDir)&quot;"
+				CommandLine="copy &quot;$(SolutionDir)Library3rdParty\openssl-1.0.1h.win32\bin\*.dll&quot; &quot;$(TargetDir)&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\bin\*.dll&quot; &quot;$(TargetDir)&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -176,10 +176,6 @@
 		<ProjectReference
 			ReferencedProjectIdentifier="{C28B0ED4-D61C-4A16-9A2E-8B65EA726069}"
 			RelativePathToProject=".\Platform\WISEPlatform.vcproj"
-		/>
-		<ProjectReference
-			ReferencedProjectIdentifier="{B03503D0-8410-4FC4-A7E4-A318DE24CB4C}"
-			RelativePathToProject=".\Platform\WISEUtil.vcproj"
 		/>
 	</References>
 	<Files>
@@ -219,11 +215,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\Include\WiseCarrier_MQTT.h"
+				RelativePath=".\WiseCarrier_MQTT.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\Include\WiseCarrierEx_MQTT.h"
+				RelativePath=".\WiseCarrierEx_MQTT.h"
 				>
 			</File>
 			<File

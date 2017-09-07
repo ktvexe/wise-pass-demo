@@ -237,20 +237,6 @@ WISE_CONNECTOR_API bool wc_ex_subscribe(WiConn_t conn, const char* topic, int qo
 WISE_CONNECTOR_API bool wc_ex_unsubscribe(WiConn_t conn, const char* topic);
 
 /*
- * Function: wc_ex_address_get
- *
- * To get local IP address.
- *
- * Parameters:
- *  conn -		pointer of WISE Connect Object.
- *	address	-	to get local IP address.
- *
- * Returns:
- *	true or false.
- */
-WISE_CONNECTOR_API bool wc_ex_address_get(WiConn_t conn, char *address);
-
-/*
  * Function: wc_ex_current_error_string_get
  *
  * Call to obtain a const string description the error number.

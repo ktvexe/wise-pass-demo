@@ -29,13 +29,13 @@
     <ClInclude Include="topic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\WiseCarrier_MQTT.h">
+    <ClInclude Include="WiseCarrier_MQTT.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\susiaccess_def.h">
+    <ClInclude Include="WiseCarrierEx_MQTT.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\WiseCarrierEx_MQTT.h">
+    <ClInclude Include="..\..\Include\wise\wisepaas_base_def.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

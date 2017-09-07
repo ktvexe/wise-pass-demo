@@ -29,8 +29,7 @@ int g_iPort = 1883; // MQTT broker listen port, keep 1883 as default port.
 char g_strConnID[256] = "0e95b665-3748-46ce-80c5-bdd423d7a8a5:631476df-31a5-4b66-a4c6-bd85228b9d27"; //broker connection ID
 char g_strConnPW[64] = "f3a2342t4oejbefc78cgu080ia"; //MQTT broker connection password
 char g_strDeviceID[37] = "00000001-0000-0000-0000-305A3A770020"; //Target device unique ID
-
-char g_strTenantID[37] = "general"; //EI-PaaS pre-defined tenant ID
+char g_strMac[37] = "305A3A770020"; //Network MAC address
 char g_strHostName[16] = "MQTTSample"; //the HostName will show on renote server device list as device name, user can customize the host name.
 char g_strProductTag[37] = "device"; // for common server the product tag default is "device", but user can change to their own product, such as "RMM", "SCADA"
 char g_strTLCertSPW[37] = "05155853"; // SSL/TLS provate key or pre-shared-key
@@ -56,9 +55,9 @@ void GenerateAgentInfo(char* strBuffer, int status)
 	sprintf(strBuffer, DEF_AGENTINFO_JSON, 
 			"", //Parent ID, keep empty if no parent
 			g_strHostName, //target device name
-			"305A3A77B1DA", //serial number
-			"305A3A77B1DA", // MAC address
-			"2.0.1.0", // software version
+			g_strMac, //serial number
+			g_strMac, // MAC address
+			"1.0.1", // software version
 			"IPC", //agent type
 			"MyTest", //Hardware product name
 			"Advantech", //Hardware manufacture
@@ -124,12 +123,12 @@ void* threadconnect(void* args)
 	}
 	mosq = (struct mosquitto *) args;
 	/*Send Connect Info*/
-	sprintf(strTopic, DEF_INFOACK_TOPIC, g_strTenantID, g_strDeviceID);
+	sprintf(strTopic, DEF_INFOACK_TOPIC, g_strDeviceID);
 	GenerateAgentInfo(strBuffer, 1);
 	mosquitto_publish(mosq, NULL, strTopic, strlen(strBuffer), strBuffer, 0, false);
 
 	/*Subscribe Command Topic*/
-	sprintf(strTopic, DEF_CALLBACKREQ_TOPIC, g_strTenantID, g_strProductTag, g_strDeviceID);
+	sprintf(strTopic, DEF_CALLBACKREQ_TOPIC, g_strProductTag, g_strDeviceID);
 	mosquitto_subscribe(mosq, NULL, strTopic, 0);
 
 	printf("CB_Connected \n");
@@ -144,9 +143,10 @@ void* threadconnect(void* args)
 		/*Send heart beat*/
 		if(nextHeartbeat<= curTime)
 		{
-			sprintf(strTopic, DEF_HEARTBEAT_TOPIC, g_strTenantID, g_strDeviceID);
+			sprintf(strTopic, DEF_HEARTBEAT_TOPIC, g_strDeviceID);
 			sprintf(strBuffer, DEF_HEARTBEAT_MESSAGE_JSON, g_strDeviceID); //device ID
 			mosquitto_publish(mosq, NULL, strTopic, strlen(strBuffer), strBuffer, 0, false);
+			printf("Heartbeat Send Topic:%s, Payload:%s \n", strTopic, strBuffer);
 			nextHeartbeat += 60000; //60 sec.
 		}
 
@@ -155,9 +155,10 @@ void* threadconnect(void* args)
 		{
 			char temp[1024] = {0};
 			sprintf(temp, SENSOR_DATA, curTime, "MySensor", "SensorGroup", "SensorGroup", g_iSensor[0], g_iSensor[1], g_iSensor[2]);
-			sprintf(strTopic, DEF_AGENTREPORT_TOPIC, g_strTenantID, g_strDeviceID);
+			sprintf(strTopic, DEF_AGENTREPORT_TOPIC, g_strDeviceID);
 			sprintf(strBuffer, DEF_AUTOREPORT_JSON, g_strDeviceID, temp, curTime); //device ID
 			mosquitto_publish(mosq, NULL, strTopic, strlen(strBuffer), strBuffer, 0, false);
+			printf("Data Send Topic:%s, Payload:%s \n", strTopic, strBuffer);
 			nextReport += 10000; //10 sec.
 		}
 
@@ -345,7 +346,7 @@ int main(int argc, char *argv[])
 	mosquitto_will_clear(mosq);
 
 	//Create MQTT Will message format and topic and register to broker
-	sprintf(strWillTopic, DEF_WILLMSG_TOPIC, g_strTenantID, g_strDeviceID);
+	sprintf(strWillTopic, DEF_WILLMSG_TOPIC, g_strDeviceID);
 	GenerateAgentInfo(strWillPayload, 0);
 	mosquitto_will_set(mosq, strWillTopic ,strlen(strWillPayload) ,strWillPayload, 0, false);
 		
@@ -371,7 +372,7 @@ EXIT:
 	{
 		char strTopic[260] = {0};
 		/*Send Disconnect Info*/
-		sprintf(strTopic, DEF_INFOACK_TOPIC, g_strTenantID, g_strDeviceID);
+		sprintf(strTopic, DEF_INFOACK_TOPIC, g_strDeviceID);
 		mosquitto_publish(mosq, NULL, strTopic, strlen(strWillPayload), strWillPayload, 0, false);
 
 		/*flush message queue*/

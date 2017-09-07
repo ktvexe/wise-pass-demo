@@ -40,7 +40,10 @@
     <ClInclude Include="WISECoreEx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\wisepaas_02_def.h">
+    <ClInclude Include="..\..\Include\wise\wisepaas_02_def.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\wise\wisepaas_base_def.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

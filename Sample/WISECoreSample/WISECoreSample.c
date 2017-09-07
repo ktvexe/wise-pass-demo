@@ -26,8 +26,7 @@ int g_iPort = 1883; // MQTT broker listen port, keep 1883 as default port.
 char g_strConnID[256] = "0e95b665-3748-46ce-80c5-bdd423d7a8a5:631476df-31a5-4b66-a4c6-bd85228b9d27"; //broker connection ID
 char g_strConnPW[64] = "f3a2342t4oejbefc78cgu080ia"; //MQTT broker connection password
 char g_strDeviceID[37] = "00000001-0000-0000-0000-305A3A770020"; //Target device unique ID
-
-char g_strTenantID[37] = "general"; //EI-PaaS pre-defined tenant ID
+char g_strMac[37] = "305A3A770020"; //Network MAC address
 char g_strHostName[16] = "WISECoreSample"; //the HostName will show on renote server device list as device name, user can customize the host name.
 char g_strProductTag[37] = "device"; // for common server the product tag default is "device", but user can change to their own product, such as "RMM", "SCADA"
 char g_strTLCertSPW[37] = "05155853"; // SSL/TLS provate key or pre-shared-key
@@ -129,6 +128,19 @@ bool value_parse(const char* strCmd, const char* strTag, char* value, int length
 	return bFound;
 }
 
+//function to send snesor data capability in EI-PaaS handshake protocol
+void sendCapability(long long curTime)
+{
+	char strBuffer[1024] = {0};
+	char strTopic[256] = {0};
+	char temp[512] = {0};
+	sprintf(temp, SENSOR_DATA, curTime, "MySensor", "SensorGroup", "SensorGroup", g_iSensor[0], g_iSensor[1], g_iSensor[2]);
+	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strProductTag, g_strDeviceID);
+	sprintf(strBuffer, DEF_AUTOREPORT_JSON, g_strDeviceID, temp, curTime); //device ID
+	core_publish(strTopic, strBuffer, strlen(strBuffer), 0, 0);
+	printf("Capability send:\n [%s],\n %s\n", strTopic, strBuffer);
+}
+
 //function to send snesor data in EI-PaaS handshake protocol
 void sendReportData(long long curTime)
 {
@@ -136,13 +148,10 @@ void sendReportData(long long curTime)
 	char strTopic[256] = {0};
 	char temp[512] = {0};
 	sprintf(temp, SENSOR_DATA, curTime, "MySensor", "SensorGroup", "SensorGroup", g_iSensor[0], g_iSensor[1], g_iSensor[2]);
-#ifdef _WISEPAAS_02_DEF_H_
-	sprintf(strTopic, DEF_AGENTREPORT_TOPIC, g_strTenantID, g_strDeviceID);
-#else
 	sprintf(strTopic, DEF_AGENTREPORT_TOPIC, g_strDeviceID);
-#endif
 	sprintf(strBuffer, DEF_AUTOREPORT_JSON, g_strDeviceID, temp, curTime); //device ID
 	core_publish(strTopic, strBuffer, strlen(strBuffer), 0, 0);
+	printf("Data send:\n [%s],\n %s\n", strTopic, strBuffer);
 }
 
 //function to send response message in EI-PaaS handshake protocol
@@ -151,12 +160,13 @@ void sendResponse(int cmdID, char* handerlName, char* data, long long curTime)
 	char strBuffer[1024] = {0};
 	char strTopic[256] = {0};
 #ifdef _WISEPAAS_02_DEF_H_
-	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strTenantID, g_strDeviceID);
+	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strProductTag, g_strDeviceID);
 #else
 	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strDeviceID);
 #endif
 	sprintf(strBuffer, DEF_ACTION_RESPONSE_JSON, g_strDeviceID, cmdID, handerlName, data, curTime); //device ID
 	core_publish(strTopic, strBuffer, strlen(strBuffer), 0, 0);
+	printf("Response send:\n [%s],\n %s\n", strTopic, strBuffer);
 }
 
 // Connect thread body
@@ -177,7 +187,7 @@ void* threadconnect(void* args)
 		{
 			if(nextHeartbeat == 0)
 				nextHeartbeat = curTime;
-			nextHeartbeat += (g_iHeartbeatRate * 60000);
+			nextHeartbeat += (g_iHeartbeatRate * 1000);
 			core_heartbeat_send();
 		}
 		if(g_bReportData)
@@ -386,27 +396,27 @@ void on_msgrecv(const char* topic, const void *pkt, const long pktlength, void* 
 }
 
 //Callback function to handle rename command.
-void on_rename(const char* name, const int cmdid, const char* sessionid, const char* tenantid, const char* devid, void* userdata)
+void on_rename(const char* name, const int cmdid, const char* sessionid, const char* devid, void* userdata)
 {
 	printf("rename to: %s\n", name);
 	strcpy(g_strHostName, name);
-	core_action_response(cmdid, sessionid, true, tenantid, devid);
+	core_action_response(cmdid, sessionid, true, devid);
 	return;
 }
 
 //Callback function to handle update command.
 // the message brings the file transfer server's IP, Port, ID, Password file path and the md5.
 // client can based on these data to download file.
-void on_update(const char* loginID, const char* loginPW, const int port, const char* path, const char* md5, const int cmdid, const char* sessionid, const char* tenantid, const char* devid, void* userdata)
+void on_update(const char* loginID, const char* loginPW, const int port, const char* path, const char* md5, const int cmdid, const char* sessionid, const char* devid, void* userdata)
 {
 	printf("Update: %s, %s, %d, %s, %s\n", loginID, loginPW, port, path, md5);
 
-	core_action_response(cmdid, sessionid, true, tenantid, devid);
+	core_action_response(cmdid, sessionid, true, devid);
 	return;
 }
 
 //Callback function to handle reconnect command.
-void on_server_reconnect(const char* tenantid, const char* devid, void* userdata)
+void on_server_reconnect(const char* devid, void* userdata)
 {
 	if(!strcmp(g_strDeviceID, devid))
 		core_device_register();
@@ -414,16 +424,16 @@ void on_server_reconnect(const char* tenantid, const char* devid, void* userdata
 
 //Callback function to handle IoT get capability command.
 //User can describe full capability of this device in IPSO json format.
-void on_get_capability(const void *pkt, const long pktlength, const char* tenantid, const char* devid, void* userdata)
+void on_get_capability(const void *pkt, const long pktlength, const char* devid, void* userdata)
 {
 	/*TODO: send whole capability, no need on common server*/
 	long long curTime = get_timetick(NULL);
-	sendReportData(curTime);
+	sendCapability(curTime);
 }
 
 // Callback function to handle IoT start report command
 // parse the command to get the report interval and set to global variable
-void on_start_report(const void *pkt, const long pktlength, const char* tenantid, const char* devid, void* userdata)
+void on_start_report(const void *pkt, const long pktlength, const char* devid, void* userdata)
 {
 	/*TODO: start report sensor data*/
 	char data[32] = {0};
@@ -436,24 +446,24 @@ void on_start_report(const void *pkt, const long pktlength, const char* tenantid
 
 // Callback function to handle IoT stop report command
 // using a global flag to skip send data function (MQTT publish)
-void on_stop_report(const void *pkt, const long pktlength, const char* tenantid, const char* devid, void* userdata)
+void on_stop_report(const void *pkt, const long pktlength, const char* devid, void* userdata)
 {
 	/*TODO: stop report sensor data*/
 	g_bReportData = false;
 }
 
 // Callback function to handle heartbet rate query
-void on_heartbeatrate_query(const char* sessionid,const char* tenantid,const char* devid, void* userdata)
+void on_heartbeatrate_query(const char* sessionid, const char* devid, void* userdata)
 {
-	core_heartbeatratequery_response(g_iHeartbeatRate,sessionid, tenantid, devid);
+	core_heartbeatratequery_response(g_iHeartbeatRate,sessionid, devid);
 }
 
 // Callback function to handle heartbet rate update command
-void on_heartbeatrate_update(const int heartbeatrate, const char* sessionid, const char* tenantid, const char* devid, void* userdata)
+void on_heartbeatrate_update(const int heartbeatrate, const char* sessionid, const char* devid, void* userdata)
 {
 	printf("Heartbeat Rate Update: %d, %s, %s\n", heartbeatrate, sessionid, devid);
 	g_iHeartbeatRate = heartbeatrate;
-	core_action_response(130/*wise_heartbeatrate_update_rep*/, sessionid, true, tenantid, devid);
+	core_action_response(130/*wise_heartbeatrate_update_rep*/, sessionid, true, devid);
 	return;
 }
 
@@ -463,7 +473,7 @@ void SubscribeTopic()
 	char topic[256] = {0};
 	
 #ifdef _WISEPAAS_02_DEF_H_
-	sprintf(topic, DEF_CALLBACKREQ_TOPIC, g_strTenantID, g_strProductTag, g_strDeviceID);
+	sprintf(topic, DEF_CALLBACKREQ_TOPIC, g_strProductTag, g_strDeviceID);
 #else
 	sprintf(topic, DEF_CALLBACKREQ_TOPIC, g_strDeviceID);
 #endif
@@ -522,7 +532,7 @@ int main(int argc, char *argv[])
 	threaddataaccess = StartAccessData();
 
 	// Initialize WISECore and set "305A3A77B1CC" as identity.
-	if(!core_initialize(g_strTenantID, g_strDeviceID, g_strHostName, "305A3A77B1CC", NULL))
+	if(!core_initialize(g_strDeviceID, g_strHostName, g_strMac, NULL))
 	{
 		printf("Unable to initialize AgentCore.\n");
 		goto EXIT;
@@ -551,7 +561,7 @@ int main(int argc, char *argv[])
 	core_tag_set(g_strProductTag);
 
 	// Setup basic agent product info. include: SN, parent ID (keep NULL if not any), software version, agent type (keep IPC if you don't know), product name and manufacturer name.
-	core_product_info_set("305A3A77B1CC", NULL, "1.0.1", "IPC", "Sample", "Sample");
+	core_product_info_set(g_strMac, NULL, "1.0.1", "IPC", "Sample", "Sample");
 
 	// Setup WISECore connection SSL/TLS, 
 	//   SSLMode=0 disable the SSL/TLS.
