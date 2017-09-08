@@ -488,7 +488,6 @@ void* threadaccessdata(void* args)
 
 	while(true)
 	{
-		//UpdateData("capability.txt", g_pCapability);
 		int i=0;
 		for(i=0; i<3; i++)
 		{
