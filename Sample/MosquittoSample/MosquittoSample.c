@@ -244,7 +244,7 @@ void on_message_recv_callback(struct mosquitto *mosq, void *userdata, const stru
 {	
 	printf("Received topic: %s\n message: %s\n", msg->topic, (char*)msg->payload);
 
-	//commCmd 523 and 525 is defined in RMM product to get and set sensor data.
+	//commCmd 523 and 525 is defined to get and set sensor data.
 	//user cand customize the command id to trigger function.
 
 	if(strstr((char*)msg->payload, "\"commCmd\":523")!=0)

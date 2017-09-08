@@ -367,26 +367,26 @@ void on_msgrecv(const char* topic, const void *pkt, const long pktlength, void* 
 
 	//command id 523 and 525 is defined in RMM product to get and set sensor data.
 	//user cand customize the command id to trigger function.
-	if(cmdID == 523)
+	if(cmdID == wise_get_sensor_data_req)
 	{
 		/*TODO: Get Sensor Data*/
 		pthread_t getthread = 0;
 		getset_cmd* cmd = calloc(1, sizeof(getset_cmd));
 		cmd->bHasSessionID = bHasSessionID;
-		cmd->cmdID = cmdID+1;
+		cmd->cmdID = wise_get_sensor_data_rep;
 		strcpy(cmd->handlerName,handlerName);
 		strcpy(cmd->sessionID,sessionID);
 		cmd->pkt = strdup((char*)pkt);
 		if(pthread_create(&getthread, NULL, threadget, cmd)==0)
 			pthread_detach(getthread);
 	}
-	else if(cmdID == 525)
+	else if(cmdID == wise_set_sensor_data_req)
 	{
 		/*TODO: Set Sensor Data*/
 		pthread_t setthread = 0;
 		getset_cmd* cmd = calloc(1, sizeof(getset_cmd));
 		cmd->bHasSessionID = bHasSessionID;
-		cmd->cmdID = cmdID+1;
+		cmd->cmdID = wise_set_sensor_data_rep;
 		strcpy(cmd->handlerName,handlerName);
 		strcpy(cmd->sessionID,sessionID);
 		cmd->pkt = strdup((char*)pkt);
