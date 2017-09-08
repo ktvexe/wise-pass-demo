@@ -51,6 +51,11 @@ typedef enum{
 	wise_heartbeatrate_update_req = 129,
 	wise_heartbeatrate_update_rep = 130,
 
+	wise_get_sensor_data_req = 523,
+	wise_get_sensor_data_rep = 524,
+	wise_set_sensor_data_req = 525,
+	wise_set_sensor_data_rep = 526,
+
 	wise_error_rep = 600,
 
 	wise_get_capability_req = 2051,
