@@ -4,6 +4,7 @@
 * ### [Changed]
 
     * Rebuild EI-Connect project
+    
         >1\. Split Platform, Include, Library into subtree
         
 
