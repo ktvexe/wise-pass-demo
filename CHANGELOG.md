@@ -5,6 +5,8 @@
 
     * Rebuild EI-Connect project
         >1\. Split Platform, Include, Library into subtree
+        
+
 ## Bugs Fixed
 * [#None]
         * [WISECore]：Fix Lostconnect error message
