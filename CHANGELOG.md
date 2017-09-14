@@ -9,6 +9,7 @@
 
 ## Bugs Fixed
 * [#None]
+
         * [WISECore]：Fix Lostconnect error message
 
 # 1.0.0: Maintenance Release
