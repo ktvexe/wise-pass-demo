@@ -19,7 +19,7 @@
 ## Bugs Fixed
 * [#None]
 
-  * [Sample Code]：Change heartbeat sleep time from 1 min. to 1sec in WISECoreSample.
+        * [Sample Code]：Change heartbeat sleep time from 1 min. to 1sec in WISECoreSample.
 
 # 1.0.1: Maintenance Release
  
