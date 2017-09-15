@@ -10,6 +10,7 @@
   * WISECore APIs, WISEConnector APIs and WISECarrier APIs
 
   >1. Remove get local IP api.
+  >2. Remove TenantID from API and Topic.
 
 * ### [Changed]
   * WISECoreSample
