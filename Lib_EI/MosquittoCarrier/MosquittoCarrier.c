@@ -146,16 +146,6 @@ WISE_CARRIER_API bool WiCar_MQTT_UnSubscribe(const char* topic)
 	return WiCarEx_MQTT_UnSubscribe(g_mosq, topic);
 }
 
-WISE_CARRIER_API bool WiCar_MQTT_GetLocalIP(char *address)
-{
-	if(g_mosq == NULL)
-	{
-		g_iErrorCode = mc_err_no_init;
-		return false;
-	}
-	return WiCarEx_MQTT_GetLocalIP(g_mosq, address);
-}
-
 WISE_CARRIER_API const char *WiCar_MQTT_GetCurrentErrorString()
 {
 	if(g_mosq == NULL)

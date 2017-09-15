@@ -34,7 +34,6 @@ extern "C" {
  * WISEAgentLite API function will be lite_no_init unless this function is called.
  *
  * Parameters:
- *  strTenantID -	the tenant id for connection.
  * 	strClientID -	the unique id for connection.
  * 	strHostName -	local device name.
  * 	strMAC -		local device MAC address
@@ -44,7 +43,7 @@ extern "C" {
  * Returns:
  * 	boolean value for success or not.
  */
-WISECORE_API bool core_initialize(char* strTenantID, char* strClientID, char* strHostName, char* strMAC, void* userdata);
+WISECORE_API bool core_initialize(char* strClientID, char* strHostName, char* strMAC, void* userdata);
 
 /* 
  * Function: core_uninitialize
@@ -145,13 +144,12 @@ WISECORE_API bool core_action_callback_set(CORE_RENAME_CALLBACK on_rename, CORE_
  *  cmdid -			command ID of request action
  * 	sessionid -		session ID of request action.
  *  success -		result of request action.
- *  tenantid -		tenant ID of request device.
  *  clientid -		client ID of request device.
  *
  * Returns:
  *  boolean value for success or not.	
  */
-WISECORE_API bool core_action_response(const int cmdid, const char * sessoinid, bool success, const char* tenantid, const char* clientid);
+WISECORE_API bool core_action_response(const int cmdid, const char * sessoinid, bool success, const char* clientid);
 
 /* 
  * Function: core_server_reconnect_callback_set
@@ -216,13 +214,12 @@ WISECORE_API bool core_heartbeat_callback_set(CORE_QUERY_HEARTBEATRATE_CALLBACK 
  * Parameters:
  *  heartbeatrate - current heartbeat rate.
  * 	sessionid -		session ID of request action.
- *  tenantid -		tenant ID of request device.
  *  clientid -		client ID of request device.
  *
  * Returns:
  *  boolean value for success or not.	
  */
-WISECORE_API bool core_heartbeatratequery_response(const int heartbeatrate, const char * sessoinid, const char* tenantid, const char* clientid);
+WISECORE_API bool core_heartbeatratequery_response(const int heartbeatrate, const char * sessoinid, const char* clientid);
 
 /*
  * Function: lite_tls_set

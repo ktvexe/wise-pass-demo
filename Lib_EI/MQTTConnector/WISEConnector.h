@@ -225,19 +225,6 @@ WISE_CONNECTOR_API bool wc_subscribe(const char* topic, int qos);
 WISE_CONNECTOR_API bool wc_unsubscribe(const char* topic);
 
 /*
- * Function: wc_address_get
- *
- * To get local IP address.
- *
- * Parameters:
- *	address 	-	to get local IP address.
- *
- * Returns:
- *	true or false.
- */
-WISE_CONNECTOR_API bool wc_address_get(char *address);
-
-/*
  * Function: wc_error_string_get
  *
  * Call to obtain a const string description the error number.

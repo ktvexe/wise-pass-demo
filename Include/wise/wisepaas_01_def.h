@@ -34,4 +34,37 @@
 #define DEF_HEARTBEAT_MESSAGE_JSON			"{\"hb\":{\"devID\":\"%s\"}}"
 #define DEF_HEARTBEATRATE_RESPONSE_SESSION_JSON	"{\"susiCommData\":{\"agentID\":\"%s\",\"commCmd\":%d,\"catalogID\":4,\"handlerName\":\"general\",\"heartbeatrate\":%d,\"sessionID\":\"%s\",\"sendTS\":{\"$date\":%lld}}}"
 
+typedef enum{
+	wise_unknown_cmd = 0,
+	wise_agentinfo_cmd = 21,
+	//--------------------------Global command define(101--130)--------------------------------
+	wise_update_cagent_req = 111,
+	wise_update_cagent_rep,
+	wise_cagent_rename_req = 113,
+	wise_cagent_rename_rep,
+	wise_cagent_osinfo_rep = 116,
+	wise_server_control_req = 125,
+	wise_server_control_rep,
+
+	wise_heartbeatrate_query_req = 127,
+	wise_heartbeatrate_query_rep = 128,
+	wise_heartbeatrate_update_req = 129,
+	wise_heartbeatrate_update_rep = 130,
+
+	wise_get_sensor_data_req = 523,
+	wise_get_sensor_data_rep = 524,
+	wise_set_sensor_data_req = 525,
+	wise_set_sensor_data_rep = 526,
+
+	wise_error_rep = 600,
+
+	wise_get_capability_req = 2051,
+	wise_get_capability_rep = 2052,
+	wise_start_report_req = 2053,
+	wise_start_report_rep = 2054,
+	wise_report_data_rep = 2055,
+	wise_stop_report_req = 2056,
+	wise_stop_report_rep = 2057,
+}wise_comm_cmd_t;
+
 #endif

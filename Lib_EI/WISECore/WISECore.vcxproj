@@ -117,7 +117,8 @@
     <ClCompile Include="WISECoreEx.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Include\wisepaas_02_def.h" />
+    <ClInclude Include="..\..\Include\wise\wisepaas_02_def.h" />
+    <ClInclude Include="..\..\Include\wise\wisepaas_base_def.h" />
     <ClInclude Include="liteparse.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="version.h" />

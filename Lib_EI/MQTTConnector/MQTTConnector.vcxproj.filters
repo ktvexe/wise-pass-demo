@@ -22,10 +22,10 @@
     <ClInclude Include="MQTTConnector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\WISEConnector.h">
+    <ClInclude Include="WISEConnector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\WISEConnectorEx.h">
+    <ClInclude Include="WISEConnectorEx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

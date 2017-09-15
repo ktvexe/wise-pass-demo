@@ -263,19 +263,6 @@ WISE_CARRIER_API bool WiCar_MQTT_Subscribe(const char* topic, int qos, WICAR_MES
  *  boolean value for success or not.
  */
 WISE_CARRIER_API bool WiCar_MQTT_UnSubscribe(const char* topic);
-/*
- * Function: WiCar_MQTT_GetLocalIP
- *
- * Get local IP address. 
- *
- * Parameters:
- * 	address 	-	to get local IP address.
- *
- * Returns:
- *  boolean value for success or not.
- */
-
-WISE_CARRIER_API bool WiCar_MQTT_GetLocalIP(char *address);
 
 //error
 /*

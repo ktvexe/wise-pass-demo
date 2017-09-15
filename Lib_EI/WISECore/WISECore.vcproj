@@ -221,15 +221,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\Include\wisepaas_01_def.h"
+				RelativePath="..\..\Include\wise\wisepaas_01_def.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\Include\wisepaas_02_def.h"
+				RelativePath="..\..\Include\wise\wisepaas_02_def.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\Include\wisepase_base_def.h"
+				RelativePath="..\..\Include\wise\wisepaas_base_def.h"
 				>
 			</File>
 		</Filter>

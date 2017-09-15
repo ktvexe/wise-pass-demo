@@ -95,9 +95,9 @@
     <ClCompile Include="MQTTConnectorEx.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Include\WISEConnector.h" />
-    <ClInclude Include="..\..\Include\WISEConnectorEx.h" />
     <ClInclude Include="MQTTConnector.h" />
+    <ClInclude Include="WISEConnector.h" />
+    <ClInclude Include="WISEConnectorEx.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MosquittoCarrier\MosquittoCarrier.vcxproj">
