@@ -380,19 +380,6 @@ WISECORE_API bool core_subscribe(char const * topic, int qos);
  */
 WISECORE_API bool core_unsubscribe(char const * topic);
 
-/*
- * Function: core_address_get
- *
- * To get local IP address.
- *
- * Parameters:
- *	address 	-	to get local IP address.
- *
- * Returns:
- *	true or false.
- */
-WISECORE_API bool core_address_get(char *address);
-
 /* 
  * Function: core_error_string_get
  *
