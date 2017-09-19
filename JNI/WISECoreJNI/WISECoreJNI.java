@@ -17,7 +17,7 @@ public class WISECoreJNI {
   }
 
   // Declare a native method
-  private native boolean core_initialize(String strTenantID, String strClientID, String strHostName, String strMAC);
+  private native boolean core_initialize(String strClientID, String strHostName, String strMAC);
 
   private native void core_uninitialize();
 
@@ -30,11 +30,9 @@ public class WISECoreJNI {
 
   private native boolean core_callback_set(WISECoreJNI CallbackInterface);
 
-  private native boolean core_action_response(int cmdid, String sessoinid, boolean success, String tenantid,
-      String devid);
+  private native boolean core_action_response(int cmdid, String sessoinid, boolean success, String devid);
 
-  private native boolean core_heartbeatratequery_response(int heartbeatrate, String sessoinid, String tenantid,
-      String devid);
+  private native boolean core_heartbeatratequery_response(int heartbeatrate, String sessoinid, String devid);
 
   private native boolean core_tls_set(String cafile, String capath, String certfile, String keyfile, String password);
 
@@ -53,8 +51,6 @@ public class WISECoreJNI {
   private native boolean core_subscribe(String topic, int qos);
 
   private native boolean core_unsubscribe(String topic);
-
-  private native String core_address_get();
 
   private native String core_error_string_get();
 
@@ -102,12 +98,12 @@ public class WISECoreJNI {
     /*Handle received message*/
   }
 
-  public void on_get_capablity(String pkt, long pktlength, String tenantid, String devid) {
+  public void on_get_capablity(String pkt, long pktlength, String devid) {
     System.out.println("JAVA on_get_capablity");
     /*preserved for future design*/
   }
 
-  public void on_autoreport_start(String pkt, long pktlength, String tenantid, String devid) {
+  public void on_autoreport_start(String pkt, long pktlength, String devid) {
     System.out.println("JAVA on_autoreport_start");
     if (g_oConnect != null) {
       /*Parse packet and get report interval, ex: 10000 = 10 sec.*/
@@ -115,7 +111,7 @@ public class WISECoreJNI {
     }
   }
 
-  public void on_autoreport_stop(String pkt, long pktlength, String tenantid, String devid) {
+  public void on_autoreport_stop(String pkt, long pktlength, String devid) {
     System.out.println("JAVA on_autoreport_stop");
     if (g_oConnect != null) {
       /*Parse packet and get report interval, ex: 10000 = 10 sec.*/
@@ -123,23 +119,22 @@ public class WISECoreJNI {
     }
   }
 
-  public void on_rename(String name, int cmdid, String sessionid, String tenantid, String devid) {
+  public void on_rename(String name, int cmdid, String sessionid, String devid) {
     System.out.println("JAVA rename to: " + name);
     /*Update host name */
-    g_wiseobj.core_action_response(cmdid, sessionid, true, tenantid, devid);
+    g_wiseobj.core_action_response(cmdid, sessionid, true, devid);
   }
 
   public void on_update(String loginID, String loginPW, int port, String path, String md5, int cmdid, String sessionid,
-      String tenantid, String devid) {
+      String devid) {
     System.out.println("JAVA Update: " + loginID + ", " + loginPW + ", " + port + ", " + path + "," + md5);
     /*Handle agent update request the download URL: ftp://loginID:loginPW@<ServerIP>:port/path
        md5 is used to check the download file.
     */
-    g_wiseobj.core_action_response(cmdid, sessionid, true, tenantid, devid);
-    return;
+    g_wiseobj.core_action_response(cmdid, sessionid, true, devid);
   }
 
-  public void on_server_reconnect(String tenantid, String devid) {
+  public void on_server_reconnect(String devid) {
     System.out.println("JAVA on_server_reconnect");
     /*Server request to sync the agent status, agent send device registration again.*/
     g_wiseobj.core_device_register();
@@ -153,18 +148,17 @@ public class WISECoreJNI {
     return tick;
   }
 
-  public void on_heartbeatrate_query(String sessionid, String tenantid, String devid) {
+  public void on_heartbeatrate_query(String sessionid, String devid) {
     System.out.println("JAVA on_heartbeatrate_query");
     /*Handle the heart beat rate query.*/
-    g_wiseobj.core_heartbeatratequery_response(g_heartbeatrate, sessionid, tenantid, devid);
+    g_wiseobj.core_heartbeatratequery_response(g_heartbeatrate, sessionid, devid);
   }
 
-  public void on_heartbeatrate_update(int heartbeatrate, String sessionid, String tenantid, String devid) {
+  public void on_heartbeatrate_update(int heartbeatrate, String sessionid, String devid) {
     System.out.println("JAVA Heartbeat Rate Update: " + heartbeatrate + ", " + sessionid + ", " + devid);
-    g_heartbeatrate = heartbeatrate;
+    //g_heartbeatrate = heartbeatrate;
     /*Handle the heart beat rate update.*/
-    g_wiseobj.core_action_response(130/*wise_heartbeatrate_update_rep*/, sessionid, true, tenantid, devid);
-    return;
+    //g_wiseobj.core_action_response(130/*wise_heartbeatrate_update_rep*/, sessionid, true, devid);
   }
 
   // Test Driver
@@ -172,10 +166,13 @@ public class WISECoreJNI {
   static int g_heartbeatrate = 60;
   Thread g_tConnect;
   ConnectLoop g_oConnect;
-  static String g_strTenantID = "00000001-0000-0000-0000-000ADVANTECH";
+  static String  g_strServerIP = "wise-msghub.eastasia.cloudapp.azure.com"; // MQTT broker URL or IP
+  static int g_iPort = 1883; // MQTT broker listen port, keep 1883 as default port.
+  static String  g_strConnID = "0e95b665-3748-46ce-80c5-bdd423d7a8a5:631476df-31a5-4b66-a4c6-bd85228b9d27"; //broker connection ID
+  static String  g_strConnPW = "f3a2342t4oejbefc78cgu080ia"; //MQTT broker connection password
   static String g_strDevID = "00000001-0000-0000-0000-305A3A77B1CC";
   static String g_strReport = "{\"agentID\":\"%s\",\"handlerName\":\"SUSIControl\",\"commCmd\":123,\"content\":{\"SUSIControl\":{\"Temperature\":{\"e\":[{\"n\":\"CPU\",\"v\":38},{\"n\":\"Platform\",\"v\":39}],\"bn\":\"Temperature\"}}}}";
-  static String g_strReportTopic = "/wisepaas/%s/device/%s/devinfoack";
+  static String g_strReportTopic = "/wisepaas/device/%s/devinfoack";
 
   /* Thread for agent connected.
    After connected, agent need to 
@@ -204,7 +201,7 @@ public class WISECoreJNI {
     public void run() {
       long sendHBTime = 0;
       long sendRpTime = 0;
-      String strTopic = String.format(g_strReportTopic, g_strTenantID, g_strDevID);
+      String strTopic = String.format(g_strReportTopic, g_strDevID);
       String strData = String.format(g_strReport, g_strDevID);
       try {
         /*send device registration*/
@@ -238,7 +235,7 @@ public class WISECoreJNI {
   public static void main(String[] args) {
     g_wiseobj = new WISECoreJNI();
     boolean bResult = false;
-    bResult = g_wiseobj.core_initialize(g_strTenantID, g_strDevID, "TEST", "305A3A77B1CC"); // invoke the native method
+    bResult = g_wiseobj.core_initialize(g_strDevID, "TEST", "305A3A77B1CC"); // invoke the native method
 
     if (!bResult)
       System.out.println("core_initialize failed");
@@ -254,7 +251,7 @@ public class WISECoreJNI {
     } else if (SSLMode == 2) {
       g_wiseobj.core_tls_psk_set("05155853", g_strDevID, null);
     }
-    g_wiseobj.core_connect("172.22.12.29", 1883, "admin", "05155853");
+    g_wiseobj.core_connect(g_strServerIP, g_iPort, g_strConnID, g_strConnPW);
     Scanner s = new Scanner(System.in);
     System.out.println("Enter return to exit:");
     s.nextLine();

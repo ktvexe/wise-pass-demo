@@ -74,7 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Program Files\RedHat\java-1.8.0-openjdk-1.8.0.111-3\include;C:\Program Files\RedHat\java-1.8.0-openjdk-1.8.0.111-3\include\win32;$(SolutionDir)Library\WISECore;$(SolutionDir)Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk1.8.0_60\include;C:\Program Files\Java\jdk1.8.0_60\include\win32;$(SolutionDir)Lib_EI\WISECore;$(SolutionDir)Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Program Files\RedHat\java-1.8.0-openjdk-1.8.0.111-3\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -99,7 +99,7 @@ COPY /Y WISECoreJNI$ConnectLoop.class $(OutDir)</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Program Files\RedHat\java-1.8.0-openjdk-1.8.0.111-3\include;C:\Program Files\RedHat\java-1.8.0-openjdk-1.8.0.111-3\include\win32;$(SolutionDir)Library\WISECore;$(SolutionDir)Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk1.8.0_60\include;C:\Program Files\Java\jdk1.8.0_60\include\win32;$(SolutionDir)Lib_EI\WISECore;$(SolutionDir)Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -132,7 +132,7 @@ COPY /Y WISECoreJNI$ConnectLoop.class $(OutDir)</Command>
     <ClInclude Include="WISECoreJNI.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Library\WISECore\WISECore.vcxproj">
+    <ProjectReference Include="..\..\Lib_EI\WISECore\WISECore.vcxproj">
       <Project>{ba2b04d2-cbf7-42f5-a1e8-982fdc93e35d}</Project>
     </ProjectReference>
   </ItemGroup>

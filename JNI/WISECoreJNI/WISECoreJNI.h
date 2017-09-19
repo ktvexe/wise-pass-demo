@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     WISECoreJNI
  * Method:    core_initialize
- * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1initialize
-  (JNIEnv *, jobject, jstring, jstring, jstring, jstring);
+  (JNIEnv *, jobject, jstring, jstring, jstring);
 
 /*
  * Class:     WISECoreJNI
@@ -58,18 +58,18 @@ JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1callback_1set
 /*
  * Class:     WISECoreJNI
  * Method:    core_action_response
- * Signature: (ILjava/lang/String;ZLjava/lang/String;Ljava/lang/String;)Z
+ * Signature: (ILjava/lang/String;ZLjava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1action_1response
-  (JNIEnv *, jobject, jint, jstring, jboolean, jstring, jstring);
+  (JNIEnv *, jobject, jint, jstring, jboolean, jstring);
 
 /*
  * Class:     WISECoreJNI
  * Method:    core_heartbeatratequery_response
- * Signature: (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z
+ * Signature: (ILjava/lang/String;Ljava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1heartbeatratequery_1response
-  (JNIEnv *, jobject, jint, jstring, jstring, jstring);
+  (JNIEnv *, jobject, jint, jstring, jstring);
 
 /*
  * Class:     WISECoreJNI
@@ -142,14 +142,6 @@ JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1subscribe
  */
 JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1unsubscribe
   (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     WISECoreJNI
- * Method:    core_address_get
- * Signature: ()Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_WISECoreJNI_core_1address_1get
-  (JNIEnv *, jobject);
 
 /*
  * Class:     WISECoreJNI

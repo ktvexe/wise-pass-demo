@@ -127,7 +127,7 @@ void on_msgrecv(const char* topic, const void *pkt, const long pktlength, void* 
 	jstrTopic = (*env)->NewStringUTF(env, topic);
 	jstrPacket = (*env)->NewStringUTF(env, pkt);
 
-	printf("Packet received:\n [%s],\n %s\n", topic, pkt);
+	printf("Packet received:\n [%s],\n %s\n", topic, (char*)pkt);
 	(*env)->ExceptionClear(env);
 	if (ctx->msgrecv_cb)
 		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->msgrecv_cb, jstrTopic, jstrPacket, pktlength);
@@ -142,10 +142,10 @@ void on_msgrecv(const char* topic, const void *pkt, const long pktlength, void* 
 	DetachThread(ctx->vm);
 }
 
-void on_get_capability(const void *pkt, const long pktlength, const char* tenantid, const char* devid, void* userdata)
+void on_get_capability(const void *pkt, const long pktlength, const char* devid, void* userdata)
 {
 	core_jni_contex_t* ctx = (core_jni_contex_t*)userdata;
-	jstring jstrPacket, jstrTenant, jstrDevID;
+	jstring jstrPacket, jstrDevID;
 	JNIEnv *env = AttachThread(ctx->vm, ctx->version);
 	if (env == NULL)
 	{
@@ -153,12 +153,11 @@ void on_get_capability(const void *pkt, const long pktlength, const char* tenant
 		return;
 	}
 	jstrPacket = (*env)->NewStringUTF(env, pkt);
-	jstrTenant = (*env)->NewStringUTF(env, tenantid);
 	jstrDevID = (*env)->NewStringUTF(env, devid);
 	printf("on_get_capability \n");
 	(*env)->ExceptionClear(env);
 	if (ctx->getcap_cb)
-		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->getcap_cb, jstrPacket, pktlength, jstrTenant, jstrDevID);
+		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->getcap_cb, jstrPacket, pktlength, jstrDevID);
 	if ((*env)->ExceptionCheck(env)) {
 		//panic! Light fires! The British are coming!!!
 		printf("Exception on calling on_get_capability \n");
@@ -166,15 +165,14 @@ void on_get_capability(const void *pkt, const long pktlength, const char* tenant
 		(*env)->ExceptionClear(env);
 	}
 	(*env)->DeleteLocalRef(env, jstrPacket);
-	(*env)->DeleteLocalRef(env, jstrTenant);
 	(*env)->DeleteLocalRef(env, jstrDevID);
 	DetachThread(ctx->vm);
 }
 
-void on_start_report(const void *pkt, const long pktlength, const char* tenantid, const char* devid, void* userdata)
+void on_start_report(const void *pkt, const long pktlength, const char* devid, void* userdata)
 {
 	core_jni_contex_t* ctx = (core_jni_contex_t*)userdata;
-	jstring jstrPacket, jstrTenant, jstrDevID;
+	jstring jstrPacket, jstrDevID;
 	JNIEnv *env = AttachThread(ctx->vm, ctx->version);
 	if (env == NULL)
 	{
@@ -182,12 +180,11 @@ void on_start_report(const void *pkt, const long pktlength, const char* tenantid
 		return;
 	}
 	jstrPacket = (*env)->NewStringUTF(env, pkt);
-	jstrTenant = (*env)->NewStringUTF(env, tenantid);
 	jstrDevID = (*env)->NewStringUTF(env, devid);
 	printf("on_start_report \n");
 	(*env)->ExceptionClear(env);
 	if (ctx->reportstart_cb)
-		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->reportstart_cb, jstrPacket, pktlength, jstrTenant, jstrDevID);
+		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->reportstart_cb, jstrPacket, pktlength, jstrDevID);
 	if ((*env)->ExceptionCheck(env)) {
 		//panic! Light fires! The British are coming!!!
 		printf("Exception on calling on_get_capability \n");
@@ -195,15 +192,14 @@ void on_start_report(const void *pkt, const long pktlength, const char* tenantid
 		(*env)->ExceptionClear(env);
 	}
 	(*env)->DeleteLocalRef(env, jstrPacket);
-	(*env)->DeleteLocalRef(env, jstrTenant);
 	(*env)->DeleteLocalRef(env, jstrDevID);
 	DetachThread(ctx->vm);
 }
 
-void on_stop_report(const void *pkt, const long pktlength, const char* tenantid, const char* devid, void* userdata)
+void on_stop_report(const void *pkt, const long pktlength, const char* devid, void* userdata)
 {
 	core_jni_contex_t* ctx = (core_jni_contex_t*)userdata;
-	jstring jstrPacket, jstrTenant, jstrDevID;
+	jstring jstrPacket, jstrDevID;
 	JNIEnv *env = AttachThread(ctx->vm, ctx->version);
 	if (env == NULL)
 	{
@@ -211,12 +207,11 @@ void on_stop_report(const void *pkt, const long pktlength, const char* tenantid,
 		return;
 	}
 	jstrPacket = (*env)->NewStringUTF(env, pkt);
-	jstrTenant = (*env)->NewStringUTF(env, tenantid);
 	jstrDevID = (*env)->NewStringUTF(env, devid);
 	printf("on_stop_report \n");
 	(*env)->ExceptionClear(env);
 	if (ctx->reportstop_cb)
-		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->reportstop_cb, jstrPacket, pktlength, jstrTenant, jstrDevID);
+		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->reportstop_cb, jstrPacket, pktlength, jstrDevID);
 	if ((*env)->ExceptionCheck(env)) {
 		//panic! Light fires! The British are coming!!!
 		printf("Exception on calling on_get_capability \n");
@@ -224,15 +219,14 @@ void on_stop_report(const void *pkt, const long pktlength, const char* tenantid,
 		(*env)->ExceptionClear(env);
 	}
 	(*env)->DeleteLocalRef(env, jstrPacket);
-	(*env)->DeleteLocalRef(env, jstrTenant);
 	(*env)->DeleteLocalRef(env, jstrDevID);
 	DetachThread(ctx->vm);
 }
 
-void on_rename(const char* name, const int cmdid, const char* sessionid, const char* tenantid, const char* devid, void* userdata)
+void on_rename(const char* name, const int cmdid, const char* sessionid, const char* devid, void* userdata)
 {
 	core_jni_contex_t* ctx = (core_jni_contex_t*)userdata;
-	jstring jstrName, jstrSession, jstrTenant, jstrDevID;
+	jstring jstrName, jstrSession, jstrDevID;
 	JNIEnv *env = AttachThread(ctx->vm, ctx->version);
 	if (env == NULL)
 	{
@@ -241,12 +235,11 @@ void on_rename(const char* name, const int cmdid, const char* sessionid, const c
 	}
 	jstrName = (*env)->NewStringUTF(env, name);
 	jstrSession = (*env)->NewStringUTF(env, sessionid);
-	jstrTenant = (*env)->NewStringUTF(env, tenantid);
 	jstrDevID = (*env)->NewStringUTF(env, devid);
 	printf("rename to: %s\n", name);
 	(*env)->ExceptionClear(env);
 	if (ctx->rename_cb)
-		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->rename_cb, jstrName, cmdid, jstrSession, jstrTenant, jstrDevID);
+		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->rename_cb, jstrName, cmdid, jstrSession, jstrDevID);
 	if ((*env)->ExceptionCheck(env)) {
 		//panic! Light fires! The British are coming!!!
 		printf("Exception on calling on_rename \n");
@@ -255,15 +248,14 @@ void on_rename(const char* name, const int cmdid, const char* sessionid, const c
 	}
 	(*env)->DeleteLocalRef(env, jstrName);
 	(*env)->DeleteLocalRef(env, jstrSession);
-	(*env)->DeleteLocalRef(env, jstrTenant);
 	(*env)->DeleteLocalRef(env, jstrDevID);
 	DetachThread(ctx->vm);
 }
 
-void on_update(const char* loginID, const char* loginPW, const int port, const char* path, const char* md5, const int cmdid, const char* sessionid, const char* tenantid, const char* devid, void* userdata)
+void on_update(const char* loginID, const char* loginPW, const int port, const char* path, const char* md5, const int cmdid, const char* sessionid, const char* devid, void* userdata)
 {
 	core_jni_contex_t* ctx = (core_jni_contex_t*)userdata;
-	jstring jstrID, jstrPW, jstrPath, jstrMD5, jstrSession, jstrTenant, jstrDevID;
+	jstring jstrID, jstrPW, jstrPath, jstrMD5, jstrSession, jstrDevID;
 	JNIEnv *env = AttachThread(ctx->vm, ctx->version);
 	if (env == NULL)
 	{
@@ -275,12 +267,11 @@ void on_update(const char* loginID, const char* loginPW, const int port, const c
 	jstrPath = (*env)->NewStringUTF(env, path);
 	jstrMD5 = (*env)->NewStringUTF(env, md5);
 	jstrSession = (*env)->NewStringUTF(env, sessionid);
-	jstrTenant = (*env)->NewStringUTF(env, tenantid);
 	jstrDevID = (*env)->NewStringUTF(env, devid);
 	printf("Update: %s, %s, %d, %s, %s\n", loginID, loginPW, port, path, md5);
 	(*env)->ExceptionClear(env);
 	if (ctx->update_cb)
-		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->update_cb, jstrID, jstrPW, port, jstrPath, jstrMD5, cmdid, jstrSession, jstrTenant, jstrDevID);
+		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->update_cb, jstrID, jstrPW, port, jstrPath, jstrMD5, cmdid, jstrSession, jstrDevID);
 	if ((*env)->ExceptionCheck(env)) {
 		//panic! Light fires! The British are coming!!!
 		printf("Exception on calling on_rename \n");
@@ -292,34 +283,31 @@ void on_update(const char* loginID, const char* loginPW, const int port, const c
 	(*env)->DeleteLocalRef(env, jstrPath);
 	(*env)->DeleteLocalRef(env, jstrMD5);
 	(*env)->DeleteLocalRef(env, jstrSession);
-	(*env)->DeleteLocalRef(env, jstrTenant);
 	(*env)->DeleteLocalRef(env, jstrDevID);
 	DetachThread(ctx->vm);
 }
 
-void on_server_reconnect(const char* tenantid, const char* devid, void* userdata)
+void on_server_reconnect(const char* devid, void* userdata)
 {
 	core_jni_contex_t* ctx = (core_jni_contex_t*)userdata;
-	jstring jstrTenant, jstrDevID;
+	jstring jstrDevID;
 	JNIEnv *env = AttachThread(ctx->vm, ctx->version);
 	if (env == NULL)
 	{
 		printf("AttachJNIEnv fail \n");
 		return;
 	}
-	jstrTenant = (*env)->NewStringUTF(env, tenantid);
 	jstrDevID = (*env)->NewStringUTF(env, devid);
 	printf("on_server_reconnect \n");
 	(*env)->ExceptionClear(env);
 	if (ctx->reconnect_cb)
-		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->reconnect_cb, jstrTenant, jstrDevID);
+		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->reconnect_cb, jstrDevID);
 	if ((*env)->ExceptionCheck(env)) {
 		//panic! Light fires! The British are coming!!!
 		printf("Exception on calling on_rename \n");
 		(*env)->ExceptionDescribe(env);
 		(*env)->ExceptionClear(env);
 	}
-	(*env)->DeleteLocalRef(env, jstrTenant);
 	(*env)->DeleteLocalRef(env, jstrDevID);
 	DetachThread(ctx->vm);
 }
@@ -348,10 +336,10 @@ long long get_timetick(void* userdata)
 	return tick;
 }
 
-void on_heartbeatrate_query(const char* sessionid, const char* tenantid, const char* devid, void* userdata)
+void on_heartbeatrate_query(const char* sessionid, const char* devid, void* userdata)
 {
 	core_jni_contex_t* ctx = (core_jni_contex_t*)userdata;
-	jstring jstrSession, jstrTenant, jstrDevID;
+	jstring jstrSession, jstrDevID;
 	JNIEnv *env = AttachThread(ctx->vm, ctx->version);
 	if (env == NULL)
 	{
@@ -359,12 +347,11 @@ void on_heartbeatrate_query(const char* sessionid, const char* tenantid, const c
 		return;
 	}
 	jstrSession = (*env)->NewStringUTF(env, sessionid);
-	jstrTenant = (*env)->NewStringUTF(env, tenantid);
 	jstrDevID = (*env)->NewStringUTF(env, devid);
 	printf("on_heartbeatrate_query \n");
 	(*env)->ExceptionClear(env);
 	if(ctx->heartbeatquery_cb)
-		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->heartbeatquery_cb, jstrSession, jstrTenant, jstrDevID);
+		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->heartbeatquery_cb, jstrSession, jstrDevID);
 	if ((*env)->ExceptionCheck(env)) {
 		//panic! Light fires! The British are coming!!!
 		printf("Exception on calling on_rename \n");
@@ -372,28 +359,27 @@ void on_heartbeatrate_query(const char* sessionid, const char* tenantid, const c
 		(*env)->ExceptionClear(env);
 	}
 	(*env)->DeleteLocalRef(env, jstrSession);
-	(*env)->DeleteLocalRef(env, jstrTenant);
 	(*env)->DeleteLocalRef(env, jstrDevID);
 	DetachThread(ctx->vm);
 }
 
-void on_heartbeatrate_update(const int heartbeatrate, const char* sessionid, const char* tenantid, const char* devid, void* userdata)
+void on_heartbeatrate_update(const int heartbeatrate, const char* sessionid, const char* devid, void* userdata)
 {
 	core_jni_contex_t* ctx = (core_jni_contex_t*)userdata;
-	jstring jstrSession, jstrTenant, jstrDevID;
+	jstring jstrSession, jstrDevID;
 	JNIEnv *env = AttachThread(ctx->vm, ctx->version);
+
 	if (env == NULL)
 	{
 		printf("AttachJNIEnv fail \n");
 		return;
 	}
 	jstrSession = (*env)->NewStringUTF(env, sessionid);
-	jstrTenant = (*env)->NewStringUTF(env, tenantid);
 	jstrDevID = (*env)->NewStringUTF(env, devid);
 	printf("Heartbeat Rate Update: %d, %s, %s\n", heartbeatrate, sessionid, devid);
 	(*env)->ExceptionClear(env);
 	if(ctx->heartbeatupdate_cb)
-		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->heartbeatupdate_cb, heartbeatrate, jstrSession, jstrTenant, jstrDevID);
+		(*env)->CallVoidMethod(env, ctx->cbIface, ctx->heartbeatupdate_cb, heartbeatrate, jstrSession, jstrDevID);
 	if ((*env)->ExceptionCheck(env)) {
 		//panic! Light fires! The British are coming!!!
 		printf("Exception on calling on_rename \n");
@@ -401,14 +387,12 @@ void on_heartbeatrate_update(const int heartbeatrate, const char* sessionid, con
 		(*env)->ExceptionClear(env);
 	}
 	(*env)->DeleteLocalRef(env, jstrSession);
-	(*env)->DeleteLocalRef(env, jstrTenant);
 	(*env)->DeleteLocalRef(env, jstrDevID);
 	DetachThread(ctx->vm);
 }
 
-JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1initialize (JNIEnv *env, jobject thisObj, jstring strTenantID, jstring strClientID, jstring strHostName, jstring strMAC) {
+JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1initialize (JNIEnv *env, jobject thisObj, jstring strClientID, jstring strHostName, jstring strMAC) {
 	
-	const char *nativeTenantID = (*env)->GetStringUTFChars(env, strTenantID, 0);
 	const char *nativeClientID = (*env)->GetStringUTFChars(env, strClientID, 0);
 	const char *nativeHostName = (*env)->GetStringUTFChars(env, strHostName, 0);
 	const char *nativeMAC = (*env)->GetStringUTFChars(env, strMAC, 0);
@@ -420,8 +404,7 @@ JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1initialize (JNIEnv *env, jobje
 	g_ctx = calloc(1, sizeof(core_jni_contex_t));
 	(*env)->GetJavaVM(env, &g_ctx->vm);
 	g_ctx->version = (*env)->GetVersion(env);
-	g_wise = core_ex_initialize(nativeTenantID, nativeClientID, nativeHostName, nativeMAC, g_ctx);
-	(*env)->ReleaseStringUTFChars(env, strTenantID, nativeTenantID);
+	g_wise = core_ex_initialize(nativeClientID, nativeHostName, nativeMAC, g_ctx);
 	(*env)->ReleaseStringUTFChars(env, strClientID, nativeClientID);
 	(*env)->ReleaseStringUTFChars(env, strHostName, nativeHostName);
 	(*env)->ReleaseStringUTFChars(env, strMAC, nativeMAC);
@@ -530,32 +513,32 @@ JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1callback_1set(JNIEnv *env, job
 		g_ctx->msgrecv_cb = msgrecv_cb;
 	}
 
-	getcap_cb = (*env)->GetMethodID(env, objclass, "on_get_capablity", "(Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)V");
+	getcap_cb = (*env)->GetMethodID(env, objclass, "on_get_capablity", "(Ljava/lang/String;JLjava/lang/String;)V");
 	if (getcap_cb != 0) {
 		g_ctx->getcap_cb = getcap_cb;
 	}
 
-	reportstart_cb = (*env)->GetMethodID(env, objclass, "on_autoreport_start", "(Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)V");
+	reportstart_cb = (*env)->GetMethodID(env, objclass, "on_autoreport_start", "(Ljava/lang/String;JLjava/lang/String;)V");
 	if (reportstart_cb != 0) {
 		g_ctx->reportstart_cb = reportstart_cb;
 	}
 
-	reportstop_cb = (*env)->GetMethodID(env, objclass, "on_autoreport_stop", "(Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)V");
+	reportstop_cb = (*env)->GetMethodID(env, objclass, "on_autoreport_stop", "(Ljava/lang/String;JLjava/lang/String;)V");
 	if (reportstop_cb != 0) {
 		g_ctx->reportstop_cb = reportstop_cb;
 	}
 
-	rename_cb = (*env)->GetMethodID(env, objclass, "on_rename", "(Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+	rename_cb = (*env)->GetMethodID(env, objclass, "on_rename", "(Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;)V");
 	if (rename_cb != 0) {
 		g_ctx->rename_cb = rename_cb;
 	}
 
-	update_cb = (*env)->GetMethodID(env, objclass, "on_update", "(Ljava/lang/String;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+	update_cb = (*env)->GetMethodID(env, objclass, "on_update", "(Ljava/lang/String;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;)V");
 	if (update_cb != 0) {
 		g_ctx->update_cb = update_cb;
 	}
 
-	reconnect_cb = (*env)->GetMethodID(env, objclass, "on_server_reconnect", "(Ljava/lang/String;Ljava/lang/String;)V");
+	reconnect_cb = (*env)->GetMethodID(env, objclass, "on_server_reconnect", "(Ljava/lang/String;)V");
 	if (reconnect_cb != 0) {
 		g_ctx->reconnect_cb = reconnect_cb;
 	}
@@ -565,12 +548,12 @@ JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1callback_1set(JNIEnv *env, job
 		g_ctx->timetick_cb = timetick_cb;
 	}
 
-	heartbeatquery_cb = (*env)->GetMethodID(env, objclass, "on_heartbeatrate_query", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+	heartbeatquery_cb = (*env)->GetMethodID(env, objclass, "on_heartbeatrate_query", "(Ljava/lang/String;Ljava/lang/String;)V");
 	if (heartbeatquery_cb != 0) {
 		g_ctx->heartbeatquery_cb = heartbeatquery_cb;
 	}
 
-	heartbeatupdate_cb = (*env)->GetMethodID(env, objclass, "on_heartbeatrate_update", "(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+	heartbeatupdate_cb = (*env)->GetMethodID(env, objclass, "on_heartbeatrate_update", "(ILjava/lang/String;Ljava/lang/String;)V");
 	if (heartbeatupdate_cb != 0) {
 		g_ctx->heartbeatupdate_cb = heartbeatupdate_cb;
 	}
@@ -595,32 +578,28 @@ JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1callback_1set(JNIEnv *env, job
 	return bRet ? JNI_TRUE : JNI_FALSE;
 }
 
-JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1action_1response(JNIEnv *env, jobject thisObj, jint cmdid, jstring sessoinid, jboolean success, jstring tenantid, jstring devid)
+JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1action_1response(JNIEnv *env, jobject thisObj, jint cmdid, jstring sessoinid, jboolean success, jstring devid)
 {
 	bool bRet = false;
 	const char *nativeSessionID = (*env)->GetStringUTFChars(env, sessoinid, 0);
-	const char *nativeTenantID = (*env)->GetStringUTFChars(env, tenantid, 0);
 	const char *nativeDevID = (*env)->GetStringUTFChars(env, devid, 0);
 	if (g_wise)
-		bRet = core_ex_action_response(g_wise, cmdid, nativeSessionID, success, nativeTenantID, nativeDevID);
+		bRet = core_ex_action_response(g_wise, cmdid, nativeSessionID, success, nativeDevID);
 	printf("core_ex_action_response %d %s\n", cmdid, bRet ? "true" : "false");
 	(*env)->ReleaseStringUTFChars(env, sessoinid, nativeSessionID);
-	(*env)->ReleaseStringUTFChars(env, tenantid, nativeTenantID);
 	(*env)->ReleaseStringUTFChars(env, devid, nativeDevID);
 	return bRet ? JNI_TRUE : JNI_FALSE;
 }
 
-JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1heartbeatratequery_1response(JNIEnv *env, jobject thisObj, jint heartbeatrate, jstring sessoinid, jstring tenantid, jstring devid)
+JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1heartbeatratequery_1response(JNIEnv *env, jobject thisObj, jint heartbeatrate, jstring sessoinid, jstring devid)
 {
 	bool bRet = false;
 	const char *nativeSessionID = (*env)->GetStringUTFChars(env, sessoinid, 0);
-	const char *nativeTenantID = (*env)->GetStringUTFChars(env, tenantid, 0);
 	const char *nativeDevID = (*env)->GetStringUTFChars(env, devid, 0);
 	if (g_wise)
-		bRet = core_heartbeatratequery_response(g_wise, heartbeatrate, nativeSessionID, nativeTenantID, nativeDevID);
+		bRet = core_ex_heartbeatratequery_response(g_wise, heartbeatrate, nativeSessionID, nativeDevID);
 	printf("core_heartbeatratequery_response %d %s\n", heartbeatrate, bRet ? "true" : "false");
 	(*env)->ReleaseStringUTFChars(env, sessoinid, nativeSessionID);
-	(*env)->ReleaseStringUTFChars(env, tenantid, nativeTenantID);
 	(*env)->ReleaseStringUTFChars(env, devid, nativeDevID);
 	return bRet ? JNI_TRUE : JNI_FALSE;
 }
@@ -732,17 +711,4 @@ JNIEXPORT jboolean JNICALL Java_WISECoreJNI_core_1unsubscribe(JNIEnv *env, jobje
 	printf("core_ex_unsubscribe %s %s\n", nativeTopic, bRet ? "true" : "false");
 	(*env)->ReleaseStringUTFChars(env, topic, nativeTopic);
 	return bRet ? JNI_TRUE : JNI_FALSE;
-}
-
-JNIEXPORT jstring JNICALL Java_WISECoreJNI_core_1address_1get(JNIEnv *env, jobject thisObj)
-{
-	char address[16] = { 0 };
-	bool bRet = false;
-	jstring jstrAddress = NULL;
-	if (g_wise)
-		bRet = core_ex_address_get(g_wise, address);
-	printf("core_ex_address_get %s %s\n", address, bRet ? "true" : "false");
-	if(bRet)
-		jstrAddress = (*env)->NewStringUTF(env, address);
-	return jstrAddress;
 }
