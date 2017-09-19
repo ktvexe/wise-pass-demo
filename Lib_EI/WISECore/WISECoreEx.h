@@ -423,6 +423,20 @@ WISECORE_API bool core_ex_subscribe(WiCore_t core, char const * topic, int qos);
  */
 WISECORE_API bool core_ex_unsubscribe(WiCore_t core, char const * topic);
 
+/*
+ * Function: core_ex_address_get
+ *
+ * To get local IP address.
+ *
+ * Parameters:
+ *  core -		pointer of WISE Core Object.
+ *	address -	to get local IP address.
+ *
+ * Returns:
+ *	true or false.
+ */
+WISECORE_API bool core_ex_address_get(WiCore_t core, char *address);
+
 /* 
  * Function: core_ex_error_string_get
  *
