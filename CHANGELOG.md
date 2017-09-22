@@ -1,3 +1,16 @@
+# 1.0.3: Maintenance Release
+
+## Feature
+* ### [Removed]
+
+  * WISECoreJNI
+
+  >1. Move WISECoreJNI to EI-Connect-JNI project.
+
+  * WISECore APIs
+
+  >1. Remove address_get api.
+
 # 1.0.2: Maintenance Release
 
 ## Feature
