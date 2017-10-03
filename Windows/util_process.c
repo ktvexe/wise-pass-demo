@@ -165,6 +165,7 @@ WISEPLATFORM_API bool util_process_as_user_launch(char * cmdLine, bool isAppName
 			{
 				if(newPrcID != NULL) *newPrcID = pi.dwProcessId;
 			}
+			WaitForSingleObject(hToken, INFINITE);
 			CloseHandle(hToken);
 		}
 	}
