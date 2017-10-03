@@ -1,3 +1,12 @@
+# 1.0.4: Maintenance Release
+
+## Feature
+
+## Bugs Fixed
+
+* [#None]
+  * [Platform]：Add wait result while execute util_process_as_user_launch  
+
 # 1.0.3: Maintenance Release
 
 ## Feature
