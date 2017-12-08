@@ -1,6 +1,6 @@
 #!/bin/bash
 cmd=push
-branch=$2
+account=$2
 
 if [ "$1" == "push" ] || [ "$1" == "add" ] || [ "$1" == "pull" ]; then
 	cmd=$1
@@ -14,15 +14,16 @@ else
 	exit -1
 fi
 
-if [ "$2" == "" ]; then
-	branch=master
+if [ -z "${account}" ]; then
+	url="http://advgitlab.eastasia.cloudapp.azure.com"
+else
+	url="http://${account}@advgitlab.eastasia.cloudapp.azure.com"
 fi
+echo "git subtree ${cmd} --prefix=Lib_EI ${url}/EI-Connect/EI-Lib.git master"
+git subtree ${cmd} --prefix=Lib_EI ${url}/EI-Connect/EI-Lib.git master
 
-echo "git subtree ${cmd}--prefix=Lib_EI http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Lib.git ${branch}"
-git subtree ${cmd} --prefix=Lib_EI http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Lib.git ${branch}
+echo "git subtree ${cmd} --prefix=Platform ${url}/EI-Connect/EI-Platform.git master"
+git subtree ${cmd} --prefix=Platform ${url}/EI-Connect/EI-Platform.git master
 
-echo "git subtree ${cmd} --prefix=Platform http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Platform.git ${branch}"
-git subtree ${cmd} --prefix=Platform http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Platform.git ${branch}
-
-echo "git subtree ${cmd} --prefix=Include/wise http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Predefine.git ${branch}"
-git subtree ${cmd} --prefix=Include/wise http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Predefine.git ${branch}
+echo "git subtree ${cmd} --prefix=Include/wise ${url}/EI-Connect/EI-Predefine.git master"
+git subtree ${cmd} --prefix=Include/wise ${url}/EI-Connect/EI-Predefine.git master
