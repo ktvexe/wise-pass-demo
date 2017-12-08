@@ -36,6 +36,7 @@ int g_iReportInterval = 60; //Send sensor data every 60 sec.
 int g_iHeartbeatRate = 60; //Send heartbeat packet every min.
 int g_iSensor[3] = {0}; //integer array for randomized sensor data
 
+bool g_bConnected = false;
 typedef struct
 {
 	int cmdID;
@@ -180,7 +181,7 @@ void* threadconnect(void* args)
 	printf("CB_Connected \n");
 
 	SubscribeTopic();
-	while(true)
+	while(g_bConnected)
 	{
 		long long curTime = get_timetick(NULL);
 		if(nextHeartbeat < curTime)
@@ -205,7 +206,7 @@ void* threadconnect(void* args)
 		{
 			nextReport = 0;
 		}
-		usleep(100);
+		usleep(100000);
 	}
 
 	pthread_exit(0);
@@ -216,6 +217,7 @@ void* threadconnect(void* args)
 void on_connect_cb(void* userdata)
 {
 	pthread_t conn = 0;
+	g_bConnected = true;
 	if(pthread_create(&conn, NULL, threadconnect, NULL)==0)
 		pthread_detach(conn);
 }
@@ -224,6 +226,7 @@ void on_connect_cb(void* userdata)
 void on_lostconnect_cb(void* userdata)
 {
 	printf("CB_Lostconnect %s\n", core_error_string_get());
+	g_bConnected = false;
 	/*WISEConnector will reconnect automatically*/
 }
 
@@ -231,6 +234,7 @@ void on_lostconnect_cb(void* userdata)
 void on_disconnect_cb(void* userdata)
 {
 	printf("CB_Disconnect \n");
+	g_bConnected = false;
 }
 
 // Sensor Get thread body to handle get command
