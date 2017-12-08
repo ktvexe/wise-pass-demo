@@ -1,3 +1,16 @@
+# 1.0.5: Maintenance Release
+
+## Feature
+### [Modified]
+
+  * WISECarrier
+
+  > Set tls in insecure mode.
+
+  * WISECoreSample
+
+  > Modify WISECoreSample.
+
 # 1.0.4: Maintenance Release
 
 ## Feature
