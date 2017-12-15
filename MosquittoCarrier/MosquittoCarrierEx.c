@@ -394,7 +394,7 @@ bool _psk_set(mosq_car_t *pmosq)
 	if(pmosq == NULL)
 		return false;
 	mosquitto_tls_insecure_set(pmosq->mosq, true);
-	result = mosquitto_tls_psk_set(pmosq->mosq, strlen(pmosq->strPsk)>0?pmosq->strPsk:NULL, strlen(pmosq->strIdentity)>0?pmosq->strIdentity:NULL, strlen(pmosq->strCiphers)>0?pmosq->strCiphers:NULL);
+	result = mosquitto_tls_psk_set(pmosq->mosq, strlen(pmosq->strPsk)>0?pmosq->strPsk:"", strlen(pmosq->strIdentity)>0?pmosq->strIdentity:NULL, strlen(pmosq->strCiphers)>0?pmosq->strCiphers:NULL);
 	pmosq->iErrorCode = result;
 	return result==MOSQ_ERR_SUCCESS?true:false;
 }
