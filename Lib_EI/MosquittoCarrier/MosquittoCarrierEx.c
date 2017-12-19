@@ -200,7 +200,7 @@ void MQTT_publish_callback(struct mosquitto *mosq, void *obj, int mid)
 void* thread_reconnect(void* args)
 {
 	struct mosquitto *mosq = NULL;
-	int sleep_time = 30;
+	int sleep_time = 20;
 	if(args == NULL)
 	{
 		pthread_exit(0);
@@ -239,7 +239,7 @@ void on_connect_callback(struct mosquitto *mosq, void *userdata, int rc)
 	}
 	else
 	{
-		if(pmosq == NULL)
+		if(pmosq->reconnthr == NULL)
 		{
 			if(pthread_create(&pmosq->reconnthr, NULL, thread_reconnect, mosq)!=0)
 				pmosq->reconnthr = NULL;				
@@ -316,20 +316,9 @@ int on_password_check(char *buf, int size, int rwflag, void *userdata)
 	length = strlen(pmosq->strCerPasswd);
 
 	memset(buf, 0, size);
-	if(length+1 >= size)
-	{
-		strncpy(buf,pmosq->strCerPasswd,size);
-		return size;
-	}
-	else
-	{
-		pthread_t reconnthr = 0;
-		if(pthread_create(&reconnthr, NULL, thread_reconnect, NULL)==0)
-			pthread_detach(reconnthr);
+	strncpy(buf,pmosq->strCerPasswd,size);
 
-		strncpy(buf, pmosq->strCerPasswd, length+1);
-		return length;
-	}
+	return length > size? size:length;
 }
 
 struct mosquitto * _initialize(mosq_car_t* pmosq, char const * devid)
@@ -394,17 +383,24 @@ bool _psk_set(mosq_car_t *pmosq)
 	if(pmosq == NULL)
 		return false;
 	mosquitto_tls_insecure_set(pmosq->mosq, true);
-	result = mosquitto_tls_psk_set(pmosq->mosq, strlen(pmosq->strPsk)>0?pmosq->strPsk:NULL, strlen(pmosq->strIdentity)>0?pmosq->strIdentity:NULL, strlen(pmosq->strCiphers)>0?pmosq->strCiphers:NULL);
+	result = mosquitto_tls_psk_set(pmosq->mosq, strlen(pmosq->strPsk)>0?pmosq->strPsk:"", strlen(pmosq->strIdentity)>0?pmosq->strIdentity:NULL, strlen(pmosq->strCiphers)>0?pmosq->strCiphers:NULL);
 	pmosq->iErrorCode = result;
 	return result==MOSQ_ERR_SUCCESS?true:false;
 }
 
 bool _connect(mosq_car_t *pmosq)
 {
-	bool bAsync = true;
+	bool bAsync = false;
 	int result = MOSQ_ERR_SUCCESS;
 	if(pmosq == NULL)
 		return false;
+
+	if(pmosq->reconnthr != NULL)
+	{
+		pthread_cancel(pmosq->reconnthr);
+		pthread_join(pmosq->reconnthr, NULL);
+		pmosq->reconnthr = NULL;				
+	}
 
 	if( strlen(pmosq->strAuthID)>0 && strlen(pmosq->strAuthPW)>0)
 		mosquitto_username_pw_set(pmosq->mosq,pmosq->strAuthID,pmosq->strAuthPW);
@@ -430,6 +426,13 @@ bool _reconnect(mosq_car_t *pmosq)
 	if(pmosq == NULL)
 		return false;
 
+	if(pmosq->reconnthr != NULL)
+	{
+		pthread_cancel(pmosq->reconnthr);
+		pthread_join(pmosq->reconnthr, NULL);
+		pmosq->reconnthr = NULL;				
+	}
+
 	result = mosquitto_reconnect(pmosq->mosq);
 	pmosq->iErrorCode = result;
 
@@ -441,6 +444,14 @@ bool _disconnect(mosq_car_t *pmosq, bool bForce)
 	int result = MOSQ_ERR_SUCCESS;
 	if(pmosq == NULL)
 		return false;
+
+	if(pmosq->reconnthr != NULL)
+	{
+		pthread_cancel(pmosq->reconnthr);
+		pthread_join(pmosq->reconnthr, NULL);
+		pmosq->reconnthr = NULL;				
+	}
+
 	if(!bForce)
 		mosquitto_loop(pmosq->mosq, 0, 1);	
 	result = mosquitto_disconnect(pmosq->mosq);

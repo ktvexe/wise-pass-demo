@@ -622,7 +622,7 @@ WISECORE_API bool core_ex_tls_set(WiCore_t core, const char *cafile, const char 
 		return false;
 	}
 
-	if(!cafile && !capath)
+	/*if(!cafile && !capath)
 	{
 		tHandleCtx->iErrorCode = core_param_error;
 		return false;
@@ -638,7 +638,7 @@ WISECORE_API bool core_ex_tls_set(WiCore_t core, const char *cafile, const char 
 	{
 		tHandleCtx->iErrorCode = core_param_error;
 		return false;
-	}
+	}*/
 
 	if(wc_ex_tls_set(tHandleCtx->conn, cafile, capath, certfile, keyfile, password))
 	{
