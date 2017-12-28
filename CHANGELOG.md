@@ -1,3 +1,21 @@
+# 1.0.6: Maintenance Release
+
+## Feature
+### [Modified]
+
+  * MosquittoCarrier
+
+  > Modify reconnect behavior
+  > Modify PSK for insecure mode
+
+  * WISECoreSample
+
+  > Add comment for EnSaaS Service limitation and modify sample data format to meet the limitation.
+
+  * MosquittoSample
+
+  > Add comment for EnSaaS Service limitation and modify sample data format to meet the limitation.
+
 # 1.0.5: Maintenance Release
 
 ## Feature
