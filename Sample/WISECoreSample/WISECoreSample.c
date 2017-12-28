@@ -18,7 +18,7 @@
 #include "liteparse.h"
 
 //Sensor data JSON format, it contain 3 sensor data: data1~3
-#define SENSOR_DATA "{\"opTS\":{\"$date\":%lld},\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"data1\",\"v\":%d},{\"n\":\"data2\",\"v\":%d},{\"n\":\"data3\",\"v\":%d}]}}}"
+#define SENSOR_DATA "{\"opTS\":{\"$date\":%lld},\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"data1\",\"v\":%d},{\"n\":\"data2\",\"v\":%d},{\"n\":\"data3\",\"v\":%d},{\"n\":\"data4\",\"v\":%d},{\"n\":\"data5\",\"v\":%d},{\"n\":\"data6\",\"v\":%d},{\"n\":\"data7\",\"v\":%d},{\"n\":\"data8\",\"v\":%d},{\"n\":\"data9\",\"v\":%d},{\"n\":\"data10\",\"v\":%d},{\"n\":\"data11\",\"v\":%d},{\"n\":\"data12\",\"v\":%d},{\"n\":\"data13\",\"v\":%d},{\"n\":\"data14\",\"v\":%d}]}}}"
 
 /*User can update g_strServerIP, g_iPort, g_strConnID, g_strConnPW and g_strDeviceID to connect to specific broker*/
 char g_strServerIP[64] = "wise-msghub.eastasia.cloudapp.azure.com"; // MQTT broker URL or IP
@@ -33,8 +33,13 @@ char g_strTLCertSPW[37] = "05155853"; // SSL/TLS provate key or pre-shared-key
 
 bool g_bReportData = true; // Report data flag, true: send sensor data after connected.
 int g_iReportInterval = 60; //Send sensor data every 60 sec.
+/* EnSaaS define each message size is 512 byte
+ * Small Service: Support 10 devices and 3 million messages per month. For each device the data report frequency(g_iReportInterval) most not smaller then 10 second.
+ * Medium Service: Support 100 devices and 50 million messages per month. For each device the data report frequency(g_iReportInterval) most not smaller then 6 second.
+ * Large Service: Support 500 devices and 200 million messages per month. For each device the data report frequency(g_iReportInterval) most not smaller then 7 second.
+ */
 int g_iHeartbeatRate = 60; //Send heartbeat packet every min.
-int g_iSensor[3] = {0}; //integer array for randomized sensor data
+int g_iSensor[14] = {0}; //integer array for randomized sensor data
 
 bool g_bConnected = false;
 typedef struct
@@ -135,7 +140,10 @@ void sendCapability(long long curTime)
 	char strBuffer[1024] = {0};
 	char strTopic[256] = {0};
 	char temp[512] = {0};
-	sprintf(temp, SENSOR_DATA, curTime, "MySensor", "SensorGroup", "SensorGroup", g_iSensor[0], g_iSensor[1], g_iSensor[2]);
+	sprintf(temp, SENSOR_DATA, curTime, "MySensor", "SensorGroup", "SensorGroup",
+		g_iSensor[0], g_iSensor[1], g_iSensor[2], g_iSensor[3], g_iSensor[4],
+		g_iSensor[5], g_iSensor[6], g_iSensor[7], g_iSensor[8], g_iSensor[9],
+		g_iSensor[10], g_iSensor[11], g_iSensor[12], g_iSensor[13]);
 	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strProductTag, g_strDeviceID);
 	sprintf(strBuffer, DEF_AUTOREPORT_JSON, g_strDeviceID, temp, curTime); //device ID
 	core_publish(strTopic, strBuffer, strlen(strBuffer), 0, 0);
@@ -148,7 +156,10 @@ void sendReportData(long long curTime)
 	char strBuffer[1024] = {0};
 	char strTopic[256] = {0};
 	char temp[512] = {0};
-	sprintf(temp, SENSOR_DATA, curTime, "MySensor", "SensorGroup", "SensorGroup", g_iSensor[0], g_iSensor[1], g_iSensor[2]);
+	sprintf(temp, SENSOR_DATA, curTime, "MySensor", "SensorGroup", "SensorGroup",
+		g_iSensor[0], g_iSensor[1], g_iSensor[2], g_iSensor[3], g_iSensor[4],
+		g_iSensor[5], g_iSensor[6], g_iSensor[7], g_iSensor[8], g_iSensor[9],
+		g_iSensor[10], g_iSensor[11], g_iSensor[12], g_iSensor[13]);
 	sprintf(strTopic, DEF_AGENTREPORT_TOPIC, g_strDeviceID);
 	sprintf(strBuffer, DEF_AUTOREPORT_JSON, g_strDeviceID, temp, curTime); //device ID
 	core_publish(strTopic, strBuffer, strlen(strBuffer), 0, 0);
@@ -493,7 +504,7 @@ void* threadaccessdata(void* args)
 	while(true)
 	{
 		int i=0;
-		for(i=0; i<3; i++)
+		for(i=0; i<14; i++)
 		{
 			g_iSensor[i] += (rand() % 3) -1;
 		}
