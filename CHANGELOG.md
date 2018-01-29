@@ -1,3 +1,19 @@
+# 1.0.7: Maintenance Release
+
+## Feature
+### [Modified]
+  * 3rd Party library/Mosquitto
+
+  > rename libmosquitto to mosquitto
+
+  * MosquittoCarrier
+
+  > re-link libmosquitto to mosquitto
+
+  * MosquittoSample
+
+  > re-link libmosquitto to mosquitto
+
 # 1.0.6: Maintenance Release
 
 ## Feature
