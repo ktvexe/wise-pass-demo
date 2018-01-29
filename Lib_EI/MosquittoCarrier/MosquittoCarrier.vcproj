@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libmosquitto.lib"
+				AdditionalDependencies="mosquitto.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\lib&quot;"
 				GenerateDebugInformation="true"
@@ -139,7 +139,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libmosquitto.lib"
+				AdditionalDependencies="mosquitto.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\lib&quot;"
 				GenerateDebugInformation="true"
