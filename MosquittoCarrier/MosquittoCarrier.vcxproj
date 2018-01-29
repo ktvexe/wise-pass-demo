@@ -18,8 +18,7 @@
     <ProjectGuid>{A0B8B05E-0D6D-4744-8F2D-601CD414C5DC}</ProjectGuid>
     <RootNamespace>MosquittoCarrier</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>
-    </WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">
@@ -30,13 +29,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
@@ -84,7 +83,7 @@
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libmosquitto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>mosquitto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)Library3rdParty\openssl-1.0.1h.win32\bin\*.dll" "$(TargetDir)"
@@ -111,7 +110,7 @@ copy "$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\bin\*.dll" "$(TargetD
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libmosquitto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>mosquitto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)Library3rdParty\openssl-1.0.1h.win32\bin\*.dll" "$(TargetDir)"
@@ -124,7 +123,7 @@ copy "$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\bin\*.dll" "$(TargetD
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libmosquitto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>mosquitto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)Library3rdParty\openssl-1.0.1h.win32\bin\*.dll" "$(TargetDir)"
