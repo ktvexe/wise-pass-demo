@@ -390,7 +390,7 @@ bool _psk_set(mosq_car_t *pmosq)
 
 bool _connect(mosq_car_t *pmosq)
 {
-	bool bAsync = false;
+	bool bAsync = true;
 	int result = MOSQ_ERR_SUCCESS;
 	if(pmosq == NULL)
 		return false;
@@ -410,6 +410,7 @@ bool _connect(mosq_car_t *pmosq)
 	if(pmosq->pWillPayload != NULL) {
 		mosquitto_will_set(pmosq->mosq, pmosq->strWillTopic, pmosq->iWillLen , pmosq->pWillPayload, 0, false);
 	}
+	mosquitto_reconnect_delay_set(pmosq->mosq, 10, 60, false);
 	mosquitto_loop_start(pmosq->mosq); /*Must call before mosquitto_connect_async*/
 	if(bAsync)
 		result = mosquitto_connect_async(pmosq->mosq, pmosq->strServerIP, pmosq->iServerPort, pmosq->iKeepalive);
