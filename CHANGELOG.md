@@ -1,3 +1,11 @@
+# 1.0.8: Maintenance Release
+
+## Feature
+### [Modified]
+  * MosquittoCarrier
+
+  > Set reconnect interval to 10 sec.
+
 # 1.0.7: Maintenance Release
 
 ## Feature
