@@ -145,7 +145,7 @@ void sendCapability(long long curTime)
 		g_iSensor[5], g_iSensor[6], g_iSensor[7], g_iSensor[8], g_iSensor[9],
 		g_iSensor[10], g_iSensor[11], g_iSensor[12], g_iSensor[13]);
 	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strProductTag, g_strDeviceID);
-	sprintf(strBuffer, DEF_AUTOREPORT_JSON, g_strDeviceID, temp, curTime); //device ID
+	sprintf(strBuffer, DEF_ACTION_RESPONSE_JSON, g_strDeviceID, 2052, "general", temp, curTime); 
 	core_publish(strTopic, strBuffer, strlen(strBuffer), 0, 0);
 	printf("Capability send:\n [%s],\n %s\n", strTopic, strBuffer);
 }
@@ -190,8 +190,8 @@ void* threadconnect(void* args)
 	core_device_register();
 
 	printf("CB_Connected \n");
-
 	SubscribeTopic();
+
 	while(g_bConnected)
 	{
 		long long curTime = get_timetick(NULL);
