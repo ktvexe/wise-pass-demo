@@ -1,3 +1,11 @@
+# 1.0.9: Maintenance Release
+## Feature
+
+## Bugs Fixed
+
+* [#None]
+  * [WISECoreSample]：Fix capability message format.
+
 # 1.0.8: Maintenance Release
 
 ## Feature
