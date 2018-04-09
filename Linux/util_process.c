@@ -162,6 +162,36 @@ unsigned long getPIDByName(char * prcName)
 	return pid;
 }
 
+bool GetSysLogonUserName2(char * userNameBuf, unsigned int bufLen)
+{
+	int i = 0;
+	FILE * fp = NULL;
+	char cmdline[128] = {0};
+	char cmdbuf[12][32]={{0}};
+
+	if (userNameBuf == NULL || bufLen == 0) return false;
+
+	sprintf(cmdline,"last|grep \"no logout\"");//for opensusi kde desktop
+	fp = popen(cmdline,"r");
+	if(NULL != fp)
+	{
+		char buf[512]={0};
+		if (fgets(buf, sizeof(buf), fp))
+    		{
+        		sscanf(buf,"%31s",cmdbuf[0]);
+		}
+	}
+	
+    	pclose(fp);
+
+	i = strlen(cmdbuf[0]);
+	if(i>0 && i< bufLen)
+		strcpy(userNameBuf, cmdbuf[0]);
+	else 
+		return false;
+	return true;
+}
+
 bool GetSysLogonUserName(char * userNameBuf, unsigned int bufLen)
 {
 	int i = 0;
@@ -188,7 +218,7 @@ bool GetSysLogonUserName(char * userNameBuf, unsigned int bufLen)
 	if(i>0 && i< bufLen)
 		strcpy(userNameBuf, cmdbuf[0]);
 	else 
-		return false;
+		return GetSysLogonUserName2(userNameBuf, bufLen);
 	return true;
 }
 
@@ -300,6 +330,37 @@ bool util_process_get_logon_users(char * logonUserList, int *logonUserCnt ,int m
 	char cmdline[128];
 	if (logonUserList == NULL || logonUserCnt == NULL) return false;
 	*logonUserCnt = 0;
+	sprintf(cmdline,"last|grep \"no logout\"");
+	fp = popen(cmdline,"r");
+	if(NULL != fp){
+	    char buf[512] = {0};
+		while (fgets(buf, sizeof(buf), fp))
+    		{
+			int i = 0;
+			char cmdbuf[12][32]={{0}};
+			bool isAddIn = false;
+        	sscanf(buf,"%31s",cmdbuf[0]);
+			for (i = 0; i < *logonUserCnt && i< maxLogonUserCnt; i++)
+			{
+				if(!strcmp(&(logonUserList[maxLogonUserNameLen * i]),cmdbuf[0]))
+				{
+					isAddIn = true;
+					break;
+				}
+			}
+			if(!isAddIn)
+			{
+				if(*logonUserCnt < maxLogonUserCnt)
+				{
+					strcpy(&(logonUserList[maxLogonUserNameLen * (*logonUserCnt)]),cmdbuf[0]);
+					(*logonUserCnt)++;
+				}
+			}
+			
+		}
+	}
+    pclose(fp);
+	memset(cmdline, 0, sizeof(cmdline));
 	sprintf(cmdline,"last|grep still");
 	fp = popen(cmdline,"r");
 	if(NULL != fp){
