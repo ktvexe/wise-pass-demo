@@ -13,7 +13,7 @@
 RUN_PKG_NEED="libxml2 libmosquitto1"
 
 # ${DEVLE_PKG_NEED} is specify the depend packages to develop RMM cagent.
-DEVLE_PKG_NEED="gcc g++ make libxml2-dev libcurl4-openssl-dev libmosquitto-dev autoconf autotools-dev build-essential libtool"
+DEVLE_PKG_NEED="gcc g++ make libxml2-dev libcurl4-openssl-dev libxtst-dev libxext-dev libssl-dev libmosquitto-dev autoconf autotools-dev build-essential libtool"
 
 # Tell me how to import the source of mosquitto
 MOSQUITTO_SOURCE_IMPORT="add-apt-repository -y ppa:mosquitto-dev/mosquitto-ppa"

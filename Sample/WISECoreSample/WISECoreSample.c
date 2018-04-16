@@ -28,12 +28,11 @@
 char g_strServerIP[64] = "wise-msghub.eastasia.cloudapp.azure.com"; // MQTT broker URL or IP
 //char g_strServerIP[64] = "172.22.12.18"; // MQTT broker URL or IP
 int g_iPort = 1883; // MQTT broker listen port, keep 1883 as default port.
-char g_strConnID[256] = "85767a25-16c4-42f4-ace3-4d01a36a2fc1:baa43299-8450-4468-9eb9-5964973eec16"; //broker connection ID
-char g_strConnPW[64] = "d97uv681v090amr29mso37kegu"; //MQTT broker connection password
-char g_strDeviceID[37] = "00000001-0000-0000-0000-f3e14694bc3a"; //Target device unique ID
-char g_strMac[37] = "f3e14694bc3a"; //Network MAC address
-char g_strHostName[] = "WISECoreSample"; //the HostName will show on renote server device list as device name, user can customize the host name.
-//char g_strProductTag[37] = "device"; // for common server the product tag default is "device", but user can change to their own product, such as "RMM", "SCADA"
+char g_strConnID[256] = "f1b2f600-fb24-4bee-a655-40a5394894d2:d77e6ba9-a635-4459-837e-2ffa0f3093d2"; //broker connection ID
+char g_strConnPW[64] = "up6pf454k3r4po8m5h4j37f0gl"; //MQTT broker connection password
+char g_strDeviceID[37] = "00000001-0000-0000-0000-305A3A77B120"; //Target device unique ID
+char g_strMac[37] = "305A3A770020"; //Network MAC address
+char g_strHostName[16] = "WISECoreSample"; //the HostName will show on renote server device list as device name, user can customize the host name.
 char g_strProductTag[37] = "RMM"; // for common server the product tag default is "device", but user can change to their own product, such as "RMM", "SCADA"
 char g_strTLCertSPW[37] = "05155853"; // SSL/TLS provate key or pre-shared-key
 
@@ -257,7 +256,7 @@ void on_disconnect_cb(void* userdata)
 // Sensor Get thread body to handle get command
 void* threadget(void* args)
 {
-	char strBuffer[2048] = "{\"sensorIDList\":{\"e\":[";
+	char strBuffer[2048] = "{\"sensorInfoList\":{\"e\":[";
 	char tmp[512] = {0};
 	bool bFirst = true;
 	char* p = strBuffer;
@@ -266,13 +265,13 @@ void* threadget(void* args)
 		goto GET_EXIT;
 	if(strstr(cmd->pkt, "MySensor/SensorGroup/data1"))
 	{
-		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data1\",\"v\":%d}", g_iSensor[0]);
+		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data1\",\"v\":%d,\"StatusCode\": 200}", g_iSensor[0]);
 		p = strcat(p, tmp);
 		bFirst = false;
 	}
 	if(strstr(cmd->pkt, "MySensor/SensorGroup/data2"))
 	{
-		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data2\",\"v\":%d}", g_iSensor[1]);
+		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data2\",\"v\":%d,\"StatusCode\": 200}", g_iSensor[1]);
 		if(!bFirst)
 			p = strcat(p, ",");
 		p = strcat(p, tmp);
@@ -280,7 +279,95 @@ void* threadget(void* args)
 	}
 	if(strstr(cmd->pkt, "MySensor/SensorGroup/data3"))
 	{
-		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data3\",\"v\":%d}", g_iSensor[2]);
+		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data3\",\"v\":%d,\"StatusCode\": 200}", g_iSensor[2]);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, tmp);
+		bFirst = false;
+	}
+	if(strstr(cmd->pkt, "MySensor/SensorGroup/data4"))
+	{
+		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data4\",\"v\":%d,\"StatusCode\": 200}", g_iSensor[3]);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, tmp);
+		bFirst = false;
+	}
+	if(strstr(cmd->pkt, "MySensor/SensorGroup/data5"))
+	{
+		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data5\",\"v\":%d,\"StatusCode\": 200}", g_iSensor[4]);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, tmp);
+		bFirst = false;
+	}
+	if(strstr(cmd->pkt, "MySensor/SensorGroup/data6"))
+	{
+		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data6\",\"v\":%d,\"StatusCode\": 200}", g_iSensor[5]);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, tmp);
+		bFirst = false;
+	}
+	if(strstr(cmd->pkt, "MySensor/SensorGroup/data7"))
+	{
+		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data7\",\"v\":%d,\"StatusCode\": 200}", g_iSensor[6]);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, tmp);
+		bFirst = false;
+	}
+	if(strstr(cmd->pkt, "MySensor/SensorGroup/data8"))
+	{
+		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data8\",\"v\":%d,\"StatusCode\": 200}", g_iSensor[7]);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, tmp);
+		bFirst = false;
+	}
+	if(strstr(cmd->pkt, "MySensor/SensorGroup/data9"))
+	{
+		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data9\",\"v\":%d,\"StatusCode\": 200}", g_iSensor[8]);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, tmp);
+		bFirst = false;
+	}
+	if(strstr(cmd->pkt, "MySensor/SensorGroup/data10"))
+	{
+		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data10\",\"v\":%d,\"StatusCode\": 200}", g_iSensor[9]);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, tmp);
+		bFirst = false;
+	}
+	if(strstr(cmd->pkt, "MySensor/SensorGroup/data11"))
+	{
+		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data11\",\"v\":%d,\"StatusCode\": 200}", g_iSensor[10]);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, tmp);
+		bFirst = false;
+	}
+	if(strstr(cmd->pkt, "MySensor/SensorGroup/data12"))
+	{
+		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data12\",\"v\":%d,\"StatusCode\": 200}", g_iSensor[11]);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, tmp);
+		bFirst = false;
+	}
+	if(strstr(cmd->pkt, "MySensor/SensorGroup/data13"))
+	{
+		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data13\",\"v\":%d,\"StatusCode\": 200}", g_iSensor[12]);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, tmp);
+		bFirst = false;
+	}
+	if(strstr(cmd->pkt, "MySensor/SensorGroup/data14"))
+	{
+		sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/data14\",\"v\":%d,\"StatusCode\": 200}", g_iSensor[13]);
 		if(!bFirst)
 			p = strcat(p, ",");
 		p = strcat(p, tmp);
@@ -306,7 +393,7 @@ GET_EXIT:
 // Data Set thread body to handle set command
 void* threadset(void* args)
 {
-	char strBuffer[2048] = "{\"sensorIDList\":{\"e\":[";
+	char strBuffer[2048] = "{\"sensorInfoList\":{\"e\":[";
 	char tmp[512] = {0};
 	bool bFirst = true;
 	char* p = strBuffer;
@@ -340,6 +427,116 @@ void* threadset(void* args)
 		if(!bFirst)
 			p = strcat(p, ",");
 		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/data3\",\"sv\":\"Success\",\"StatusCode\":200}");
+		bFirst = false;
+	}
+	if((target = strstr(cmd->pkt, "MySensor/SensorGroup/data4")) > 0)
+	{
+		memset(tmp, 0, sizeof(tmp));
+		value_parse(target, "v", tmp, sizeof(tmp));
+		g_iSensor[3] = atoi(tmp);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/data4\",\"sv\":\"Success\",\"StatusCode\":200}");
+		bFirst = false;
+	}
+	if((target = strstr(cmd->pkt, "MySensor/SensorGroup/data5")) > 0)
+	{
+		memset(tmp, 0, sizeof(tmp));
+		value_parse(target, "v", tmp, sizeof(tmp));
+		g_iSensor[4] = atoi(tmp);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/data5\",\"sv\":\"Success\",\"StatusCode\":200}");
+		bFirst = false;
+	}
+	if((target = strstr(cmd->pkt, "MySensor/SensorGroup/data6")) > 0)
+	{
+		memset(tmp, 0, sizeof(tmp));
+		value_parse(target, "v", tmp, sizeof(tmp));
+		g_iSensor[5] = atoi(tmp);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/data6\",\"sv\":\"Success\",\"StatusCode\":200}");
+		bFirst = false;
+	}
+	if((target = strstr(cmd->pkt, "MySensor/SensorGroup/data7")) > 0)
+	{
+		memset(tmp, 0, sizeof(tmp));
+		value_parse(target, "v", tmp, sizeof(tmp));
+		g_iSensor[6] = atoi(tmp);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/data7\",\"sv\":\"Success\",\"StatusCode\":200}");
+		bFirst = false;
+	}
+	if((target = strstr(cmd->pkt, "MySensor/SensorGroup/data8")) > 0)
+	{
+		memset(tmp, 0, sizeof(tmp));
+		value_parse(target, "v", tmp, sizeof(tmp));
+		g_iSensor[7] = atoi(tmp);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/data8\",\"sv\":\"Success\",\"StatusCode\":200}");
+		bFirst = false;
+	}
+	if((target = strstr(cmd->pkt, "MySensor/SensorGroup/data9")) > 0)
+	{
+		memset(tmp, 0, sizeof(tmp));
+		value_parse(target, "v", tmp, sizeof(tmp));
+		g_iSensor[8] = atoi(tmp);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/data9\",\"sv\":\"Success\",\"StatusCode\":200}");
+		bFirst = false;
+	}
+	if((target = strstr(cmd->pkt, "MySensor/SensorGroup/data10")) > 0)
+	{
+		memset(tmp, 0, sizeof(tmp));
+		value_parse(target, "v", tmp, sizeof(tmp));
+		g_iSensor[9] = atoi(tmp);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/data10\",\"sv\":\"Success\",\"StatusCode\":200}");
+		bFirst = false;
+	}
+	if((target = strstr(cmd->pkt, "MySensor/SensorGroup/data11")) > 0)
+	{
+		memset(tmp, 0, sizeof(tmp));
+		value_parse(target, "v", tmp, sizeof(tmp));
+		g_iSensor[10] = atoi(tmp);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/data11\",\"sv\":\"Success\",\"StatusCode\":200}");
+		bFirst = false;
+	}
+	if((target = strstr(cmd->pkt, "MySensor/SensorGroup/data12")) > 0)
+	{
+		memset(tmp, 0, sizeof(tmp));
+		value_parse(target, "v", tmp, sizeof(tmp));
+		g_iSensor[11] = atoi(tmp);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/data12\",\"sv\":\"Success\",\"StatusCode\":200}");
+		bFirst = false;
+	}
+	if((target = strstr(cmd->pkt, "MySensor/SensorGroup/data13")) > 0)
+	{
+		memset(tmp, 0, sizeof(tmp));
+		value_parse(target, "v", tmp, sizeof(tmp));
+		g_iSensor[12] = atoi(tmp);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/data13\",\"sv\":\"Success\",\"StatusCode\":200}");
+		bFirst = false;
+	}
+	if((target = strstr(cmd->pkt, "MySensor/SensorGroup/data14")) > 0)
+	{
+		memset(tmp, 0, sizeof(tmp));
+		value_parse(target, "v", tmp, sizeof(tmp));
+		g_iSensor[13] = atoi(tmp);
+		if(!bFirst)
+			p = strcat(p, ",");
+		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/data14\",\"sv\":\"Success\",\"StatusCode\":200}");
 		bFirst = false;
 	}
 	if(cmd->bHasSessionID)
@@ -627,4 +824,3 @@ EXIT:
 
 	return 0;
 }
-

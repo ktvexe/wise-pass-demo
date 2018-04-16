@@ -8,7 +8,7 @@
 #	${RUN_PKG_NEED} is specify the depend packages to execute RMM Agent.
 #	${DEVLE_PKG_NEED} is specify the depend packages to develop RMM Agent.
 RUN_PKG_NEED="libxml2 openssl libmosquitto1 redhat-lsb-core"
-DEVLE_PKG_NEED="gcc gcc-c++ make libxml2-devel openssl-devel libmosquitto-devel autoconf libtool"
+DEVLE_PKG_NEED="gcc gcc-c++ make libxml2-devel openssl-devel libXtst libmosquitto-devel autoconf libtool"
 CHK_CMD=rpm
 CHK_ARG=-q
 INSTALL_CMD=yum
