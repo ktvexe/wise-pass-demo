@@ -21,7 +21,8 @@ LOCAL_C_INCLUDES := \
 		-I external/mosquitto/lib
 
 LOCAL_CFLAGS := \
-        -DDUMMY_PTHREAD_CANCEL
+        -DDUMMY_PTHREAD_CANCEL \
+	-DSYNC_CONNECT
 
 LOCAL_MODULE:= libMosquittoCarrier
 LOCAL_MODULE_TAGS := debug
