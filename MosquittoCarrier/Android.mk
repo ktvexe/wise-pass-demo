@@ -17,8 +17,8 @@ LOCAL_SHARED_LIBRARIES := \
 LOCAL_C_INCLUDES := \
         -I $(LOCAL_PATH)/../../Platform \
         -I $(LOCAL_PATH)/../../Platform/Linux/ \
-		-I $(LOCAL_PATH)/../../Include \
-		-I external/mosquitto/lib
+	-I $(LOCAL_PATH)/../../Include \
+	-I $(LOCAL_PATH)/../../Library3rdParty/mosquitto-1.4.15.android/lib
 
 LOCAL_CFLAGS := \
         -DDUMMY_PTHREAD_CANCEL \
