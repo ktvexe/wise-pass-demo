@@ -16,6 +16,10 @@
 #include <math.h>
 #include "wise/wisepaas_base_def.h"
 
+#ifdef DUMMY_PTHREAD_CANCEL
+   #define pthread_cancel(A)
+#endif
+
 static char g_version[32] = {0};
 
 struct mqttmsg
@@ -390,7 +394,11 @@ bool _psk_set(mosq_car_t *pmosq)
 
 bool _connect(mosq_car_t *pmosq)
 {
+#ifdef SYNC_CONNECT
+	bool bAsync = false;
+#else
 	bool bAsync = true;
+#endif
 	int result = MOSQ_ERR_SUCCESS;
 	if(pmosq == NULL)
 		return false;

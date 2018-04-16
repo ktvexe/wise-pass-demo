@@ -17,18 +17,24 @@
 #include "WISEPlatform.h"
 #include "liteparse.h"
 
+#ifdef DUMMY_PTHREAD_CANCEL
+   #define pthread_cancel(A)
+#endif
+
 //Sensor data JSON format, it contain 3 sensor data: data1~3
 #define SENSOR_DATA "{\"opTS\":{\"$date\":%lld},\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"data1\",\"v\":%d},{\"n\":\"data2\",\"v\":%d},{\"n\":\"data3\",\"v\":%d},{\"n\":\"data4\",\"v\":%d},{\"n\":\"data5\",\"v\":%d},{\"n\":\"data6\",\"v\":%d},{\"n\":\"data7\",\"v\":%d},{\"n\":\"data8\",\"v\":%d},{\"n\":\"data9\",\"v\":%d},{\"n\":\"data10\",\"v\":%d},{\"n\":\"data11\",\"v\":%d},{\"n\":\"data12\",\"v\":%d},{\"n\":\"data13\",\"v\":%d},{\"n\":\"data14\",\"v\":%d}]}}}"
 
 /*User can update g_strServerIP, g_iPort, g_strConnID, g_strConnPW and g_strDeviceID to connect to specific broker*/
 char g_strServerIP[64] = "wise-msghub.eastasia.cloudapp.azure.com"; // MQTT broker URL or IP
+//char g_strServerIP[64] = "172.22.12.18"; // MQTT broker URL or IP
 int g_iPort = 1883; // MQTT broker listen port, keep 1883 as default port.
-char g_strConnID[256] = "0e95b665-3748-46ce-80c5-bdd423d7a8a5:631476df-31a5-4b66-a4c6-bd85228b9d27"; //broker connection ID
-char g_strConnPW[64] = "f3a2342t4oejbefc78cgu080ia"; //MQTT broker connection password
-char g_strDeviceID[37] = "00000001-0000-0000-0000-305A3A770020"; //Target device unique ID
-char g_strMac[37] = "305A3A770020"; //Network MAC address
-char g_strHostName[16] = "WISECoreSample"; //the HostName will show on renote server device list as device name, user can customize the host name.
-char g_strProductTag[37] = "device"; // for common server the product tag default is "device", but user can change to their own product, such as "RMM", "SCADA"
+char g_strConnID[256] = "85767a25-16c4-42f4-ace3-4d01a36a2fc1:baa43299-8450-4468-9eb9-5964973eec16"; //broker connection ID
+char g_strConnPW[64] = "d97uv681v090amr29mso37kegu"; //MQTT broker connection password
+char g_strDeviceID[37] = "00000001-0000-0000-0000-f3e14694bc3a"; //Target device unique ID
+char g_strMac[37] = "f3e14694bc3a"; //Network MAC address
+char g_strHostName[] = "WISECoreSample"; //the HostName will show on renote server device list as device name, user can customize the host name.
+//char g_strProductTag[37] = "device"; // for common server the product tag default is "device", but user can change to their own product, such as "RMM", "SCADA"
+char g_strProductTag[37] = "RMM"; // for common server the product tag default is "device", but user can change to their own product, such as "RMM", "SCADA"
 char g_strTLCertSPW[37] = "05155853"; // SSL/TLS provate key or pre-shared-key
 
 bool g_bReportData = true; // Report data flag, true: send sensor data after connected.
