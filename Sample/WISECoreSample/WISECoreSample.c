@@ -17,11 +17,16 @@
 #include "WISEPlatform.h"
 #include "liteparse.h"
 
+#ifdef DUMMY_PTHREAD_CANCEL
+   #define pthread_cancel(A)
+#endif
+
 //Sensor data JSON format, it contain 3 sensor data: data1~3
 #define SENSOR_DATA "{\"opTS\":{\"$date\":%lld},\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"data1\",\"v\":%d},{\"n\":\"data2\",\"v\":%d},{\"n\":\"data3\",\"v\":%d},{\"n\":\"data4\",\"v\":%d},{\"n\":\"data5\",\"v\":%d},{\"n\":\"data6\",\"v\":%d},{\"n\":\"data7\",\"v\":%d},{\"n\":\"data8\",\"v\":%d},{\"n\":\"data9\",\"v\":%d},{\"n\":\"data10\",\"v\":%d},{\"n\":\"data11\",\"v\":%d},{\"n\":\"data12\",\"v\":%d},{\"n\":\"data13\",\"v\":%d},{\"n\":\"data14\",\"v\":%d}]}}}"
 
 /*User can update g_strServerIP, g_iPort, g_strConnID, g_strConnPW and g_strDeviceID to connect to specific broker*/
 char g_strServerIP[64] = "wise-msghub.eastasia.cloudapp.azure.com"; // MQTT broker URL or IP
+//char g_strServerIP[64] = "172.22.12.18"; // MQTT broker URL or IP
 int g_iPort = 1883; // MQTT broker listen port, keep 1883 as default port.
 char g_strConnID[256] = "f1b2f600-fb24-4bee-a655-40a5394894d2:d77e6ba9-a635-4459-837e-2ffa0f3093d2"; //broker connection ID
 char g_strConnPW[64] = "up6pf454k3r4po8m5h4j37f0gl"; //MQTT broker connection password
@@ -819,4 +824,3 @@ EXIT:
 
 	return 0;
 }
-
