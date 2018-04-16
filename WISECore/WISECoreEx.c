@@ -494,7 +494,7 @@ WISECORE_API WiCore_t core_ex_initialize(char* strClientID, char* strHostName, c
 	strncpy(tHandleCtx->strHostName, strHostName, sizeof(tHandleCtx->strHostName));
 	strncpy(tHandleCtx->strMAC, strMAC, sizeof(tHandleCtx->strMAC));
 
-	conn = wc_ex_initialize(strMAC, tHandleCtx);
+	conn = wc_ex_initialize(tHandleCtx->strMAC, tHandleCtx);
 	if(!conn)
 	{
 		free(tHandleCtx);
