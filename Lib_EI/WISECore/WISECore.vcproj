@@ -205,10 +205,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\Include\susiaccess_def.h"
-				>
-			</File>
-			<File
 				RelativePath=".\version.h"
 				>
 			</File>
