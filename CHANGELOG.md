@@ -1,4 +1,39 @@
+# 1.0.10: Maintenance Release
+
+## Feature
+
+## [Added]
+
+* EI-Connect Library
+
+  > Add android platform support.
+
+** [Changed]
+
+* MosquittoCarrierEx
+
+  > Set mosquitto_tls_insecure_set to true to disable server check.
+
+* WISECoreEx
+
+  > Modify core_ex_initialize to pass cached mac string into MQTTConnector
+
+* Platform/util_process
+
+  > Modify GetSysLogonUserName for Ubuntu 16.04
+  > Updat version to 1.0.6
+
+* WISECoreSample 
+  
+  > Modify Get/Set response format.
+
+## Bugs Fixed
+
+* [#None]
+  * [Install Shell]：Add libssl and libxtst into pre-install script.
+
 # 1.0.9: Maintenance Release
+
 ## Feature
 
 ## Bugs Fixed
