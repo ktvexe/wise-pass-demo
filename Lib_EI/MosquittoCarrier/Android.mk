@@ -21,8 +21,7 @@ LOCAL_C_INCLUDES := \
 	-I $(LOCAL_PATH)/../../Library3rdParty/mosquitto-1.4.15.android/lib
 
 LOCAL_CFLAGS := \
-        -DDUMMY_PTHREAD_CANCEL \
-	-DSYNC_CONNECT
+        -DDUMMY_PTHREAD_CANCEL
 
 LOCAL_MODULE:= libMosquittoCarrier
 LOCAL_MODULE_TAGS := debug

@@ -16,17 +16,16 @@
 #include "util_path.h"
 #include "WISEPlatform.h"
 #include "liteparse.h"
-
+#include "svnversion.h"
 #ifdef DUMMY_PTHREAD_CANCEL
    #define pthread_cancel(A)
 #endif
 
 //Sensor data JSON format, it contain 3 sensor data: data1~3
-#define SENSOR_DATA "{\"opTS\":{\"$date\":%lld},\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"data1\",\"v\":%d},{\"n\":\"data2\",\"v\":%d},{\"n\":\"data3\",\"v\":%d},{\"n\":\"data4\",\"v\":%d},{\"n\":\"data5\",\"v\":%d},{\"n\":\"data6\",\"v\":%d},{\"n\":\"data7\",\"v\":%d},{\"n\":\"data8\",\"v\":%d},{\"n\":\"data9\",\"v\":%d},{\"n\":\"data10\",\"v\":%d},{\"n\":\"data11\",\"v\":%d},{\"n\":\"data12\",\"v\":%d},{\"n\":\"data13\",\"v\":%d},{\"n\":\"data14\",\"v\":%d}]}}}"
-
+#define SENSOR_DATA "{\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"data1\",\"v\":%d},{\"n\":\"data2\",\"v\":%d},{\"n\":\"data3\",\"v\":%d},{\"n\":\"data4\",\"v\":%d},{\"n\":\"data5\",\"v\":%d},{\"n\":\"data6\",\"v\":%d},{\"n\":\"data7\",\"v\":%d},{\"n\":\"data8\",\"v\":%d},{\"n\":\"data9\",\"v\":%d},{\"n\":\"data10\",\"v\":%d},{\"n\":\"data11\",\"v\":%d},{\"n\":\"data12\",\"v\":%d},{\"n\":\"data13\",\"v\":%d},{\"n\":\"data14\",\"v\":%d}]}},\"opTS\":{\"$date\":%lld}}"
+#define DEF_OSINFO_JSON "{\"cagentVersion\":\"%s\",\"cagentType\":\"%s\",\"osVersion\":\"%s\",\"biosVersion\":\"%s\",\"platformName\":\"%s\",\"processorName\":\"%s\",\"osArch\":\"%s\",\"totalPhysMemKB\":%d,\"macs\":\"%s\",\"IP\":\"%s\"}"
 /*User can update g_strServerIP, g_iPort, g_strConnID, g_strConnPW and g_strDeviceID to connect to specific broker*/
 char g_strServerIP[64] = "wise-msghub.eastasia.cloudapp.azure.com"; // MQTT broker URL or IP
-//char g_strServerIP[64] = "172.22.12.18"; // MQTT broker URL or IP
 int g_iPort = 1883; // MQTT broker listen port, keep 1883 as default port.
 char g_strConnID[256] = "f1b2f600-fb24-4bee-a655-40a5394894d2:d77e6ba9-a635-4459-837e-2ffa0f3093d2"; //broker connection ID
 char g_strConnPW[64] = "up6pf454k3r4po8m5h4j37f0gl"; //MQTT broker connection password
@@ -145,14 +144,42 @@ void sendCapability(long long curTime)
 	char strBuffer[1024] = {0};
 	char strTopic[256] = {0};
 	char temp[512] = {0};
-	sprintf(temp, SENSOR_DATA, curTime, "MySensor", "SensorGroup", "SensorGroup",
+	sprintf(temp, SENSOR_DATA, "MySensor", "SensorGroup", "SensorGroup",
 		g_iSensor[0], g_iSensor[1], g_iSensor[2], g_iSensor[3], g_iSensor[4],
 		g_iSensor[5], g_iSensor[6], g_iSensor[7], g_iSensor[8], g_iSensor[9],
-		g_iSensor[10], g_iSensor[11], g_iSensor[12], g_iSensor[13]);
+		g_iSensor[10], g_iSensor[11], g_iSensor[12], g_iSensor[13],curTime);
+#ifndef RMM3X
 	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strProductTag, g_strDeviceID);
+#else
+	{
+		char temp1[512] = {0};
+		sprintf(temp1, "\"infoSpec\":%s",temp);
+		strcpy(temp, temp1);
+	}
+	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strDeviceID);
+#endif
 	sprintf(strBuffer, DEF_ACTION_RESPONSE_JSON, g_strDeviceID, 2052, "general", temp, curTime); 
 	core_publish(strTopic, strBuffer, strlen(strBuffer), 0, 0);
 	printf("Capability send:\n [%s],\n %s\n", strTopic, strBuffer);
+}
+
+void sendOSInfo(long long curTime)
+{
+	char strBuffer[1024] = {0};
+	char strTopic[256] = {0};
+	char temp[512] = {0};
+	char temp1[512] = {0};
+
+	sprintf(temp, DEF_OSINFO_JSON, "3.3.20", "IPC", "Windows 7", "V1.13", "ARK-DS520", "intel Atom", "X64", 4096, g_strMac, "127.0.0.1");
+	sprintf(temp1, "\"osInfo\":%s", temp);
+#ifndef RMM3X
+	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strProductTag, g_strDeviceID);
+#else
+	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strDeviceID);
+#endif
+	sprintf(strBuffer, DEF_ACTION_RESPONSE_JSON, g_strDeviceID, 116, "general", temp1, curTime); 
+	core_publish(strTopic, strBuffer, strlen(strBuffer), 0, 0);
+	printf("OSInfo send:\n [%s],\n %s\n", strTopic, strBuffer);
 }
 
 //function to send snesor data in EI-PaaS handshake protocol
@@ -161,10 +188,10 @@ void sendReportData(long long curTime)
 	char strBuffer[1024] = {0};
 	char strTopic[256] = {0};
 	char temp[512] = {0};
-	sprintf(temp, SENSOR_DATA, curTime, "MySensor", "SensorGroup", "SensorGroup",
+	sprintf(temp, SENSOR_DATA, "MySensor", "SensorGroup", "SensorGroup",
 		g_iSensor[0], g_iSensor[1], g_iSensor[2], g_iSensor[3], g_iSensor[4],
 		g_iSensor[5], g_iSensor[6], g_iSensor[7], g_iSensor[8], g_iSensor[9],
-		g_iSensor[10], g_iSensor[11], g_iSensor[12], g_iSensor[13]);
+		g_iSensor[10], g_iSensor[11], g_iSensor[12], g_iSensor[13], curTime);
 	sprintf(strTopic, DEF_AGENTREPORT_TOPIC, g_strDeviceID);
 	sprintf(strBuffer, DEF_AUTOREPORT_JSON, g_strDeviceID, temp, curTime); //device ID
 	core_publish(strTopic, strBuffer, strlen(strBuffer), 0, 0);
@@ -176,7 +203,7 @@ void sendResponse(int cmdID, char* handerlName, char* data, long long curTime)
 {
 	char strBuffer[1024] = {0};
 	char strTopic[256] = {0};
-#ifdef _WISEPAAS_02_DEF_H_
+#ifndef RMM3X
 	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strProductTag, g_strDeviceID);
 #else
 	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strDeviceID);
@@ -196,7 +223,6 @@ void* threadconnect(void* args)
 
 	printf("CB_Connected \n");
 	SubscribeTopic();
-
 	while(g_bConnected)
 	{
 		long long curTime = get_timetick(NULL);
@@ -646,6 +672,7 @@ void on_get_capability(const void *pkt, const long pktlength, const char* devid,
 {
 	/*TODO: send whole capability, no need on common server*/
 	long long curTime = get_timetick(NULL);
+	sendOSInfo(curTime);
 	sendCapability(curTime);
 }
 
@@ -690,7 +717,7 @@ void SubscribeTopic()
 {
 	char topic[256] = {0};
 	
-#ifdef _WISEPAAS_02_DEF_H_
+#ifndef RMM3X
 	sprintf(topic, DEF_CALLBACKREQ_TOPIC, g_strProductTag, g_strDeviceID);
 #else
 	sprintf(topic, DEF_CALLBACKREQ_TOPIC, g_strDeviceID);
@@ -824,3 +851,4 @@ EXIT:
 
 	return 0;
 }
+
