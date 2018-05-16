@@ -232,7 +232,7 @@ bool util_process_as_user_launch(char * cmdLine, bool isAppNameRun, bool isShowW
 		char cmdBuf[256] = {0};
 		//sprintf(cmdBuf,"su - %s -c %s &",logonUserName,cmdLine);
 		//sprintf(cmdBuf,"DISPLAY=:0 su -c %s %s &",cmdLine,logonUserName);
-		sprintf(cmdBuf,"DISPLAY=:0 su -c 'xterm -e /bin/bash -c '%s'' %s &",cmdLine,logonUserName);
+		sprintf(cmdBuf,"DISPLAY=:0 su -c 'xterm -e /bin/bash -c \"%s\"' %s &",cmdLine,logonUserName);
 		if((fp=popen(cmdBuf,"r"))==NULL)
 		{
 			//printf("restart process failed,%s",cmdBuf);
