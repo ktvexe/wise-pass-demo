@@ -1,3 +1,20 @@
+# 1.0.11: Maintenance Release
+
+## Feature
+
+## [Added]
+
+* EI-Connect Library
+
+  > Add RMM3X pre-definitation to build client for WISE-PaaS 1.0 handshake protocol.
+
+** [Changed]
+
+* Platform
+
+  > Fix xterm command in util_process_as_user_launch
+  > Update version to 1.0.7
+
 # 1.0.10: Maintenance Release
 
 ## Feature
