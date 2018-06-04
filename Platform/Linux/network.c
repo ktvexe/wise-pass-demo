@@ -484,7 +484,7 @@ bool network_magic_packet_send(char * mac, int size)
 		struct sockaddr_in addr;
 		int sockfd;
 		int i = 0, j = 0;
-		bool optVal = true;
+		int optVal = 1;
 
 		for(i=0;i<6;i++)  
 		{
@@ -501,7 +501,7 @@ bool network_magic_packet_send(char * mac, int size)
 		sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 		if(sockfd > 0)
 		{
-			int iRet = setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,(char *)&optVal, sizeof(optVal));
+			int iRet = setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,(int *)&optVal, sizeof(optVal));
 			if(iRet == 0)
 			{
 				memset((void*)&addr, 0, sizeof(addr));
