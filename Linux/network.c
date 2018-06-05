@@ -11,6 +11,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <dirent.h> 
+#include <errno.h>
+#include <ifaddrs.h>
+
 
 void network_init(void)
 {
@@ -475,6 +478,95 @@ int network_local_ip_get(int socket, char* clientip, int size)
 	return res;
 }
 
+int send_broadcast_packet(uint32_t addr_num, unsigned char* packet, int packet_len)
+{
+	int iRet;
+	struct sockaddr_in addr;
+	int sockfd;
+	int optVal = 1;
+
+	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+	if(sockfd > 0)
+	{
+		iRet = setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,(char *)&optVal, sizeof(optVal));
+
+		memset((void*)&addr, 0, sizeof(addr));
+		addr.sin_family = AF_INET;
+		addr.sin_port = htons(9);
+		addr.sin_addr.s_addr = addr_num;
+		iRet = sendto(sockfd, packet, packet_len, 0, (struct sockaddr *)&addr, sizeof(addr));
+		if (iRet == -1) {
+			fprintf(stderr, "[PowerOnOff] sendto fail, errno=%d\n", errno);
+		}
+		close(sockfd);
+	}
+
+	return 0;
+}
+
+int send_local_broadcast_WOL(char * mac, int size)
+{
+	unsigned char packet[102];
+	int i = 0, j = 0;
+    struct ifaddrs *ifap, *ifa;
+    struct sockaddr_in *sa;
+    char addr[16];
+	uint32_t loopback, addr_num;
+	void* ptr;
+
+	if(size < 6)
+		return -1;
+
+	// create WOL content
+	for(i=0;i<6;i++) {
+		packet[i] = 0xFF;
+	}
+	for(i=1;i<17;i++) {
+		for(j=0;j<6;j++) {
+			packet[i*6+j] = mac[j];
+		}
+	}
+
+	// get localhost address
+	inet_pton(AF_INET, "127.0.0.1", &loopback);
+
+    getifaddrs (&ifap);
+    for (ifa = ifap; ifa; ifa = ifa->ifa_next) {
+		if (ifa->ifa_addr == NULL)
+			continue;
+
+        if (ifa->ifa_addr->sa_family == AF_INET) {
+            sa = (struct sockaddr_in *) ifa->ifa_addr;
+			ptr = &sa->sin_addr;
+			addr_num = *((unsigned int*)ptr);
+
+			if (loopback != addr_num && // skip loopback address
+				(ifa->ifa_flags & IFF_BROADCAST) != 0) // broadcast interface
+			{
+#if 1 // for debug
+				inet_ntop(AF_INET, &sa->sin_addr, addr, sizeof(addr));
+				printf("Interface: %s\tAddress: %s\n", ifa->ifa_name, addr);
+
+				sa = (struct sockaddr_in *) ifa->ifa_netmask;
+				inet_ntop(AF_INET, &sa->sin_addr, addr, sizeof(addr));
+				printf("Interface: %s\tNetmask: %s\n", ifa->ifa_name, addr);
+#endif
+				sa = (struct sockaddr_in *) ifa->ifa_broadaddr;
+				ptr = &sa->sin_addr;
+				addr_num = *((unsigned int*)ptr);
+				send_broadcast_packet((uint32_t) addr_num, packet, sizeof(packet));
+
+				inet_ntop(AF_INET, &sa->sin_addr, addr, sizeof(addr));
+				printf("Interface: %s\tBroadcast: %s\n", ifa->ifa_name, addr);
+			}
+        }
+    }
+
+    freeifaddrs(ifap);
+
+	return 0;
+}
+
 bool network_magic_packet_send(char * mac, int size)
 {
 	bool bRet = false;
@@ -514,5 +606,8 @@ bool network_magic_packet_send(char * mac, int size)
 			close(sockfd);
 		}
 	}
+
+	bRet = (!send_local_broadcast_WOL(mac, size) & bRet);
+
 	return bRet;
 }
