@@ -9,8 +9,14 @@
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
 #include <stdio.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+
+#include <ws2def.h>
+
 #pragma comment(lib,"ws2_32.lib")
 #pragma comment(lib, "IPHLPAPI.lib")
+
 
 void network_init(void)
 {
@@ -405,6 +411,121 @@ WISEPLATFORM_API int network_local_ip_get(int socket, char* clientip, int size)
 	return res;
 }
 
+WISEPLATFORM_API int send_broadcast_packet(ULONG addr_long, unsigned char* packet, int packet_len)
+{
+	SOCKET sockfd;
+	struct sockaddr_in addr;
+	int optVal = 1;
+	int iRet = -1;
+
+	WSADATA wsaData;
+	WSAStartup(MAKEWORD(2, 2), &wsaData);
+
+	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sockfd > 0)
+	{
+		iRet = setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, (char *)&optVal, sizeof(optVal));
+		memset((void*)&addr, 0, sizeof(addr));
+		addr.sin_family = AF_INET;
+		addr.sin_port = htons(9);
+		addr.sin_addr.s_addr = addr_long;
+		iRet = sendto(sockfd, (const char *)packet, packet_len, 0, (struct sockaddr *)&addr, sizeof(addr));
+		if (iRet == -1) {
+			fprintf(stderr, "sendto fail...errno=%d\n", errno);
+		}
+		else {
+			printf("sendto, iRet=%d\n", iRet);
+		}
+		closesocket(sockfd);
+	}
+	WSACleanup();
+	return iRet;
+}
+
+
+WISEPLATFORM_API int send_local_broadcast_WOL(char* mac, int size)
+{
+
+	PIP_ADAPTER_ADDRESSES pAddresses = NULL;
+	PIP_ADAPTER_ADDRESSES pCurrAddresses = NULL;
+	PIP_ADAPTER_UNICAST_ADDRESS pUnicast = NULL;
+	LPSOCKADDR addr = NULL;
+	ULONG outBufLen = 0;
+	char buff[16];
+	ULONG mask, broadcast, loopback, addr_long;
+	int i, j;
+	unsigned char packet[102];
+	void* ptr;
+
+	// create packet content
+	if (size < 6) {
+		return -1;
+	}
+
+	for (i = 0; i<6; i++) {
+		packet[i] = 0xFF;
+	}
+	for (i = 1; i<17; i++) {
+		for (j = 0; j<6; j++) {
+			packet[i * 6 + j] = mac[j];
+		}
+	}
+
+	// get loopback long address
+	inet_pton(AF_INET, "127.0.0.1", &loopback);
+
+	GetAdaptersAddresses(AF_UNSPEC, 0, NULL, pAddresses, &outBufLen);
+	pAddresses = (IP_ADAPTER_ADDRESSES*)malloc(outBufLen);
+	if (GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_SKIP_ANYCAST, NULL, pAddresses, &outBufLen) != NO_ERROR) {
+		free(pAddresses);
+		return -1;
+	}
+
+	pCurrAddresses = pAddresses;
+	while (pCurrAddresses)
+	{
+		if (pCurrAddresses->OperStatus != IfOperStatusUp) {
+			pCurrAddresses = pCurrAddresses->Next;
+			continue;
+		}
+
+		pUnicast = pCurrAddresses->FirstUnicastAddress;
+		while (pUnicast) {
+			addr = pUnicast->Address.lpSockaddr;
+
+			if (addr->sa_family == AF_INET) {
+				struct sockaddr_in  *sa_in = (struct sockaddr_in *)addr;
+				ptr = &sa_in->sin_addr;
+				addr_long = *((ULONG*)ptr);
+
+				// get ipv4 mask value from prefix number
+				ConvertLengthToIpv4Mask(pUnicast->OnLinkPrefixLength, &mask);
+#if 0
+				// for debug
+				inet_ntop(AF_INET, &(sa_in->sin_addr), buff, sizeof(buff));
+				printf("%s Address: %s / %ld / %ld\n", pCurrAddresses->AdapterName, buff, pUnicast->OnLinkPrefixLength, mask);
+				inet_ntop(AF_INET, &mask, buff, sizeof(buff));
+				printf("mask=%s\n", buff);
+#endif
+				if (addr_long != loopback) {
+					broadcast = ~mask | addr_long;
+					inet_ntop(AF_INET, &broadcast, buff, sizeof(buff));
+					printf("local boradcast=%s\n", buff);
+					send_broadcast_packet(broadcast, packet, sizeof(packet));
+				}
+			}
+			pUnicast = pUnicast->Next;
+		}
+
+		pCurrAddresses = pCurrAddresses->Next;
+	}
+
+	free(pAddresses);
+
+	return 0;
+}
+
+
 WISEPLATFORM_API bool network_magic_packet_send(char * mac, int size)
 {
 	bool bRet = false;
@@ -447,5 +568,8 @@ WISEPLATFORM_API bool network_magic_packet_send(char * mac, int size)
 		}
 		WSACleanup();
 	}
+
+	bRet = (!send_local_broadcast_WOL(mac, size) & bRet);
+
 	return bRet;
 }
