@@ -1,3 +1,20 @@
+# 1.0.12: Maintenance Release
+
+## Feature
+
+## [Added]
+
+* WISECore Sample]
+
+  > Add RMM3X pre-definitation to build client for WISE-PaaS 1.0 handshake protocol.
+
+** [Changed]
+
+* Platform
+
+  > In netowrk, send WOL packet to all interfaces to local broadcast address
+  > Update version to 1.0.8
+
 # 1.0.11: Maintenance Release
 
 ## Feature
