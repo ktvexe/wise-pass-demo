@@ -1,3 +1,14 @@
+# 1.0.13: Maintenance Release
+
+## Feature
+
+** [Changed]
+
+* Platform
+
+  > In wrapper, add strtoll define for DataSync
+  > Update version to 1.0.9
+
 # 1.0.12: Maintenance Release
 
 ## Feature
