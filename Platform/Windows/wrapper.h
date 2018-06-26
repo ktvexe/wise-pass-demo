@@ -30,6 +30,7 @@ extern "C" {
 #define strtok_r strtok_s
 #define strcasecmp _stricmp
 #define warn(format, ...) fprintf(stderr,format,##__VA_ARGS__)
+#define strtoll _strtoi64
 
 #ifdef __cplusplus
 }
