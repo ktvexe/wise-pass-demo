@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include "WISEPlatform.h"  //for strtok_r wrapping
 
 struct topic_entry * topic_first(topic_entry_st* topiclist)
 {
@@ -99,11 +100,12 @@ struct topic_entry * topic_find(topic_entry_st* topiclist, char const * topicnam
 			{
 				char *delim = "+";
 				char *p = NULL;
+				char *token = NULL;
 				char tName[128] = {0};
 				bool match = true;
 				char* ss = (char *)topicname;
 				strcpy(tName, topic->name);
-				p = strtok(tName, delim);
+				p = strtok_r(tName, delim, &token);
 				while(p)
 				{
 					ss = strstr(ss, p);
@@ -114,7 +116,7 @@ struct topic_entry * topic_find(topic_entry_st* topiclist, char const * topicnam
 						match = false;
 						break;
 					}
-					p=strtok(NULL,delim);
+					p=strtok_r(NULL, delim, &token);
 				}
 				if(match)
 					target = topic;
