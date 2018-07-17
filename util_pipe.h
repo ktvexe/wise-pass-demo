@@ -3,6 +3,10 @@
 #include <stdbool.h>
 #include "export.h"
 
+#ifndef HANDLE
+typedef int HANDLE;
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
