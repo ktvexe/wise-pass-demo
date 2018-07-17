@@ -1,26 +1,18 @@
-# libMQTTConnector
-LOCAL_PATH:= $(call my-dir)
+LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_SRC_FILES:= \
-        MQTTConnectorEx.c \
-		MQTTConnector.c
+# My macros define 
+MY_C_FILE_LIST	:= $(wildcard $(LOCAL_PATH)/*.c)
 
-LOCAL_SHARED_LIBRARIES := \
-        liblog \
-        libcutils \
-		libMosquittoCarrier
+# Module
+LOCAL_MODULE 	:= MQTTConnector 
+LOCAL_CFLAGS 	:= -fPIC
+LOCAL_C_INCLUDES:= $(LOCAL_PATH)/../../Include
+LOCAL_SRC_FILES	:= $(MY_C_FILE_LIST:$(LOCAL_PATH)/%=%)
+LOCAL_STATIC_LIBRARIES := Platform MosquittoCarrier 
+#LOCAL_SHARED_LIBRARIES := mosquitto 
 
-LOCAL_C_INCLUDES := \
-        -I $(LOCAL_PATH)/../../Lib_EI/MosquittoCarrier \
-        -I $(LOCAL_PATH)/../../Platform/Linux/ \
-		-I $(LOCAL_PATH)/../../Include \
-		-I external/mosquitto/lib
-
-LOCAL_MODULE:= libMQTTConnector
-LOCAL_MODULE_TAGS := debug
-
-include $(BUILD_SHARED_LIBRARY)
-
-
+# Export and Build 
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH) 
+include $(BUILD_STATIC_LIBRARY)

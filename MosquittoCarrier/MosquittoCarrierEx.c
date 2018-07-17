@@ -201,6 +201,13 @@ void MQTT_publish_callback(struct mosquitto *mosq, void *obj, int mid)
 
 #pragma endregion MQTT MESSAGE QUEUE
 
+#ifdef ANDROID
+typedef pthread_t sp_pthread_t;
+static int pthread_cancel(sp_pthread_t thread) {
+        return (kill(thread, SIGTERM));
+}
+#endif
+
 void* thread_reconnect(void* args)
 {
 	struct mosquitto *mosq = NULL;
