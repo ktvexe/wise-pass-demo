@@ -12,8 +12,9 @@
 #include <unistd.h>
 #include <dirent.h> 
 #include <errno.h>
+#ifndef ANDROID
 #include <ifaddrs.h>
-
+#endif
 
 void network_init(void)
 {
@@ -477,7 +478,7 @@ int network_local_ip_get(int socket, char* clientip, int size)
 	}
 	return res;
 }
-
+#ifndef ANDROID
 int send_broadcast_packet(uint32_t addr_num, unsigned char* packet, int packet_len)
 {
 	int iRet;
@@ -566,6 +567,7 @@ int send_local_broadcast_WOL(char * mac, int size)
 
 	return 0;
 }
+#endif
 
 bool network_magic_packet_send(char * mac, int size)
 {
@@ -606,8 +608,8 @@ bool network_magic_packet_send(char * mac, int size)
 			close(sockfd);
 		}
 	}
-
+#ifndef ANDROID
 	bRet = (!send_local_broadcast_WOL(mac, size) & bRet);
-
+#endif
 	return bRet;
 }

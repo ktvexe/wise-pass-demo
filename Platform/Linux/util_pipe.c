@@ -1,4 +1,6 @@
 #include "util_pipe.h"
+#include <unistd.h>
+#include <fcntl.h>
 
 bool util_pipe_create(HANDLE * hReadPipe, HANDLE * hWritePipe)
 {
@@ -34,10 +36,10 @@ bool util_pipe_close(HANDLE handle)
 bool util_pipe_read(HANDLE handle, char * buf, unsigned int nSizeToRead, unsigned int * nSizeRead)
 {
 	bool bRet = false;
-	if(fHandle == NULL || buf == NULL || nSizeRead == NULL) return bRet;
+	if(handle == NULL || buf == NULL || nSizeRead == NULL) return bRet;
 	{
 		ssize_t tmpReadRet = 0;
-		tmpReadRet = read(fHandle, buf, nSizeToRead);
+		tmpReadRet = read(handle, buf, nSizeToRead);
 		if(tmpReadRet != -1)
 		{
 			if(tmpReadRet>0)
@@ -53,10 +55,10 @@ bool util_pipe_read(HANDLE handle, char * buf, unsigned int nSizeToRead, unsigne
 bool util_pipe_write(HANDLE handle, char * buf, unsigned int nSizeToWrite, unsigned int * nSizeWrite)
 {
 	bool bRet = false;
-	if(fHandle == NULL || buf == NULL || nSizeWrite == NULL) return bRet;
+	if(handle == NULL || buf == NULL || nSizeWrite == NULL) return bRet;
 	{
 		ssize_t tmpWriteRet = 0;
-		tmpWriteRet = write(fHandle, buf, nSizeToWrite);
+		tmpWriteRet = write(handle, buf, nSizeToWrite);
 		if(tmpWriteRet != -1)
 		{
 			if(tmpWriteRet>0)
@@ -98,7 +100,11 @@ bool util_pipe_duplicate(HANDLE srcHandle, HANDLE * trgHandle)
 		dup2(hChildStdIn, STDIN_FILENO);
 		dup2(hChildStdOut, STDOUT_FILENO);
 		dup2(hChildStdErr, STDERR_FILENO);
+#ifdef ANDROID
+		execlp("/system/bin/sh", "sh", NULL);
+#else
 		execlp("/bin/sh", "sh", NULL);
+#endif
 	}
 	else if(pid > 0)
 	{

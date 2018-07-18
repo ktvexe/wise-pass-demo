@@ -58,10 +58,14 @@ bool util_os_get_os_name(char * pOSNameBuf, unsigned long * bufLen)
 	char osname[128] = {0};
 	char *p, *q;
 	//if(osVersionBuf == NULL) return false;
+#ifndef ANDROID
 	fp = popen("lsb_release -d", "r");
 	if(!fp) return false;
 	fgets(osname, 128, fp);
 	pclose(fp);
+#else
+	sprintf(osname, "Android");
+#endif
 	p = strtok(osname, ":");
 	if(!p) return false;
 	p = strtok(NULL, ":");

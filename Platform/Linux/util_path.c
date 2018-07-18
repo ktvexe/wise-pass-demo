@@ -104,6 +104,12 @@ bool util_create_directory(char* path)
 
 unsigned long util_temp_path_get(char* lpBuffer, int nBufferLength)
 {
+#ifdef ANDROID
+	int len = 0;
+	len = strlen("/cache/");
+   	strncpy(lpBuffer, "/cache/", strlen("/cache/")+1);	
+	return len;
+#else
 	int len = 0;
 	char const *folder = getenv("TMPDIR");
 	if (folder == 0)
@@ -123,6 +129,7 @@ unsigned long util_temp_path_get(char* lpBuffer, int nBufferLength)
 			strncpy(lpBuffer, folder, len+1);
 	}
 	return len;
+#endif
 }
 
 bool util_is_file_exist(char const *filepath)

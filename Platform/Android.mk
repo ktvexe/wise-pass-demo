@@ -1,32 +1,24 @@
-# libWISEUtil
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_SRC_FILES:= \
-        basequeue.c \
-        Linux/util_path.c \
-        Linux/util_string.c \
-        Linux/util_libloader.c \
-        Linux/NamedPipeClient.c \
-        Linux/NamedPipeServer.c \
-        Linux/network.c \
-        Linux/util_os.c \
-        Linux/util_process.c \
-        Linux/service.c \
-        Linux/util_power.c
+# My macros define 
+MY_C_FILE_LIST	:= $(wildcard $(LOCAL_PATH)/*.c)
+MY_C_FILE_LIST	+= $(wildcard $(LOCAL_PATH)/Linux/*.c)
+#MY_EXCLUDE_LIST := Linux/common.c Linux/platform.c
 
-LOCAL_SHARED_LIBRARIES := \
-        liblog \
-        libcutils
+# Module
+LOCAL_MODULE 	:= Platform 
+LOCAL_C_INCLUDES:= $(LOCAL_PATH)/../Include 
+LOCAL_C_INCLUDES+= $(LOCAL_PATH)/../Library/Log
+LOCAL_CFLAGS 	:= -fPIC
+#LOCAL_SRC_FILES	:= $(filter-out $(MY_EXCLUDE_LIST), $(MY_C_FILE_LIST:$(LOCAL_PATH)/%=%))
+LOCAL_SRC_FILES	:= $(MY_C_FILE_LIST:$(LOCAL_PATH)/%=%)
 
-LOCAL_C_INCLUDES := \
-        -I $(LOCAL_PATH)/. \
-        -I $(LOCAL_PATH)/Linux
+# Export and Build 
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH) 
+LOCAL_EXPORT_C_INCLUDES += $(LOCAL_PATH)/Linux 
+include $(BUILD_STATIC_LIBRARY)
 
-LOCAL_MODULE:= libWISEUtil
-LOCAL_MODULE_TAGS := debug
-
-include $(BUILD_SHARED_LIBRARY)
-
-
+# Debug 
+#$(warning $(LOCAL_EXPORT_C_INCLUDES))

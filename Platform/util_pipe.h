@@ -3,6 +3,12 @@
 #include <stdbool.h>
 #include "export.h"
 
+#ifdef ANDROID
+	#ifndef HANDLE
+	typedef int HANDLE;
+	#endif
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
