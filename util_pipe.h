@@ -3,8 +3,10 @@
 #include <stdbool.h>
 #include "export.h"
 
-#ifndef HANDLE
-typedef int HANDLE;
+#ifdef ANDROID
+	#ifndef HANDLE
+	typedef int HANDLE;
+	#endif
 #endif
 
 #ifdef __cplusplus
