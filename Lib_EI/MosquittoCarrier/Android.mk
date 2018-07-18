@@ -1,31 +1,18 @@
-# libMosquittoCarrier
-LOCAL_PATH:= $(call my-dir)
+LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_SRC_FILES:= \
-        MosquittoCarrierEx.c \
-		MosquittoCarrier.c \
-		topic.c
+# My macros define 
+MY_C_FILE_LIST	:= $(wildcard $(LOCAL_PATH)/*.c)
 
-LOCAL_SHARED_LIBRARIES := \
-        liblog \
-        libcutils \
-	libWISEUtil \
-	libmosquitto
+# Module
+LOCAL_MODULE 	:= MosquittoCarrier 
+LOCAL_CFLAGS 	:= -fPIC
+LOCAL_C_INCLUDES:= $(LOCAL_PATH)/../../Include
+LOCAL_SRC_FILES	:= $(MY_C_FILE_LIST:$(LOCAL_PATH)/%=%)
+LOCAL_STATIC_LIBRARIES := Platform mosquitto
+#LOCAL_SHARED_LIBRARIES := mosquitto 
 
-LOCAL_C_INCLUDES := \
-        -I $(LOCAL_PATH)/../../Platform \
-        -I $(LOCAL_PATH)/../../Platform/Linux/ \
-	-I $(LOCAL_PATH)/../../Include \
-	-I $(LOCAL_PATH)/../../Library3rdParty/mosquitto-1.4.15.android/lib
-
-LOCAL_CFLAGS := \
-        -DDUMMY_PTHREAD_CANCEL
-
-LOCAL_MODULE:= libMosquittoCarrier
-LOCAL_MODULE_TAGS := debug
-
-include $(BUILD_SHARED_LIBRARY)
-
-
+# Export and Build 
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH) 
+include $(BUILD_STATIC_LIBRARY)
