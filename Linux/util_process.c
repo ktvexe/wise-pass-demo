@@ -213,6 +213,10 @@ bool GetSysLogonUserName(char * userNameBuf, unsigned int bufLen)
 	FILE * fp = NULL;
 	char cmdline[128];
 	char cmdbuf[12][32]={{0}};
+	
+	bool bRet = GetSysLogonUserName2(userNameBuf, bufLen);
+	if(bRet)
+		return bRet;
 
 	if (userNameBuf == NULL || bufLen == 0) return false;
 #ifdef ANDROID
@@ -236,11 +240,8 @@ bool GetSysLogonUserName(char * userNameBuf, unsigned int bufLen)
 	if(i>0 && i< bufLen)
 		strcpy(userNameBuf, cmdbuf[0]);
 	else 
-#ifdef ANDROID
 		return false;
-#else
-		return GetSysLogonUserName2(userNameBuf, bufLen);
-#endif
+
 	return true;
 }
 
