@@ -255,7 +255,13 @@ bool util_process_as_user_launch(char * cmdLine, bool isAppNameRun, bool isShowW
 		char cmdBuf[256] = {0};
 		//sprintf(cmdBuf,"su - %s -c %s &",logonUserName,cmdLine);
 		//sprintf(cmdBuf,"DISPLAY=:0 su -c %s %s &",cmdLine,logonUserName);
+#ifdef ANDROID
+		printf("util_process_as_user_launch ->\n");
+		printf("cmdline=%s, username=%s\n", cmdLine,logonUserName);
+		sprintf(cmdBuf,"%s &",cmdLine);
+#else
 		sprintf(cmdBuf,"DISPLAY=:0 su -c 'xterm -e /bin/bash -c \"%s\"' %s &",cmdLine,logonUserName);
+#endif
 		if((fp=popen(cmdBuf,"r"))==NULL)
 		{
 			//printf("restart process failed,%s",cmdBuf);
@@ -391,7 +397,11 @@ bool util_process_get_logon_users(char * logonUserList, int *logonUserCnt ,int m
 	}
     pclose(fp);
 	memset(cmdline, 0, sizeof(cmdline));
+#ifdef ANDROID
+  	sprintf(cmdline,"whoami");
+#else
 	sprintf(cmdline,"last|grep still");
+#endif
 	fp = popen(cmdline,"r");
 	if(NULL != fp){
 	    char buf[512] = {0};
