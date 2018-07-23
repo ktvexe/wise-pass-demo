@@ -32,6 +32,7 @@
 #define DEF_OSVERSION_LEN			64
 #define DEF_MAX_PATH				260
 #define DEF_MAX_CIPHER				4095
+#define MAX_SESSION_LEN				33
 
 typedef enum{
 	tls_type_unknown = -1,
