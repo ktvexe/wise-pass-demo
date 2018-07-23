@@ -184,9 +184,6 @@ bool GetSysLogonUserName2(char * userNameBuf, unsigned int bufLen)
 	if (userNameBuf == NULL || bufLen == 0) return false;
 #ifdef ANDROID
     sprintf(cmdline,"whoami");
-#else
-    sprintf(cmdline,"last|grep \"no logout\"");//for opensusi kde desktop
-#endif
 	fp = popen(cmdline,"r");
 	if(NULL != fp)
 	{
@@ -195,9 +192,24 @@ bool GetSysLogonUserName2(char * userNameBuf, unsigned int bufLen)
     		{
         		sscanf(buf,"%31s",cmdbuf[0]);
 		}
+		pclose(fp);
 	}
-	
-    	pclose(fp);
+#else
+    sprintf(cmdline,"last");//for opensusi kde desktop
+	fp = popen(cmdline,"r");
+	if(NULL != fp)
+	{
+		char buf[512]={0};
+		while (fgets(buf, sizeof(buf), fp) != NULL) {
+			if(strstr(buf, "no logout") == 0)
+				if(strstr(buf, "still") == 0)
+					continue;
+        	sscanf(buf,"%31s",cmdbuf[0]);
+			break;
+    	}
+		pclose(fp);
+	}
+#endif  	
 
 	i = strlen(cmdbuf[0]);
 	if(i>0 && i< bufLen)
