@@ -11,7 +11,11 @@ bool util_power_off()
 	fpid = fork();
     if(fpid == 0)
 	{
+#ifdef ANDROID
+                if(execlp("/system/bin/reboot", "reboot", "-p", NULL) < 0)
+#else
 		if(execlp("/sbin/poweroff", "poweroff",  NULL) < 0)
+#endif
 		{
 			bRet = false;
 		}
@@ -31,7 +35,11 @@ bool util_power_restart()
 	fpid = fork();
 	if(fpid == 0)
 	{
+#ifdef ANDROID
+                if(execlp("/system/bin/reboot", "reboot",  NULL) < 0)
+#else
 		if(execlp("/sbin/reboot", "reboot",  NULL) < 0)
+#endif
 		{
 			bRet = false;
 		}
@@ -93,7 +101,11 @@ bool util_power_suspend_check()
 	bool bRet1 = false;
 	bool bRet2 = false;
 	FILE *fp = NULL;
+#ifdef ANDROID
+        fp = popen("/system/bin/cat  /sys/power/state ", "r");
+#else
 	fp = popen("/bin/cat  /sys/power/state ", "r");
+#endif
 	if(fp)
 	{
 		char tmpLineStr[512] = {0};
@@ -132,7 +144,11 @@ bool util_power_hibernate_check()
 	bool bRet2 = false;
 	bool bRet3 = false;
 	FILE *fp = NULL;
+#ifdef ANDROID
+        fp = popen("/system/bin/cat  /sys/power/state ", "r");
+#else
 	fp = popen("/bin/cat /sys/power/state ", "r");
+#endif
 	if(fp)
 	{
 		char tmpLineStr[512] = {0};
@@ -147,7 +163,7 @@ bool util_power_hibernate_check()
 		}
 		pclose(fp);
 	}	
-
+#ifndef ANDROID
 	fp = popen("fdisk -l | grep swap ", "r");
 	if(fp)
 	{
@@ -163,6 +179,7 @@ bool util_power_hibernate_check()
 		}
 		pclose(fp);
 	}
+#endif
 	fp = popen("if [ -f \"/usr/sbin/pm-hibernate\" ]; then echo yes; else echo no; fi", "r");
 	if(fp)
 	{

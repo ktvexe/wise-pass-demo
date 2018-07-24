@@ -73,7 +73,11 @@ bool util_process_launch(char * appPath)
 	bool bRet = true;
     	pid_t pid = fork();
 	if ( 0 == pid ) {/* Child process */
+#ifdef ANDROID	
+		exit(execlp("/system/bin/sh", "sh", "-c", appPath, NULL));
+#else
 		exit(execlp("/bin/sh", "sh", "-c", appPath, NULL));
+#endif
 	} else if (pid < 0){ /* fork() failed */
         	bRet = false;    
 	}
@@ -86,7 +90,11 @@ HANDLE util_process_cmd_launch(char * cmdline)
 	pid_t pid = fork();
 	if (0 == pid) /* Child process */
 	{
+#ifdef ANDROID
+		execlp("/system/bin/sh", "sh", "-c", cmdline, NULL);
+#else
 		execlp("/bin/sh", "sh", "-c", cmdline, NULL);
+#endif
 	}
 	if (-1 == pid)
 		return pid;//Means failed -- like 'FALSE'
@@ -104,7 +112,11 @@ HANDLE util_process_cmd_launch_no_wait(char * cmdline)
 	pid_t pid = fork();
 	if (0 == pid) /* Child process */
 	{
+#ifdef ANDROID
+		execlp("/system/bin/sh", "sh", "-c", cmdline, NULL);
+#else
 		execlp("/bin/sh", "sh", "-c", cmdline, NULL);
+#endif
 	}
 	return pid;
 }
@@ -170,8 +182,60 @@ bool GetSysLogonUserName2(char * userNameBuf, unsigned int bufLen)
 	char cmdbuf[12][32]={{0}};
 
 	if (userNameBuf == NULL || bufLen == 0) return false;
+#ifdef ANDROID
+    sprintf(cmdline,"whoami");
+	fp = popen(cmdline,"r");
+	if(NULL != fp)
+	{
+		char buf[512]={0};
+		if (fgets(buf, sizeof(buf), fp))
+    		{
+        		sscanf(buf,"%31s",cmdbuf[0]);
+		}
+		pclose(fp);
+	}
+#else
+    sprintf(cmdline,"last");//for opensusi kde desktop
+	fp = popen(cmdline,"r");
+	if(NULL != fp)
+	{
+		char buf[512]={0};
+		while (fgets(buf, sizeof(buf), fp) != NULL) {
+			if(strstr(buf, "no logout") == 0)
+				if(strstr(buf, "still") == 0)
+					continue;
+        	sscanf(buf,"%31s",cmdbuf[0]);
+			break;
+    	}
+		pclose(fp);
+	}
+#endif  	
 
-	sprintf(cmdline,"last|grep \"no logout\"");//for opensusi kde desktop
+	i = strlen(cmdbuf[0]);
+	if(i>0 && i< bufLen)
+		strcpy(userNameBuf, cmdbuf[0]);
+	else 
+		return false;
+	return true;
+}
+
+bool GetSysLogonUserName(char * userNameBuf, unsigned int bufLen)
+{
+	int i = 0;
+	FILE * fp = NULL;
+	char cmdline[128];
+	char cmdbuf[12][32]={{0}};
+	
+	bool bRet = GetSysLogonUserName2(userNameBuf, bufLen);
+	if(bRet)
+		return bRet;
+
+	if (userNameBuf == NULL || bufLen == 0) return false;
+#ifdef ANDROID
+        sprintf(cmdline,"whoami");
+#else
+	sprintf(cmdline,"last|grep still");//for opensusi kde desktop
+#endif
 	fp = popen(cmdline,"r");
 	if(NULL != fp)
 	{
@@ -189,36 +253,7 @@ bool GetSysLogonUserName2(char * userNameBuf, unsigned int bufLen)
 		strcpy(userNameBuf, cmdbuf[0]);
 	else 
 		return false;
-	return true;
-}
 
-bool GetSysLogonUserName(char * userNameBuf, unsigned int bufLen)
-{
-	int i = 0;
-	FILE * fp = NULL;
-	char cmdline[128];
-	char cmdbuf[12][32]={{0}};
-
-	if (userNameBuf == NULL || bufLen == 0) return false;
-
-	sprintf(cmdline,"last|grep still");//for opensusi kde desktop
-	fp = popen(cmdline,"r");
-	if(NULL != fp)
-	{
-		char buf[512]={0};
-		if (fgets(buf, sizeof(buf), fp))
-    		{
-        		sscanf(buf,"%31s",cmdbuf[0]);
-		}
-	}
-	
-    	pclose(fp);
-
-	i = strlen(cmdbuf[0]);
-	if(i>0 && i< bufLen)
-		strcpy(userNameBuf, cmdbuf[0]);
-	else 
-		return GetSysLogonUserName2(userNameBuf, bufLen);
 	return true;
 }
 
@@ -232,7 +267,13 @@ bool util_process_as_user_launch(char * cmdLine, bool isAppNameRun, bool isShowW
 		char cmdBuf[256] = {0};
 		//sprintf(cmdBuf,"su - %s -c %s &",logonUserName,cmdLine);
 		//sprintf(cmdBuf,"DISPLAY=:0 su -c %s %s &",cmdLine,logonUserName);
+#ifdef ANDROID
+		printf("util_process_as_user_launch ->\n");
+		printf("cmdline=%s, username=%s\n", cmdLine,logonUserName);
+		sprintf(cmdBuf,"%s &",cmdLine);
+#else
 		sprintf(cmdBuf,"DISPLAY=:0 su -c 'xterm -e /bin/bash -c \"%s\"' %s &",cmdLine,logonUserName);
+#endif
 		if((fp=popen(cmdBuf,"r"))==NULL)
 		{
 			//printf("restart process failed,%s",cmdBuf);
@@ -308,8 +349,11 @@ bool util_process_check(char * processName)
 	{
 		FILE *fd = NULL;
 		char buf[BUFSIZ];
-
+#ifdef ANDROID
+		sprintf(buf, "ps | grep %s | grep -v grep", processName);
+#else
 		sprintf(buf, "ps -ely | grep %s | grep -v grep", processName);
+#endif
 		fd = popen(buf, "r");
 		while (fgets(buf, sizeof(buf), fd))
 		{
@@ -330,7 +374,11 @@ bool util_process_get_logon_users(char * logonUserList, int *logonUserCnt ,int m
 	char cmdline[128];
 	if (logonUserList == NULL || logonUserCnt == NULL) return false;
 	*logonUserCnt = 0;
+#ifdef ANDROID
+	sprintf(cmdline,"whoami");
+#else
 	sprintf(cmdline,"last|grep \"no logout\"");
+#endif
 	fp = popen(cmdline,"r");
 	if(NULL != fp){
 	    char buf[512] = {0};
@@ -361,7 +409,11 @@ bool util_process_get_logon_users(char * logonUserList, int *logonUserCnt ,int m
 	}
     pclose(fp);
 	memset(cmdline, 0, sizeof(cmdline));
+#ifdef ANDROID
+  	sprintf(cmdline,"whoami");
+#else
 	sprintf(cmdline,"last|grep still");
+#endif
 	fp = popen(cmdline,"r");
 	if(NULL != fp){
 	    char buf[512] = {0};
