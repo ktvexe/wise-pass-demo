@@ -1,3 +1,19 @@
+# 1.0.14: Maintenance Release
+
+## Feature
+
+** [Changed]
+
+* EI-Connect Library
+
+  > Replace strtok with strtok_r for thread safe.
+  > Add MAX_SESSION_LEN define to avoid sessionID overflow
+
+* Platform
+
+  > Modify GetSysLogonUserName to support Ubuntu 16.04
+  > Update version to 1.0.10
+
 # 1.0.13: Maintenance Release
 
 ## Feature
