@@ -112,7 +112,7 @@ bool util_os_get_architecture(char * pArchBuf, int * bufLen)
 	if(pArchBuf)
 		strcpy(pArchBuf, p);
 	if(bufLen)
-		*bufLen = strlen(p);
+		*bufLen = strlen(p)+1;
 	return true;
 }
 
