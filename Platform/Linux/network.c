@@ -386,6 +386,8 @@ int getMAC(char *name, char * macstr, bool filter) {
 	
 	
 	iRet = 0;
+	free(line);
+
 	return iRet;
 }
 int network_mac_list_get_ex2(char macsStr[][20], int n);
