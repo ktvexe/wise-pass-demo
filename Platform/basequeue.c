@@ -8,7 +8,7 @@ WISEPLATFORM_API bool queue_init(struct queue *const q, const unsigned int slots
     if (!q || slots < 1U)
         return false;
 
-    q->obj_queue = (void**)malloc(datasize * (size_t)(slots + 1));
+    q->obj_queue = (void**)malloc( sizeof(void*) * (size_t)(slots + 1));
     if (!q->obj_queue)
         return false;
 
