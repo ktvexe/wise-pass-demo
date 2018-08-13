@@ -1,3 +1,16 @@
+# 1.0.15: Maintenance Release
+
+## Feature
+
+** [Changed]
+
+* Platform
+
+  > Fix memory-leak in network.c
+  > Fix overwrite in util_os.c
+  > Fix malloc size in basequeue
+  > Update version to 1.0.11
+
 # 1.0.14: Maintenance Release
 
 ## Feature
