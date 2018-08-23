@@ -4,6 +4,17 @@
 
 ** [Changed]
 
+* 3rd Party library
+
+  > 1. Update OpenSSL WIN32 to V1.0.2o
+  > 2. Update Mosquitto WIN21 to V1.4.15
+
+# 1.0.15: Maintenance Release
+
+## Feature
+
+** [Changed]
+
 * Platform
 
   > Fix memory-leak in network.c
