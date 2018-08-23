@@ -9,6 +9,10 @@
   > 1. Update OpenSSL WIN32 to V1.0.2o
   > 2. Update Mosquitto WIN21 to V1.4.15
 
+* [WISECoreSample]
+
+  > Fix OSInfo message format.
+
 # 1.0.15: Maintenance Release
 
 ## Feature

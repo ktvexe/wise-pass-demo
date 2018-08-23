@@ -171,7 +171,7 @@ void sendOSInfo(long long curTime)
 	char temp1[512] = {0};
 
 	sprintf(temp, DEF_OSINFO_JSON, "3.3.20", "IPC", "Windows 7", "V1.13", "ARK-DS520", "intel Atom", "X64", 4096, g_strMac, "127.0.0.1");
-	sprintf(temp1, "\"osInfo\":%s", temp);
+	sprintf(temp1, "{\"osInfo\":%s}", temp);
 #ifndef RMM3X
 	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strProductTag, g_strDeviceID);
 #else
