@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)Include&quot;;&quot;$(SolutionDir)Platform&quot;;&quot;$(SolutionDir)Platform\Windows&quot;;&quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)Include&quot;;&quot;$(SolutionDir)Platform&quot;;&quot;$(SolutionDir)Platform\Windows&quot;;&quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.15.win32\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,7 +63,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="mosquitto.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.15.win32\lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -88,7 +88,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy &quot;$(SolutionDir)Library3rdParty\openssl-1.0.1h.win32\bin\*.dll&quot; &quot;$(TargetDir)&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\bin\*.dll&quot; &quot;$(TargetDir)&quot;&#x0D;&#x0A;"
+				CommandLine="copy &quot;$(SolutionDir)Library3rdParty\openssl-1.0.2o.win32\bin\*.dll&quot; &quot;$(TargetDir)&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.15.win32\bin\*.dll&quot; &quot;$(TargetDir)&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -118,7 +118,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)Include&quot;;&quot;$(SolutionDir)Platform&quot;;&quot;$(SolutionDir)Platform\Windows&quot;;&quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)Include&quot;;&quot;$(SolutionDir)Platform&quot;;&quot;$(SolutionDir)Platform\Windows&quot;;&quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.15.win32\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -139,7 +139,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="mosquitto.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.10.win32\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)Library3rdParty\mosquitto-1.4.15.win32\lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
