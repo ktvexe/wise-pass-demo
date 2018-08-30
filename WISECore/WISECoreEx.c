@@ -1015,12 +1015,13 @@ WISECORE_API bool core_ex_device_register(WiCore_t core)
 #else
 	sprintf(tHandleCtx->strTopicBuff, DEF_CALLBACKREQ_TOPIC, tHandleCtx->strClientID);
 #endif
-	wc_ex_subscribe(tHandleCtx->conn, tHandleCtx->strTopicBuff, 0);
-
+	if(!wc_ex_subscribe(tHandleCtx->conn, tHandleCtx->strTopicBuff, 0))
+		return false;
 	//sprintf(tHandleCtx->strTopicBuff, DEF_ACTIONACK_TOPIC, tHandleCtx->strClientID);
 	//wc_ex_subscribe(tHandleCtx->conn, tHandleCtx->strTopicBuff, 0);
 
-	wc_ex_subscribe(tHandleCtx->conn, DEF_AGENTCONTROL_TOPIC, 0);
+	if(!wc_ex_subscribe(tHandleCtx->conn, DEF_AGENTCONTROL_TOPIC, 0))
+		return false;
 
 	return _ex_send_agent_connect(tHandleCtx);
 }
