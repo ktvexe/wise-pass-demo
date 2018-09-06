@@ -122,6 +122,26 @@ struct topic_entry * topic_find(topic_entry_st* topiclist, char const * topicnam
 					target = topic;
 			}
 		}
+		else if(strchr(topic->name, '#')>0)
+		{
+			char subtopic[128] = {0};
+			char* p = topic->name;
+			char* index = strchr(topic->name, '#');
+			if(index-p > 0)
+			{
+				strncpy(subtopic, topic->name, index-p);
+				if(strstr(topicname, subtopic) == topicname)
+				{
+					target = topic;
+					break;
+				}
+			}
+			else
+			{
+				target = topic;
+				break;
+			}
+		}
 		else
 		{
 			if(strcmp(topic->name, topicname) == 0)

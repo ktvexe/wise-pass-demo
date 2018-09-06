@@ -1,3 +1,12 @@
+# 1.0.17: Maintenance Release
+
+### Feature
+
+### Enhancements
+
+* **MosquittoCarrier**: *Better support* - Subscribe topic add "#" support.
+* **WISECore**: *Better support* - Use device id as MQTT Client ID to support Azure IoTHub.
+
 # 1.0.16: Maintenance Release
 
 ## Feature
