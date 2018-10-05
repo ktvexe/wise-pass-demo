@@ -528,11 +528,26 @@ WISE_CARRIER_API const char * WiCarEx_MQTT_LibraryTag()
 	return g_version;
 }
 
-WISE_CARRIER_API WiCar_t WiCarEx_MQTT_Init(char *soln, WICAR_CONNECT_CB on_connect, WICAR_DISCONNECT_CB on_disconnect, void *userdata)
+WISE_CARRIER_API WiCar_t WiCarEx_MQTT_Init(WICAR_CONNECT_CB on_connect, WICAR_DISCONNECT_CB on_disconnect, void *userdata)
 {
 	mosq_car_t* pmosq = calloc(1, sizeof(mosq_car_t));
 	
 	if(pmosq == NULL)
+		return NULL;
+	ET_AssignSolution("");
+	pmosq->on_connect_cb = on_connect;
+	pmosq->on_disconnect_cb = on_disconnect;
+	pmosq->pUserData = userdata;
+	pmosq->iKeepalive = 10; //default 10 sec.
+	pmosq->iErrorCode = mc_err_success;
+	return (WiCar_t)pmosq;
+}
+
+WISE_CARRIER_API WiCar_t WiCarEx_MQTT_Init_soln(char *soln, WICAR_CONNECT_CB on_connect, WICAR_DISCONNECT_CB on_disconnect, void *userdata)
+{
+	mosq_car_t* pmosq = calloc(1, sizeof(mosq_car_t));
+
+	if (pmosq == NULL)
 		return NULL;
 	ET_AssignSolution(soln);
 	pmosq->on_connect_cb = on_connect;

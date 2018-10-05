@@ -67,17 +67,39 @@ void wc_ex_message_callback(const char* topic, const void* payload, const int pa
 }
 
 
-WISE_CONNECTOR_API WiConn_t wc_ex_initialize(char *soln, char const * devid, void* userdata)
+WISE_CONNECTOR_API WiConn_t wc_ex_initialize(char const * devid, void* userdata)
 {	
 	mosq_conn_t* pmosq = calloc(1, sizeof(mosq_conn_t));
 
-	WiCar_t *mosq = WiCarEx_MQTT_Init(soln, wc_ex_connect_callback, wc_ex_disconnect_callback, pmosq);
+	WiCar_t *mosq = WiCarEx_MQTT_Init(wc_ex_connect_callback, wc_ex_disconnect_callback, pmosq);
 	if(mosq)
 	{	
 		//printf("wc_initialize...\n");
 		pmosq->userdata=userdata;
 		//printf("g_userdata : %u\n",g_userdata);
 		pmosq->clientID=(char *)devid;
+		//printf("devid: %s\n",clientID);
+		pmosq->mosq = mosq;
+		return (WiConn_t)pmosq;
+	}
+	else
+	{
+		free(pmosq);
+		return NULL;
+	}
+}
+
+WISE_CONNECTOR_API WiConn_t wc_ex_initialize_soln(char *soln, char const * devid, void* userdata)
+{
+	mosq_conn_t* pmosq = calloc(1, sizeof(mosq_conn_t));
+
+	WiCar_t *mosq = WiCarEx_MQTT_Init_soln(soln, wc_ex_connect_callback, wc_ex_disconnect_callback, pmosq);
+	if (mosq)
+	{
+		//printf("wc_initialize...\n");
+		pmosq->userdata = userdata;
+		//printf("g_userdata : %u\n",g_userdata);
+		pmosq->clientID = (char *)devid;
 		//printf("devid: %s\n",clientID);
 		pmosq->mosq = mosq;
 		return (WiConn_t)pmosq;

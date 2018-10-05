@@ -39,12 +39,13 @@ extern "C" {
  * 	strMAC -		local device MAC address
  * 	userdata -		A user pointer that will be passed as an argument to any
  *                  callbacks that are specified.
+ *  soln -			An eigenvalue to decide the solution of server.
  *
  * Returns:
  * 	boolean value for success or not.
  */
-WISECORE_API bool core_initialize(char *soln, char* strClientID, char* strHostName, char* strMAC, void* userdata);
-
+WISECORE_API bool core_initialize(char* strClientID, char* strHostName, char* strMAC, void* userdata);
+WISECORE_API bool core_initialize_soln(char *soln, char* strClientID, char* strHostName, char* strMAC, void* userdata);
 /* 
  * Function: core_uninitialize
  *

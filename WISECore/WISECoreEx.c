@@ -473,7 +473,7 @@ void _ex_on_message_recv(const char* topic, const void* payload, const int paylo
 }
 
 
-WISECORE_API WiCore_t core_ex_initialize(char *soln, char* strClientID, char* strHostName, char* strMAC, void* userdata)
+WISECORE_API WiCore_t core_ex_initialize(char* strClientID, char* strHostName, char* strMAC, void* userdata)
 {
 	core_contex_t* tHandleCtx = NULL;
 	WiConn_t conn = NULL;
@@ -494,8 +494,43 @@ WISECORE_API WiCore_t core_ex_initialize(char *soln, char* strClientID, char* st
 	strncpy(tHandleCtx->strHostName, strHostName, sizeof(tHandleCtx->strHostName));
 	strncpy(tHandleCtx->strMAC, strMAC, sizeof(tHandleCtx->strMAC));
 
-	conn = wc_ex_initialize(soln,tHandleCtx->strClientID, tHandleCtx);
+	conn = wc_ex_initialize(tHandleCtx->strClientID, tHandleCtx);
 	if(!conn)
+	{
+		free(tHandleCtx);
+		return NULL;
+	}
+	tHandleCtx->conn = conn;
+	tHandleCtx->userdata = userdata;
+	wc_ex_callback_set(conn, _ex_on_connect_cb, _ex_on_lostconnect_cb, _ex_on_disconnect_cb, _ex_on_message_recv);
+	tHandleCtx->bInited = true;
+	tHandleCtx->iErrorCode = core_success;
+	return tHandleCtx;
+}
+
+WISECORE_API WiCore_t core_ex_initialize_soln(char *soln, char* strClientID, char* strHostName, char* strMAC, void* userdata)
+{
+	core_contex_t* tHandleCtx = NULL;
+	WiConn_t conn = NULL;
+
+	if (!strClientID)
+		return tHandleCtx;
+
+	if (!strHostName)
+		return tHandleCtx;
+
+	if (!strMAC)
+		return tHandleCtx;
+
+	tHandleCtx = calloc(1, sizeof(core_contex_t));
+
+	tHandleCtx->tick = 0;
+	strncpy(tHandleCtx->strClientID, strClientID, sizeof(tHandleCtx->strClientID));
+	strncpy(tHandleCtx->strHostName, strHostName, sizeof(tHandleCtx->strHostName));
+	strncpy(tHandleCtx->strMAC, strMAC, sizeof(tHandleCtx->strMAC));
+
+	conn = wc_ex_initialize_soln(soln, tHandleCtx->strClientID, tHandleCtx);
+	if (!conn)
 	{
 		free(tHandleCtx);
 		return NULL;

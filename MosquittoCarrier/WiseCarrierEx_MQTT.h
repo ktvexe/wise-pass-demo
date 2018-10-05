@@ -68,13 +68,14 @@ WISE_CARRIER_API const char* WiCarEx_MQTT_LibraryTag();
  * Parameters:
  * 	on_connect    -	Will be trigger by connect event.
  * 	on_disconnect -	Will be trigger by manual disconnect event.
+ *  soln -			An eigenvalue to decide the solution of server.
  *
  * Returns:
  * 	pointer of WISE Carrier Object.
  *
  */
-WISE_CARRIER_API WiCar_t WiCarEx_MQTT_Init(char *soln, WICAR_CONNECT_CB on_connect, WICAR_DISCONNECT_CB on_disconnect, void *userdata);
-
+WISE_CARRIER_API WiCar_t WiCarEx_MQTT_Init(WICAR_CONNECT_CB on_connect, WICAR_DISCONNECT_CB on_disconnect, void *userdata);
+WISE_CARRIER_API WiCar_t WiCarEx_MQTT_Init_soln(char *soln, WICAR_CONNECT_CB on_connect, WICAR_DISCONNECT_CB on_disconnect, void *userdata);
 /*
  * Function: WiCarEx_MQTT_Uninit
  *

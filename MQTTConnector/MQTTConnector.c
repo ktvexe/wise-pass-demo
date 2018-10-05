@@ -46,12 +46,22 @@ void wc_message_callback(const char* topic, const void* payload, const int paylo
 }
 
 
-WISE_CONNECTOR_API bool wc_initialize(char *soln, char const * devid, void* userdata)
+WISE_CONNECTOR_API bool wc_initialize(char const * devid, void* userdata)
 {	
 	//printf("wc_initialize...\n");
 	g_userdata=userdata;
 	//printf("g_userdata : %u\n",g_userdata);
 	clientID=(char *)devid;
+	//printf("devid: %s\n",clientID);
+	return WiCar_MQTT_Init(wc_connect_callback, wc_disconnect_callback, g_userdata);
+}
+
+WISE_CONNECTOR_API bool wc_initialize_soln(char *soln, char const * devid, void* userdata)
+{
+	//printf("wc_initialize...\n");
+	g_userdata = userdata;
+	//printf("g_userdata : %u\n",g_userdata);
+	clientID = (char *)devid;
 	//printf("devid: %s\n",clientID);
 	return WiCar_MQTT_Init(soln, wc_connect_callback, wc_disconnect_callback, g_userdata);
 }
