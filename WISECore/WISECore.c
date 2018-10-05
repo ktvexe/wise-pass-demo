@@ -13,9 +13,9 @@
 
 WiCore_t g_tHandleCtx = NULL;
 
-WISECORE_API bool core_initialize(char* strClientID, char* strHostName, char* strMAC, void* userdata)
+WISECORE_API bool core_initialize(char *soln, char* strClientID, char* strHostName, char* strMAC, void* userdata)
 {
-	g_tHandleCtx = core_ex_initialize(strClientID, strHostName, strMAC, userdata);
+	g_tHandleCtx = core_ex_initialize(soln, strClientID, strHostName, strMAC, userdata);
 
 	if(g_tHandleCtx == NULL)
 		return false;

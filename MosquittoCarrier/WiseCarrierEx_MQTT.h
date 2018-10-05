@@ -73,7 +73,7 @@ WISE_CARRIER_API const char* WiCarEx_MQTT_LibraryTag();
  * 	pointer of WISE Carrier Object.
  *
  */
-WISE_CARRIER_API WiCar_t WiCarEx_MQTT_Init(WICAR_CONNECT_CB on_connect, WICAR_DISCONNECT_CB on_disconnect, void *userdata);
+WISE_CARRIER_API WiCar_t WiCarEx_MQTT_Init(char *soln, WICAR_CONNECT_CB on_connect, WICAR_DISCONNECT_CB on_disconnect, void *userdata);
 
 /*
  * Function: WiCarEx_MQTT_Uninit

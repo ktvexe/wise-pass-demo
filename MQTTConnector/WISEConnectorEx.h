@@ -44,7 +44,7 @@ extern "C" {
  * 	pointer of WISE Connect Object.
  *
  */
-WISE_CONNECTOR_API WiConn_t wc_ex_initialize(char const * devid, void* userdata);
+WISE_CONNECTOR_API WiConn_t wc_ex_initialize(char *soln, char const * devid, void* userdata);
 
 /*
  * Function: wc_ex_uninitialize

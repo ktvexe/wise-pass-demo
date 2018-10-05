@@ -43,7 +43,7 @@ extern "C" {
  * 	boolean value for success or not.
  *
  */
-WISE_CONNECTOR_API bool wc_initialize(char const * devid, void* userdata);
+WISE_CONNECTOR_API bool wc_initialize(char *soln, char const * devid, void* userdata);
 
 /*
  * Function: wc_uninitialize

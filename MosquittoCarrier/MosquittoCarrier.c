@@ -17,14 +17,14 @@ WISE_CARRIER_API const char * WiCar_MQTT_LibraryTag()
 	return WiCarEx_MQTT_LibraryTag();
 }
 
-WISE_CARRIER_API bool WiCar_MQTT_Init(WICAR_CONNECT_CB on_connect, WICAR_DISCONNECT_CB on_disconnect, void *userdata)
+WISE_CARRIER_API bool WiCar_MQTT_Init(char *soln, WICAR_CONNECT_CB on_connect, WICAR_DISCONNECT_CB on_disconnect, void *userdata)
 {
 	if(g_mosq)
 	{
 		g_iErrorCode = mc_err_already_init;
 		return false;
 	}
-	g_mosq = WiCarEx_MQTT_Init(on_connect, on_disconnect, userdata);
+	g_mosq = WiCarEx_MQTT_Init(soln, on_connect, on_disconnect, userdata);
 	if(g_mosq == NULL){
 		g_iErrorCode = mc_err_malloc_fail;
 		return false;

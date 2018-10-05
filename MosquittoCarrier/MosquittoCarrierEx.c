@@ -9,6 +9,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "mosquitto.h"
+#include "ExternalTranslator.h"
 #include "WiseCarrierEx_MQTT.h"
 #include "topic.h"
 #include <pthread.h>
@@ -297,17 +298,58 @@ void on_message_recv_callback(struct mosquitto *mosq, void *userdata, const stru
 {	
 	struct topic_entry * target = NULL;
 	mosq_car_t* pmosq = NULL;
-
+	//printf("====\n[Received] topic: %s\n message: %s\n", msg->topic, (char*)msg->payload);
 	if(userdata == NULL)
 		return;
 	pmosq = (mosq_car_t*)userdata;
 
-	target = topic_find(pmosq->pSubscribeTopics, msg->topic);
+	//const char* topic, const void* payload, const int payloadlen
+	char *realTopic = NULL;
+	int realTopicLen = 0;
+	char *realPayload = NULL;
+	int realPayloadLen = msg->payloadlen;
+	char replacedtopic[256] = { 0 };
+
+	realTopicLen = strlen(replacedtopic);
+	realTopic = ET_PostTopicTranslate(msg->topic, msg->payload, replacedtopic, &realTopicLen);
+	realPayload = ET_PostMessageTranslate(msg->payload, msg->topic, NULL, &realPayloadLen);
+
+	/*char realTopic[256] = {0};
+	char *realPayload = NULL;
+	int realPayloadLen = 0;
+
+	if (NULL != strstr(msg->topic, "messages/devicebound/%24.to=")) {
+		char *s = strstr(msg->payload, "\"body\":{");
+		if (s != NULL) {
+			s += 7;
+			char *e = strstr(s, "\"topic\":\"") - 3;
+			realPayload = s;
+			realPayloadLen = (int)(e - s) + 2;
+			s = e + 12;
+			e = strchr(s, '\"');
+			memcpy(realTopic, s, (int)(e - s));
+		}
+	} else {
+		strcpy(realTopic,msg->topic);
+		realPayload = msg->payload;
+		realPayloadLen = msg->payloadlen;
+	}*/
+	
+	//char format[128] = { 0 };
+	//sprintf(format, "====\n[Received] topic: %%s\n message: %%.%ds\n", real_payloadlen);
+	//printf(format, real_topic, real_payload);
+
+	//char dummy_payload[4096] = { 0 };
+	//strncpy(dummy_payload, real_payload, real_payloadlen);
+	//printf("====\n[Received] topic: %s\n message: %s\n", real_topic, dummy_payload);
+
+
+	target = topic_find(pmosq->pSubscribeTopics, realTopic);
 	
 	if(target != NULL)
 	{
 		if(target->callback_func)
-			((WICAR_MESSAGE_CB)target->callback_func)(msg->topic, msg->payload, msg->payloadlen, pmosq->pUserData);
+			((WICAR_MESSAGE_CB)target->callback_func)(realTopic, realPayload, realPayloadLen, pmosq->pUserData);
 	}
 }
 
@@ -343,6 +385,8 @@ struct mosquitto * _initialize(mosq_car_t* pmosq, char const * devid)
 		pmosq->iErrorCode = mc_err_init_fail;
 		return NULL;
 	}
+	int version = MQTT_PROTOCOL_V311;
+	mosquitto_opts_set(mosq, MOSQ_OPT_PROTOCOL_VERSION, &version);
 
 	mosquitto_connect_callback_set(mosq, on_connect_callback);
 	mosquitto_disconnect_callback_set(mosq, on_disconnect_callback);
@@ -484,13 +528,13 @@ WISE_CARRIER_API const char * WiCarEx_MQTT_LibraryTag()
 	return g_version;
 }
 
-WISE_CARRIER_API WiCar_t WiCarEx_MQTT_Init(WICAR_CONNECT_CB on_connect, WICAR_DISCONNECT_CB on_disconnect, void *userdata)
+WISE_CARRIER_API WiCar_t WiCarEx_MQTT_Init(char *soln, WICAR_CONNECT_CB on_connect, WICAR_DISCONNECT_CB on_disconnect, void *userdata)
 {
 	mosq_car_t* pmosq = calloc(1, sizeof(mosq_car_t));
 	
 	if(pmosq == NULL)
 		return NULL;
-
+	ET_AssignSolution(soln);
 	pmosq->on_connect_cb = on_connect;
 	pmosq->on_disconnect_cb = on_disconnect;
 	pmosq->pUserData = userdata;
@@ -717,17 +761,30 @@ WISE_CARRIER_API bool WiCarEx_MQTT_Disconnect(WiCar_t pmosq, int force)
 		return false;
 }
 
+
 WISE_CARRIER_API bool WiCarEx_MQTT_Publish(WiCar_t pmosq, const char* topic, const void *msg, int msglen, int retain, int qos)
 {
 	mosq_car_t* mosq = NULL;
 	int result = MOSQ_ERR_SUCCESS;
 	struct mqttmsg* mqttmsg = NULL;
 	int mid = 0;
+	char *realTopic = NULL;
+	int realTopicLen = 0;
+	char *realPayload = NULL;
+	int realPayloadLen = msglen;
 	if(!pmosq)
 		return false;
 	mosq = (mosq_car_t*)pmosq;
 	pthread_mutex_lock(&mosq->publishlock);
-	result = mosquitto_publish(mosq->mosq, &mid, topic, msglen, msg, qos, retain>0?true:false);
+	
+	char *devid = mosq->strClientID;
+	char replacedtopic[256] = { 0 };
+	realTopicLen = sizeof(replacedtopic);
+	realTopic = ET_PreTopicTranslate(topic, devid, replacedtopic, &realTopicLen);
+	realPayload = ET_PreMessageTranslate(msg, NULL, NULL, &realPayloadLen);
+
+	printf("====\n[Send] Topic:%s \n  Payload: %s \n", realTopic, realPayload);
+	result = mosquitto_publish(mosq->mosq, &mid, realTopic, realPayloadLen, realPayload, qos, retain>0?true:false);
 	pthread_mutex_unlock(&mosq->publishlock);
 	mosq->iErrorCode = result;
 	if(result == MOSQ_ERR_SUCCESS)

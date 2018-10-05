@@ -43,7 +43,7 @@ extern "C" {
  * Returns:
  * 	boolean value for success or not.
  */
-WISECORE_API bool core_initialize(char* strClientID, char* strHostName, char* strMAC, void* userdata);
+WISECORE_API bool core_initialize(char *soln, char* strClientID, char* strHostName, char* strMAC, void* userdata);
 
 /* 
  * Function: core_uninitialize

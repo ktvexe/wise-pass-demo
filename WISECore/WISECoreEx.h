@@ -68,7 +68,7 @@ extern "C" {
  * Returns:
  * 		pointer of WISE Core Object.
  */
-WISECORE_API WiCore_t core_ex_initialize(char* strClientID, char* strHostName, char* strMAC, void* userdata);
+WISECORE_API WiCore_t core_ex_initialize(char *soln, char* strClientID, char* strHostName, char* strMAC, void* userdata);
 
 /* 
  * Function: core_ex_uninitialize

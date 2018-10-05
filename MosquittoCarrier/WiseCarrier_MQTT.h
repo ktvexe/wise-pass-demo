@@ -57,7 +57,7 @@ WISE_CARRIER_API const char* WiCar_MQTT_LibraryTag();
  * 	boolean value for success or not.
  *
  */
-WISE_CARRIER_API bool WiCar_MQTT_Init(WICAR_CONNECT_CB on_connect, WICAR_DISCONNECT_CB on_disconnect, void *userdata);
+WISE_CARRIER_API bool WiCar_MQTT_Init(char *soln, WICAR_CONNECT_CB on_connect, WICAR_DISCONNECT_CB on_disconnect, void *userdata);
 
 /*
  * Function: WiCar_MQTT_Uninit
