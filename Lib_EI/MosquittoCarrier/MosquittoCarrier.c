@@ -32,6 +32,21 @@ WISE_CARRIER_API bool WiCar_MQTT_Init(WICAR_CONNECT_CB on_connect, WICAR_DISCONN
 	return true;
 }
 
+WISE_CARRIER_API bool WiCar_MQTT_Init_soln(char *soln, WICAR_CONNECT_CB on_connect, WICAR_DISCONNECT_CB on_disconnect, void *userdata)
+{
+	if (g_mosq)
+	{
+		g_iErrorCode = mc_err_already_init;
+		return false;
+	}
+	g_mosq = WiCarEx_MQTT_Init_soln(soln, on_connect, on_disconnect, userdata);
+	if (g_mosq == NULL) {
+		g_iErrorCode = mc_err_malloc_fail;
+		return false;
+	}
+	return true;
+}
+
 WISE_CARRIER_API void WiCar_MQTT_Uninit()
 {
 	WiCarEx_MQTT_Uninit(g_mosq);

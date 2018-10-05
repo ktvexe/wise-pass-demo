@@ -508,6 +508,41 @@ WISECORE_API WiCore_t core_ex_initialize(char* strClientID, char* strHostName, c
 	return tHandleCtx;
 }
 
+WISECORE_API WiCore_t core_ex_initialize_soln(char *soln, char* strClientID, char* strHostName, char* strMAC, void* userdata)
+{
+	core_contex_t* tHandleCtx = NULL;
+	WiConn_t conn = NULL;
+
+	if (!strClientID)
+		return tHandleCtx;
+
+	if (!strHostName)
+		return tHandleCtx;
+
+	if (!strMAC)
+		return tHandleCtx;
+
+	tHandleCtx = calloc(1, sizeof(core_contex_t));
+
+	tHandleCtx->tick = 0;
+	strncpy(tHandleCtx->strClientID, strClientID, sizeof(tHandleCtx->strClientID));
+	strncpy(tHandleCtx->strHostName, strHostName, sizeof(tHandleCtx->strHostName));
+	strncpy(tHandleCtx->strMAC, strMAC, sizeof(tHandleCtx->strMAC));
+
+	conn = wc_ex_initialize_soln(soln, tHandleCtx->strClientID, tHandleCtx);
+	if (!conn)
+	{
+		free(tHandleCtx);
+		return NULL;
+	}
+	tHandleCtx->conn = conn;
+	tHandleCtx->userdata = userdata;
+	wc_ex_callback_set(conn, _ex_on_connect_cb, _ex_on_lostconnect_cb, _ex_on_disconnect_cb, _ex_on_message_recv);
+	tHandleCtx->bInited = true;
+	tHandleCtx->iErrorCode = core_success;
+	return tHandleCtx;
+}
+
 WISECORE_API void core_ex_uninitialize(WiCore_t core)
 {
 	core_contex_t* tHandleCtx = NULL;
@@ -1023,6 +1058,13 @@ WISECORE_API bool core_ex_device_register(WiCore_t core)
 	if(!wc_ex_subscribe(tHandleCtx->conn, DEF_AGENTCONTROL_TOPIC, 0))
 		return false;
 
+#define AZURE_IOT_HUB_SUB_PREFIX "devices/%s/messages/devicebound/#"
+	char *devid = tHandleCtx->strClientID;
+	char replacedtopic[256] = { 0 };
+	sprintf(replacedtopic, AZURE_IOT_HUB_SUB_PREFIX, devid);
+	if(!wc_ex_subscribe(tHandleCtx->conn, replacedtopic, 0))
+		return false;
+	
 	return _ex_send_agent_connect(tHandleCtx);
 }
 
