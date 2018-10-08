@@ -1057,14 +1057,14 @@ WISECORE_API bool core_ex_device_register(WiCore_t core)
 
 	if(!wc_ex_subscribe(tHandleCtx->conn, DEF_AGENTCONTROL_TOPIC, 0))
 		return false;
-
+	{
 #define AZURE_IOT_HUB_SUB_PREFIX "devices/%s/messages/devicebound/#"
 	char *devid = tHandleCtx->strClientID;
 	char replacedtopic[256] = { 0 };
 	sprintf(replacedtopic, AZURE_IOT_HUB_SUB_PREFIX, devid);
 	if(!wc_ex_subscribe(tHandleCtx->conn, replacedtopic, 0))
 		return false;
-	
+	}
 	return _ex_send_agent_connect(tHandleCtx);
 }
 

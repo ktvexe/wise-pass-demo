@@ -298,10 +298,6 @@ void on_message_recv_callback(struct mosquitto *mosq, void *userdata, const stru
 {	
 	struct topic_entry * target = NULL;
 	mosq_car_t* pmosq = NULL;
-	//printf("====\n[Received] topic: %s\n message: %s\n", msg->topic, (char*)msg->payload);
-	if(userdata == NULL)
-		return;
-	pmosq = (mosq_car_t*)userdata;
 
 	//const char* topic, const void* payload, const int payloadlen
 	char *realTopic = NULL;
@@ -309,6 +305,11 @@ void on_message_recv_callback(struct mosquitto *mosq, void *userdata, const stru
 	char *realPayload = NULL;
 	int realPayloadLen = msg->payloadlen;
 	char replacedtopic[256] = { 0 };
+
+	//printf("====\n[Received] topic: %s\n message: %s\n", msg->topic, (char*)msg->payload);
+	if(userdata == NULL)
+		return;
+	pmosq = (mosq_car_t*)userdata;
 
 	realTopicLen = strlen(replacedtopic);
 	realTopic = ET_PostTopicTranslate(msg->topic, msg->payload, replacedtopic, &realTopicLen);
@@ -377,6 +378,7 @@ int on_password_check(char *buf, int size, int rwflag, void *userdata)
 struct mosquitto * _initialize(mosq_car_t* pmosq, char const * devid)
 {
 	struct mosquitto *mosq = NULL;
+	int version = MQTT_PROTOCOL_V311;
 
 	mosquitto_lib_init();
 	mosq = mosquitto_new(devid, true, pmosq);
@@ -385,7 +387,7 @@ struct mosquitto * _initialize(mosq_car_t* pmosq, char const * devid)
 		pmosq->iErrorCode = mc_err_init_fail;
 		return NULL;
 	}
-	int version = MQTT_PROTOCOL_V311;
+	
 	mosquitto_opts_set(mosq, MOSQ_OPT_PROTOCOL_VERSION, &version);
 
 	mosquitto_connect_callback_set(mosq, on_connect_callback);
@@ -787,13 +789,16 @@ WISE_CARRIER_API bool WiCarEx_MQTT_Publish(WiCar_t pmosq, const char* topic, con
 	int realTopicLen = 0;
 	char *realPayload = NULL;
 	int realPayloadLen = msglen;
+
+	char *devid = mosq->strClientID;
+	char replacedtopic[256] = { 0 };
+
 	if(!pmosq)
 		return false;
 	mosq = (mosq_car_t*)pmosq;
 	pthread_mutex_lock(&mosq->publishlock);
 	
-	char *devid = mosq->strClientID;
-	char replacedtopic[256] = { 0 };
+	
 	realTopicLen = sizeof(replacedtopic);
 	realTopic = ET_PreTopicTranslate(topic, devid, replacedtopic, &realTopicLen);
 	realPayload = ET_PreMessageTranslate(msg, NULL, NULL, &realPayloadLen);
