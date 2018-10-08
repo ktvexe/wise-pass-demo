@@ -6,6 +6,7 @@
 /* Reference    : None														*/
 /****************************************************************************/
 #include <stdio.h>
+#include "WISEPlatform.h"
 #include "ExternalTranslator.h"
 
 enum {
@@ -70,8 +71,9 @@ char *ET_PostTopicTranslate(const char* topic, const char *ref, char *buffer, in
 			if (NULL != strstr(topic, "messages/devicebound/%24.to=")) {
 				char *s = strstr(ref, "\"topic\":\"");
 				if (s != NULL) {
+					char *e = NULL;
 					s += 9;
-					char *e = strchr(s, '\"');
+					e = strchr(s, '\"');
 					memcpy(buffer, s, (int)(e - s));
 					*len = strlen(buffer);
 					return buffer;
@@ -90,8 +92,9 @@ char *ET_PostMessageTranslate(const char* message, const char *ref, char *buffer
 			if (NULL != strstr(ref, "messages/devicebound/%24.to=")) {
 				char *s = strstr(message, "\"body\":{");
 				if (s != NULL) {
+					char *e = NULL;
 					s += 7;
-					char *e = strstr(s, "\"topic\":\"") - 3;
+					e = strstr(s, "\"topic\":\"") - 3;
 					*len = (int)(e - s) + 2;
 					return s;
 				}
