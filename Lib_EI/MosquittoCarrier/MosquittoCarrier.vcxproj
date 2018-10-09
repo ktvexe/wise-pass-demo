@@ -221,12 +221,14 @@ copy "$(SolutionDir)Library3rdParty\mosquitto-1.4.15.win32\bin\*.dll" "$(TargetD
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ExternalTranslator.c" />
     <ClCompile Include="MosquittoCarrier.c" />
     <ClCompile Include="MosquittoCarrierEx.c" />
     <ClCompile Include="topic.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\wise\wisepaas_base_def.h" />
+    <ClInclude Include="ExternalTranslator.h" />
     <ClInclude Include="topic.h" />
     <ClInclude Include="WiseCarrierEx_MQTT.h" />
     <ClInclude Include="WiseCarrier_MQTT.h" />

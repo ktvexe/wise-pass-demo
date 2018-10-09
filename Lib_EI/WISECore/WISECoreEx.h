@@ -64,12 +64,13 @@ extern "C" {
  * 	strMAC -		local device MAC address
  * 	userdata -		A user pointer that will be passed as an argument to any
  *                  callbacks that are specified.
+ *  soln -			An eigenvalue to decide the solution of server.
  *
  * Returns:
  * 		pointer of WISE Core Object.
  */
 WISECORE_API WiCore_t core_ex_initialize(char* strClientID, char* strHostName, char* strMAC, void* userdata);
-
+WISECORE_API WiCore_t core_ex_initialize_soln(char *soln, char* strClientID, char* strHostName, char* strMAC, void* userdata);
 /* 
  * Function: core_ex_uninitialize
  *

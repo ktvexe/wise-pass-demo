@@ -38,13 +38,14 @@ extern "C" {
  * 	devid -			String to use as the client id. If NULL, a random client id will be generated.
  * 	userdata -		A user pointer that will be passed as an argument to any
  *                  callbacks that are specified.
+ *  soln -			An eigenvalue to decide the solution of server.
  *
  * Returns:
  * 	boolean value for success or not.
  *
  */
 WISE_CONNECTOR_API bool wc_initialize(char const * devid, void* userdata);
-
+WISE_CONNECTOR_API bool wc_initialize_soln(char *soln, char const * devid, void* userdata);
 /*
  * Function: wc_uninitialize
  *

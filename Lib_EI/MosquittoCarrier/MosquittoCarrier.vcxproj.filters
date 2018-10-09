@@ -24,6 +24,9 @@
     <ClCompile Include="MosquittoCarrierEx.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ExternalTranslator.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="topic.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\wise\wisepaas_base_def.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ExternalTranslator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
