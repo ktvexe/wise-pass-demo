@@ -1,3 +1,11 @@
+# 1.1.0: Maintenance Release
+
+### Feature
+
+* **EI-connect**: *New Feature* - Add Azure IoTHub support.
+
+### Enhancements
+
 # 1.0.17: Maintenance Release
 
 ### Feature
