@@ -1,3 +1,11 @@
+# 1.1.1: Maintenance Release
+
+### Feature
+
+### Enhancements
+
+* **EI-connect**: *NULL Access* - Add protect to avoid to acess NULL pointer.
+
 # 1.1.0: Maintenance Release
 
 ### Feature
