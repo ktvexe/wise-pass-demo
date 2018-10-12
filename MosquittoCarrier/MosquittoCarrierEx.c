@@ -790,7 +790,7 @@ WISE_CARRIER_API bool WiCarEx_MQTT_Publish(WiCar_t pmosq, const char* topic, con
 	char *realPayload = NULL;
 	int realPayloadLen = msglen;
 
-	char *devid = mosq->strClientID;
+	char *devid = NULL;
 	char replacedtopic[256] = { 0 };
 
 	if(!pmosq)
@@ -798,7 +798,7 @@ WISE_CARRIER_API bool WiCarEx_MQTT_Publish(WiCar_t pmosq, const char* topic, con
 	mosq = (mosq_car_t*)pmosq;
 	pthread_mutex_lock(&mosq->publishlock);
 	
-	
+	devid = mosq->strClientID;
 	realTopicLen = sizeof(replacedtopic);
 	realTopic = ET_PreTopicTranslate(topic, devid, replacedtopic, &realTopicLen);
 	realPayload = ET_PreMessageTranslate(msg, NULL, NULL, &realPayloadLen);
