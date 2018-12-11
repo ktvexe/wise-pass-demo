@@ -4,11 +4,17 @@
 #include <dlfcn.h>
 #include "util_path.h"
 
+# define LM_ID_BASE	0	/* Initial namespace.  */
+# define LM_ID_NEWLM	-1	/* For dlmopen: request new namespace.  */
+# define RTLD_DI_LMID 1
+extern void *dlmopen (long int __nsid, const char*, int);
+
 bool util_dlexist(char* path)
 {
 	bool bRet = false;
 	void * hSAMANAGERDLL = NULL;
-	hSAMANAGERDLL = dlopen(path, RTLD_LAZY);
+	//hSAMANAGERDLL = dlopen(path, RTLD_LAZY);
+	hSAMANAGERDLL = dlmopen(LM_ID_NEWLM, path, RTLD_LAZY );
 	if(hSAMANAGERDLL != NULL)
 	{
 		bRet = true;
@@ -22,8 +28,7 @@ bool util_dlopen(char* path, void ** lib)
 {
 	bool bRet = false;
 	void * hSAMANAGERDLL = NULL;
-	
-	hSAMANAGERDLL = dlopen(path, RTLD_LAZY);
+	hSAMANAGERDLL = dlopen(path, RTLD_LAZY | RTLD_LOCAL | RTLD_DEEPBIND);
 	if(hSAMANAGERDLL != NULL)
 	{
 		bRet = true;
