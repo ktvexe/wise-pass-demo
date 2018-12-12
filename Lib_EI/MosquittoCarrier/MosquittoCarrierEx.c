@@ -803,7 +803,7 @@ WISE_CARRIER_API bool WiCarEx_MQTT_Publish(WiCar_t pmosq, const char* topic, con
 	realTopic = ET_PreTopicTranslate(topic, devid, replacedtopic, &realTopicLen);
 	realPayload = ET_PreMessageTranslate(msg, NULL, NULL, &realPayloadLen);
 
-	printf("====\n[Send] Topic:%s \n  Payload: %s \n", realTopic, realPayload);
+	//printf("====\n[Send] Topic:%s \n  Payload: %s \n", realTopic, realPayload);
 	result = mosquitto_publish(mosq->mosq, &mid, realTopic, realPayloadLen, realPayload, qos, retain>0?true:false);
 	pthread_mutex_unlock(&mosq->publishlock);
 	mosq->iErrorCode = result;
