@@ -101,3 +101,6 @@ git push origin develop || exit 1
 
 print_title "subtree push/pull/push"
 subtree_pull_push
+
+echo "merge: http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Connect/branches"
+echo "tag: http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Connect/tags"
