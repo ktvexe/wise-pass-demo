@@ -20,7 +20,7 @@
 #ifdef DUMMY_PTHREAD_CANCEL
    #define pthread_cancel(A)
 #endif
-
+static long g_iCounter = 0;
 static char g_version[32] = {0};
 
 struct mqttmsg
@@ -380,7 +380,9 @@ struct mosquitto * _initialize(mosq_car_t* pmosq, char const * devid)
 	struct mosquitto *mosq = NULL;
 	int version = MQTT_PROTOCOL_V311;
 
-	mosquitto_lib_init();
+	if(g_iCounter == 0)
+		mosquitto_lib_init();
+	g_iCounter++;
 	mosq = mosquitto_new(devid, true, pmosq);
 	if (!mosq)
 	{
@@ -419,7 +421,9 @@ void _uninitialize(mosq_car_t* pmosq)
 	MQTT_UninitMsgQueue(&pmosq->msg_queue);
 
 	mosquitto_destroy(mosq);
-	mosquitto_lib_cleanup();
+	g_iCounter--;
+	if(g_iCounter == 0)
+		mosquitto_lib_cleanup();
 }
 
 bool _tls_set(mosq_car_t *pmosq)
