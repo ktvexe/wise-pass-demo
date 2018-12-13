@@ -17,6 +17,13 @@ function print_error()
 	printf "${RED}$1${NO_COLOR}\n"
 }
 
+function do_exit()
+{
+	print_title "merge: http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Connect/branches"
+	print_title "tag: http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Connect/tags"
+	exit $1
+}
+
 function initialize()
 {
 	git reset --hard || exit 1
@@ -71,7 +78,7 @@ function commit_version()
 	git add release-helper.sh || exit 1
 	git add Lib_EI/Include/VERSION || exit 1
 	git add Lib_EI/Include/svnversion.h || exit 1
-	git commit -m "Update version to ${MAIN_VERSION}.${SUB_VERSION}.${BUILD_VERSION}" || exit 1
+	git commit -m "Update version to ${MAIN_VERSION}.${SUB_VERSION}.${BUILD_VERSION}" || do_exit 0
 	git push origin develop || exit 1
 }
 
@@ -102,5 +109,4 @@ git push origin develop || exit 1
 print_title "subtree push/pull/push"
 subtree_pull_push
 
-echo "merge: http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Connect/branches"
-echo "tag: http://advgitlab.eastasia.cloudapp.azure.com/EI-Connect/EI-Connect/tags"
+do_exit 0
