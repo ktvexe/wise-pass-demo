@@ -63,6 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="Ws2_32.lib"
 				LinkIncremental="2"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
@@ -351,6 +352,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Windows\sys\syslog.c"
+					>
+				</File>
+				<File
 					RelativePath=".\Windows\sys\time.cpp"
 					>
 				</File>
@@ -422,6 +427,10 @@
 				</File>
 				<File
 					RelativePath=".\Windows\sys\socket.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Windows\sys\syslog.h"
 					>
 				</File>
 				<File
