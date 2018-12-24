@@ -78,7 +78,7 @@ function commit_version()
 	git add release-helper.sh || exit 1
 	git add Lib_EI/Include/VERSION || exit 1
 	git add Lib_EI/Include/svnversion.h || exit 1
-	git commit -m "Update version to ${MAIN_VERSION}.${SUB_VERSION}.${BUILD_VERSION}" || do_exit 0
+	git commit -m "[EI-Connect] Update version to ${MAIN_VERSION}.${SUB_VERSION}.${BUILD_VERSION}" || do_exit 0
 	git push origin develop || exit 1
 }
 
