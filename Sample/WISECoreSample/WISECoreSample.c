@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <time.h>
+#include <assert.h>
 #include "WISECore.h"
 #include "util_path.h"
 #include "WISEPlatform.h"
@@ -32,7 +33,7 @@
 #define DELTA_T 4
 
 //Sensor data JSON format, it contain 3 sensor data: data1~3
-#define SENSOR_DATA "{\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"pressure_A\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"temperature_A\",\"v\":%d},{\"n\":\"capacity_A\",\"v\":%d},{\"n\":\"control_pa\",\"v\":%d,\"asm\":\"rw\"},{\"n\":\"control_ta\",\"v\":%d,\"asm\":\"rw\"},{\"n\":\"pressure_B\",\"v\":%d},{\"n\":\"temperature_B\",\"v\":%d},{\"n\":\"capacity_B\",\"v\":%d},{\"n\":\"control_pb\",\"v\":%d,\"asm\":\"rw\"},{\"n\":\"control_tb\",\"v\":%d,\"asm\":\"rw\"}]}},\"opTS\":{\"$date\":%lld}}"
+#define SENSOR_DATA "{\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"pressure_A\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"temperature_A\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"capacity_A\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"control_pa\",\"v\":%d,\"asm\":\"rw\"},{\"n\":\"control_ta\",\"v\":%d,\"asm\":\"rw\"},{\"n\":\"pressure_B\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"temperature_B\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"capacity_B\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"control_pb\",\"v\":%d,\"asm\":\"rw\"},{\"n\":\"control_tb\",\"v\":%d,\"asm\":\"rw\"}]}},\"opTS\":{\"$date\":%lld}}"
 #define DEF_OSINFO_JSON "{\"cagentVersion\":\"%s\",\"cagentType\":\"%s\",\"osVersion\":\"%s\",\"biosVersion\":\"%s\",\"platformName\":\"%s\",\"processorName\":\"%s\",\"osArch\":\"%s\",\"totalPhysMemKB\":%d,\"macs\":\"%s\",\"IP\":\"%s\"}"
 /*User can update g_strServerIP, g_iPort, g_strConnID, g_strConnPW and g_strDeviceID to connect to specific broker*/
 char g_strServerIP[64] = "140.110.5.75"; // MQTT broker URL or IP
@@ -56,17 +57,8 @@ int g_iHeartbeatRate = 60; //Send heartbeat packet every min.
 int g_iSensor[10] = {0}; //integer array for randomized sensor data
 
 
-void check_metric(int *rate, 
-		int *metric, 
-		int upper, 
-		int lower,
-		int delta);
-
-void gen_cap(int *cap, 
-	     int *pres,
-	     int *temp);
-
 bool g_bConnected = false;
+
 typedef struct
 {
 	int cmdID;
@@ -75,6 +67,27 @@ typedef struct
 	bool bHasSessionID;
 	char* pkt;
 } getset_cmd;
+
+typedef struct {
+	int *prate;	// pressure increase rate
+	int *trate;	// temperature increase rate
+	int *pres;	// pressure
+	int *temp;	// temperature
+        int *cap;	// capacity
+} machine;
+
+bool varmap(machine *device, char tag);
+
+void check_metric(machine *device,
+	          int pdelta,
+	          int tdelta );
+/*
+void check_metric(machine *device, 
+		int upper, 
+		int lower,
+		int delta);
+*/
+void gen_cap(machine *device);
 
 //-------------------------Memory leak check define--------------------------------
 #ifdef MEM_LEAK_CHECK
@@ -677,16 +690,32 @@ void SubscribeTopic()
 void* threadaccessdata(void* args)
 {
 	srand((int) time(0)); //setup random seed.
-	int *pa_rate = &g_iSensor[3], *pb_rate = &g_iSensor[8];
-	int *ta_rate = &g_iSensor[4], *tb_rate = &g_iSensor[9];
-	int *pres_a = &g_iSensor[0], *pres_b = &g_iSensor[5];
-	int *temp_a = &g_iSensor[1], *temp_b = &g_iSensor[6];
-	int *cap_a = &g_iSensor[2], *cap_b = &g_iSensor[7];
+      	machine device_A = {NULL}, device_B = {NULL};
 
+	assert(varmap(&device_A,'A') &&
+	       "Did you implement varmap() ?");
+	assert(varmap(&device_B,'B') &&
+	       "Did you implement varmap() ?");
+/*
 	*pres_a = PRESSURE_LOWER;
 	*temp_a = TEMPERATURE_LOWER;
 	*pres_b = PRESSURE_LOWER;
 	*temp_b = TEMPERATURE_LOWER;
+*/
+	*device_A.pres = PRESSURE_LOWER;
+        *device_A.temp = TEMPERATURE_LOWER;
+        *device_B.pres = PRESSURE_LOWER;
+        *device_B.temp = TEMPERATURE_LOWER;
+
+	while(true) {
+		check_metric(&device_A, DELTA_P,DELTA_T);
+		check_metric(&device_B, DELTA_P,DELTA_T);
+ 
+                gen_cap(&device_A);
+                gen_cap(&device_B);
+                usleep(15000*1000);
+	}
+/*	
 	while(true) {
 		check_metric(pa_rate, pres_a, PRESSURE_UPPER, PRESSURE_LOWER, DELTA_P);
 		check_metric(pb_rate, pres_b, PRESSURE_UPPER, PRESSURE_LOWER, DELTA_P);
@@ -697,23 +726,68 @@ void* threadaccessdata(void* args)
 		gen_cap(cap_b, pres_b, temp_b);
 		usleep(15000*1000);
 	}
-	pthread_exit(0);
+*/	pthread_exit(0);
 	return NULL;
 }
 
+// TODO: You need to implement varmap to map g_iSensor into struct machine.
+// You can free to modify the varmap interface.
+bool varmap(machine *device, char tag){
+	int index = (tag - 'A') * 5;
+	device -> pres = &g_iSensor[index];
+	device -> temp = &g_iSensor[index+1];
+	device -> cap = &g_iSensor[index+2];
+	device -> prate = &g_iSensor[index+3];
+	device -> trate = &g_iSensor[index+4];
+/*	int *pa_rate = &g_iSensor[3], *pb_rate = &g_iSensor[8];
+	int *ta_rate = &g_iSensor[4], *tb_rate = &g_iSensor[9];
+	int *pres_a = &g_iSensor[0], *pres_b = &g_iSensor[5];
+	int *temp_a = &g_iSensor[1], *temp_b = &g_iSensor[6];
+	int *cap_a = &g_iSensor[2], *cap_b = &g_iSensor[7];
+*/
+	if(!(device -> cap))
+		return false;
+	return true;
+}
+
+void check_metric(machine *device, 
+		  int pdelta,
+		  int tdelta )
+{
+	if( !(*device -> prate) )
+		*device -> pres += (rand() % pdelta);
+	else
+		*device -> pres += pdelta * (*device -> prate);
+	
+	if( !(*device -> trate) )
+		*device -> temp += (rand() % tdelta);
+	else
+		*device -> temp += tdelta * (*device -> trate);
+}
+/*
 void check_metric(int *rate, 
 		int *metric, 
 		int upper, 
 		int lower,
 		int delta)
 {
-	//if((*metric < upper && *metric > lower) ||
-      	if( *rate == 0 )
+	if( *rate == 0 )
 		*metric += (rand() % delta);
 	else
 		*metric += delta * (*rate);
 }
-
+*/
+void gen_cap(machine *device)
+{
+	if( *device -> pres < PRESSURE_UPPER &&
+	    *device -> pres > PRESSURE_LOWER &&
+	    *device -> temp < TEMPERATURE_UPPER &&
+	    *device -> temp > TEMPERATURE_LOWER )
+		*device -> cap = (rand() % CAP_RANGE) + CAP_NORMAL;
+	else
+		*device -> cap = (rand() % CAP_RANGE) + CAP_ERR;
+}
+/*
 void gen_cap(int *cap,
              int *pres,
              int *temp)
@@ -726,7 +800,7 @@ void gen_cap(int *cap,
 	else
 		*cap = (rand() % CAP_RANGE) + CAP_ERR;
 }
-
+*/
 // Create a thread to access sensor data with your driver or library.
 pthread_t StartAccessData()
 {
