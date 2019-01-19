@@ -81,12 +81,7 @@ bool varmap(machine *device, char tag);
 void check_metric(machine *device,
 	          int pdelta,
 	          int tdelta );
-/*
-void check_metric(machine *device, 
-		int upper, 
-		int lower,
-		int delta);
-*/
+
 void gen_cap(machine *device);
 
 //-------------------------Memory leak check define--------------------------------
@@ -696,12 +691,6 @@ void* threadaccessdata(void* args)
 	       "Did you implement varmap() ?");
 	assert(varmap(&device_B,'B') &&
 	       "Did you implement varmap() ?");
-/*
-	*pres_a = PRESSURE_LOWER;
-	*temp_a = TEMPERATURE_LOWER;
-	*pres_b = PRESSURE_LOWER;
-	*temp_b = TEMPERATURE_LOWER;
-*/
 	*device_A.pres = PRESSURE_LOWER;
         *device_A.temp = TEMPERATURE_LOWER;
         *device_B.pres = PRESSURE_LOWER;
@@ -715,18 +704,8 @@ void* threadaccessdata(void* args)
                 gen_cap(&device_B);
                 usleep(15000*1000);
 	}
-/*	
-	while(true) {
-		check_metric(pa_rate, pres_a, PRESSURE_UPPER, PRESSURE_LOWER, DELTA_P);
-		check_metric(pb_rate, pres_b, PRESSURE_UPPER, PRESSURE_LOWER, DELTA_P);
-		check_metric(ta_rate, temp_a, TEMPERATURE_UPPER, TEMPERATURE_LOWER, DELTA_T);
-		check_metric(tb_rate, temp_b, TEMPERATURE_UPPER, TEMPERATURE_LOWER, DELTA_T);
-
-		gen_cap(cap_a, pres_a, temp_a);
-		gen_cap(cap_b, pres_b, temp_b);
-		usleep(15000*1000);
-	}
-*/	pthread_exit(0);
+	
+	pthread_exit(0);
 	return NULL;
 }
 
@@ -739,12 +718,7 @@ bool varmap(machine *device, char tag){
 	device -> cap = &g_iSensor[index+2];
 	device -> prate = &g_iSensor[index+3];
 	device -> trate = &g_iSensor[index+4];
-/*	int *pa_rate = &g_iSensor[3], *pb_rate = &g_iSensor[8];
-	int *ta_rate = &g_iSensor[4], *tb_rate = &g_iSensor[9];
-	int *pres_a = &g_iSensor[0], *pres_b = &g_iSensor[5];
-	int *temp_a = &g_iSensor[1], *temp_b = &g_iSensor[6];
-	int *cap_a = &g_iSensor[2], *cap_b = &g_iSensor[7];
-*/
+	
 	if(!(device -> cap))
 		return false;
 	return true;
@@ -764,19 +738,7 @@ void check_metric(machine *device,
 	else
 		*device -> temp += tdelta * (*device -> trate);
 }
-/*
-void check_metric(int *rate, 
-		int *metric, 
-		int upper, 
-		int lower,
-		int delta)
-{
-	if( *rate == 0 )
-		*metric += (rand() % delta);
-	else
-		*metric += delta * (*rate);
-}
-*/
+
 void gen_cap(machine *device)
 {
 	if( *device -> pres < PRESSURE_UPPER &&
@@ -787,20 +749,7 @@ void gen_cap(machine *device)
 	else
 		*device -> cap = (rand() % CAP_RANGE) + CAP_ERR;
 }
-/*
-void gen_cap(int *cap,
-             int *pres,
-             int *temp)
-{
-	if( *pres < PRESSURE_UPPER &&
-	    *pres > PRESSURE_LOWER &&
-	    *temp < TEMPERATURE_UPPER &&
-	    *temp > TEMPERATURE_LOWER )
-		*cap = (rand() % CAP_RANGE) + CAP_NORMAL;
-	else
-		*cap = (rand() % CAP_RANGE) + CAP_ERR;
-}
-*/
+
 // Create a thread to access sensor data with your driver or library.
 pthread_t StartAccessData()
 {
