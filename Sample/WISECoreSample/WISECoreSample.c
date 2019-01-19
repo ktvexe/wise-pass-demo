@@ -683,42 +683,16 @@ void* threadaccessdata(void* args)
 	int *temp_a = &g_iSensor[1], *temp_b = &g_iSensor[6];
 	int *cap_a = &g_iSensor[2], *cap_b = &g_iSensor[7];
 
+	*pres_a = 5000;
+	*temp_a = 50;
+	*pres_b = 5000;
+	*temp_b = 50;
 	while(true) {
 		check_metric(pa_rate, pres_a, PRESSURE_UPPER, PRESSURE_LOWER, DELTA_P);
 		check_metric(pb_rate, pres_b, PRESSURE_UPPER, PRESSURE_LOWER, DELTA_P);
 		check_metric(ta_rate, temp_a, TEMPERATURE_UPPER, TEMPERATURE_LOWER, DELTA_T);
 		check_metric(tb_rate, temp_b, TEMPERATURE_UPPER, TEMPERATURE_LOWER, DELTA_T);
 
-/*
-	if(g_iSensor[0]>6000 && g_iSensor[3] == 0)
-		g_iSensor[0] = (rand() % 1000) +6000;
-	else if(g_iSensor[3] != 0)
-		g_iSensor[0] = 5000;
-	else
-		g_iSensor[0] = (rand() % 3000) +5000;
-
-	if(g_iSensor[5]>6000 && g_iSensor[8] == 0)
-		g_iSensor[5] = (rand() % 1000) +6000;
-	else if(g_iSensor[8] != 0) 
-	        g_iSensor[5] = 5000;
-	else
-		g_iSensor[5] = (rand() % 3000) +5000;
-	
-	if(g_iSensor[1]>80 && g_iSensor[4] == 0)
-		g_iSensor[1] = (rand() % 20) +80;
-	else if(g_iSensor[4] != 0)
-		g_iSensor[1] = 60;
-	else
-		g_iSensor[1] = (rand() % 40) +60;
-
-	if(g_iSensor[6]>80 && g_iSensor[9] == 0)
-		g_iSensor[6] = (rand() % 20) +80;
-	else if(g_iSensor[9] != 0)
-		g_iSensor[6] = 60;
-	else
-		g_iSensor[6] = (rand() % 40) +60;
-
-*/
 		gen_cap(cap_a, pres_a, temp_a);
 		gen_cap(cap_b, pres_b, temp_b);
 		usleep(1000*1000);
