@@ -22,16 +22,16 @@
 #endif
 
 //Sensor data JSON format, it contain 3 sensor data: data1~3
-#define SENSOR_DATA "{\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"data1\",\"v\":%d},{\"n\":\"data2\",\"v\":%d},{\"n\":\"data3\",\"v\":%d},{\"n\":\"data4\",\"v\":%d},{\"n\":\"data5\",\"v\":%d},{\"n\":\"data6\",\"v\":%d},{\"n\":\"data7\",\"v\":%d},{\"n\":\"data8\",\"v\":%d},{\"n\":\"data9\",\"v\":%d},{\"n\":\"data10\",\"v\":%d},{\"n\":\"data11\",\"v\":%d},{\"n\":\"data12\",\"v\":%d},{\"n\":\"data13\",\"v\":%d},{\"n\":\"data14\",\"v\":%d}]}},\"opTS\":{\"$date\":%lld}}"
+#define SENSOR_DATA "{\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"data1\",\"v\":%d,\"asm\":\"rw\"},{\"n\":\"data2\",\"v\":%d},{\"n\":\"data3\",\"v\":%d},{\"n\":\"data4\",\"v\":%d},{\"n\":\"data5\",\"v\":%d},{\"n\":\"data6\",\"v\":%d},{\"n\":\"data7\",\"v\":%d},{\"n\":\"data8\",\"v\":%d},{\"n\":\"data9\",\"v\":%d},{\"n\":\"data10\",\"v\":%d},{\"n\":\"data11\",\"v\":%d},{\"n\":\"data12\",\"v\":%d},{\"n\":\"data13\",\"v\":%d},{\"n\":\"data14\",\"v\":%d},{\"n\":\"control\",\"v\":%d,\"asm\":\"rw\"}]}},\"opTS\":{\"$date\":%lld}}"
 #define DEF_OSINFO_JSON "{\"cagentVersion\":\"%s\",\"cagentType\":\"%s\",\"osVersion\":\"%s\",\"biosVersion\":\"%s\",\"platformName\":\"%s\",\"processorName\":\"%s\",\"osArch\":\"%s\",\"totalPhysMemKB\":%d,\"macs\":\"%s\",\"IP\":\"%s\"}"
 /*User can update g_strServerIP, g_iPort, g_strConnID, g_strConnPW and g_strDeviceID to connect to specific broker*/
-char g_strServerIP[64] = "wise-msghub.eastasia.cloudapp.azure.com"; // MQTT broker URL or IP
+char g_strServerIP[64] = "140.110.5.75"; // MQTT broker URL or IP
 int g_iPort = 1883; // MQTT broker listen port, keep 1883 as default port.
-char g_strConnID[256] = "f1b2f600-fb24-4bee-a655-40a5394894d2:d77e6ba9-a635-4459-837e-2ffa0f3093d2"; //broker connection ID
-char g_strConnPW[64] = "up6pf454k3r4po8m5h4j37f0gl"; //MQTT broker connection password
-char g_strDeviceID[37] = "00000001-0000-0000-0000-305A3A77B120"; //Target device unique ID
+char g_strConnID[256] = "7d21d3e2-964f-4fa1-8f1d-d5604a3dabbe:cd3ff005-6aca-4a3b-8bc4-a5463f8a25b6"; //broker connection ID
+char g_strConnPW[64] = "amqc59bjcp33gfhb8o3intliev"; //MQTT broker connection password
+char g_strDeviceID[37] = "test"; //Target device unique ID
 char g_strMac[37] = "305A3A770020"; //Network MAC address
-char g_strHostName[16] = "WISECoreSample"; //the HostName will show on renote server device list as device name, user can customize the host name.
+char g_strHostName[16] = "Factory"; //the HostName will show on renote server device list as device name, user can customize the host name.
 char g_strProductTag[37] = "RMM"; // for common server the product tag default is "device", but user can change to their own product, such as "RMM", "SCADA"
 char g_strTLCertSPW[37] = "05155853"; // SSL/TLS provate key or pre-shared-key
 
@@ -43,7 +43,7 @@ int g_iReportInterval = 60; //Send sensor data every 60 sec.
  * Large Service: Support 500 devices and 200 million messages per month. For each device the data report frequency(g_iReportInterval) most not smaller then 7 second.
  */
 int g_iHeartbeatRate = 60; //Send heartbeat packet every min.
-int g_iSensor[14] = {0}; //integer array for randomized sensor data
+int g_iSensor[15] = {0}; //integer array for randomized sensor data
 
 bool g_bConnected = false;
 typedef struct
@@ -147,7 +147,7 @@ void sendCapability(long long curTime)
 	sprintf(temp, SENSOR_DATA, "MySensor", "SensorGroup", "SensorGroup",
 		g_iSensor[0], g_iSensor[1], g_iSensor[2], g_iSensor[3], g_iSensor[4],
 		g_iSensor[5], g_iSensor[6], g_iSensor[7], g_iSensor[8], g_iSensor[9],
-		g_iSensor[10], g_iSensor[11], g_iSensor[12], g_iSensor[13],curTime);
+		g_iSensor[10], g_iSensor[11], g_iSensor[12], g_iSensor[13],g_iSensor[14],curTime);
 #ifndef RMM3X
 	sprintf(strTopic, DEF_AGENTACT_TOPIC, g_strProductTag, g_strDeviceID);
 #else
@@ -191,7 +191,7 @@ void sendReportData(long long curTime)
 	sprintf(temp, SENSOR_DATA, "MySensor", "SensorGroup", "SensorGroup",
 		g_iSensor[0], g_iSensor[1], g_iSensor[2], g_iSensor[3], g_iSensor[4],
 		g_iSensor[5], g_iSensor[6], g_iSensor[7], g_iSensor[8], g_iSensor[9],
-		g_iSensor[10], g_iSensor[11], g_iSensor[12], g_iSensor[13], curTime);
+		g_iSensor[10], g_iSensor[11], g_iSensor[12],g_iSensor[13], g_iSensor[14], curTime);
 	sprintf(strTopic, DEF_AGENTREPORT_TOPIC, g_strDeviceID);
 	sprintf(strBuffer, DEF_AUTOREPORT_JSON, g_strDeviceID, temp, curTime); //device ID
 	core_publish(strTopic, strBuffer, strlen(strBuffer), 0, 0);
@@ -399,6 +399,14 @@ void* threadget(void* args)
 		p = strcat(p, tmp);
 		bFirst = false;
 	}
+	if(strstr(cmd->pkt, "MySensor/SensorGroup/control"))
+        {
+                sprintf(tmp, "{\"n\": \"MySensor/SensorGroup/control\",\"v\":%d,\"StatusCode\": 200}", g_iSensor[14]);
+                if(!bFirst)
+                        p = strcat(p, ",");
+                p = strcat(p, tmp);
+                bFirst = false;
+        }
 	if(cmd->bHasSessionID)
 		sprintf(tmp,"]},\"sessionID\":\"%s\"}", cmd->sessionID);
 	else
@@ -733,11 +741,11 @@ void* threadaccessdata(void* args)
 
 	while(true)
 	{
-		int i=0;
-		for(i=0; i<14; i++)
-		{
-			g_iSensor[i] += (rand() % 3) -1;
-		}
+	//	int i=0;
+	//	for(i=0; i<14; i++)
+	//	{
+	//		g_iSensor[i] += (rand() % 20) +90;
+	//	}
 
 		usleep(1000*1000);
 	}
