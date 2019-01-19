@@ -29,7 +29,7 @@
 #define CAP_NORMAL 90
 #define CAP_ERR 20
 #define DELTA_P 50
-#define DELTA_T 1
+#define DELTA_T 4
 
 //Sensor data JSON format, it contain 3 sensor data: data1~3
 #define SENSOR_DATA "{\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"pressure_A\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"temperature_A\",\"v\":%d},{\"n\":\"capacity_A\",\"v\":%d},{\"n\":\"control_pa\",\"v\":%d,\"asm\":\"rw\"},{\"n\":\"control_ta\",\"v\":%d,\"asm\":\"rw\"},{\"n\":\"pressure_B\",\"v\":%d},{\"n\":\"temperature_B\",\"v\":%d},{\"n\":\"capacity_B\",\"v\":%d},{\"n\":\"control_pb\",\"v\":%d,\"asm\":\"rw\"},{\"n\":\"control_tb\",\"v\":%d,\"asm\":\"rw\"}]}},\"opTS\":{\"$date\":%lld}}"
@@ -445,8 +445,8 @@ void* threadset(void* args)
 	if((target = strstr(cmd->pkt, "MySensor/SensorGroup/control_pa")) > 0)
 	{
 		memset(tmp, 0, sizeof(tmp));
-		value_parse(target, "v", tmp, sizeof(tmp));
-		g_iSensor[3] = atoi(tmp);
+		value_parse(cmd->pkt, "v", tmp, sizeof(tmp));
+		g_iSensor[3] = strtol(tmp,NULL,10);
 		if(!bFirst)
 			p = strcat(p, ",");
 		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/control_pa\",\"sv\":\"Success\",\"StatusCode\":200}");
@@ -455,8 +455,8 @@ void* threadset(void* args)
 	if((target = strstr(cmd->pkt, "MySensor/SensorGroup/control_ta")) > 0)
 	{
 		memset(tmp, 0, sizeof(tmp));
-		value_parse(target, "v", tmp, sizeof(tmp));
-		g_iSensor[4] = atoi(tmp);
+		value_parse(cmd->pkt, "v", tmp, sizeof(tmp));
+		g_iSensor[4] = strtol(tmp,NULL,10);
 		if(!bFirst)
 			p = strcat(p, ",");
 		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/control_ta\",\"sv\":\"Success\",\"StatusCode\":200}");
@@ -495,8 +495,8 @@ void* threadset(void* args)
 	if((target = strstr(cmd->pkt, "MySensor/SensorGroup/control_pb")) > 0)
 	{
 		memset(tmp, 0, sizeof(tmp));
-		value_parse(target, "v", tmp, sizeof(tmp));
-		g_iSensor[8] = atoi(tmp);
+		value_parse(cmd->pkt, "v", tmp, sizeof(tmp));
+		g_iSensor[8] = strtol(tmp,NULL,10);
 		if(!bFirst)
 			p = strcat(p, ",");
 		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/control_pb\",\"sv\":\"Success\",\"StatusCode\":200}");
@@ -505,8 +505,8 @@ void* threadset(void* args)
 	if((target = strstr(cmd->pkt, "MySensor/SensorGroup/control_tb")) > 0)
 	{
 		memset(tmp, 0, sizeof(tmp));
-		value_parse(target, "v", tmp, sizeof(tmp));
-		g_iSensor[9] = atoi(tmp);
+		value_parse(cmd->pkt, "v", tmp, sizeof(tmp));
+		g_iSensor[9] = strtol(tmp,NULL,10);
 		if(!bFirst)
 			p = strcat(p, ",");
 		p = strcat(p, "{\"n\": \"MySensor/SensorGroup/control_tb\",\"sv\":\"Success\",\"StatusCode\":200}");
@@ -683,10 +683,10 @@ void* threadaccessdata(void* args)
 	int *temp_a = &g_iSensor[1], *temp_b = &g_iSensor[6];
 	int *cap_a = &g_iSensor[2], *cap_b = &g_iSensor[7];
 
-	*pres_a = 5000;
-	*temp_a = 50;
-	*pres_b = 5000;
-	*temp_b = 50;
+	*pres_a = PRESSURE_LOWER;
+	*temp_a = TEMPERATURE_LOWER;
+	*pres_b = PRESSURE_LOWER;
+	*temp_b = TEMPERATURE_LOWER;
 	while(true) {
 		check_metric(pa_rate, pres_a, PRESSURE_UPPER, PRESSURE_LOWER, DELTA_P);
 		check_metric(pb_rate, pres_b, PRESSURE_UPPER, PRESSURE_LOWER, DELTA_P);
@@ -695,7 +695,7 @@ void* threadaccessdata(void* args)
 
 		gen_cap(cap_a, pres_a, temp_a);
 		gen_cap(cap_b, pres_b, temp_b);
-		usleep(1000*1000);
+		usleep(15000*1000);
 	}
 	pthread_exit(0);
 	return NULL;
@@ -708,7 +708,7 @@ void check_metric(int *rate,
 		int delta)
 {
 	//if((*metric < upper && *metric > lower) ||
-	  if( *rate == 0 )
+      	if( *rate == 0 )
 		*metric += (rand() % delta);
 	else
 		*metric += delta * (*rate);
