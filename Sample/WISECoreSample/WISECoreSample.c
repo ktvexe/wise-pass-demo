@@ -33,7 +33,7 @@
 #define DELTA_T 4
 
 //Sensor data JSON format, it contain 3 sensor data: data1~3
-#define SENSOR_DATA "{\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"pressure_A\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"temperature_A\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"capacity_A\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"control_pa\",\"v\":%d,\"asm\":\"rw\"},{\"n\":\"control_ta\",\"v\":%d,\"asm\":\"rw\"},{\"n\":\"pressure_B\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"temperature_B\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"capacity_B\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"control_pb\",\"v\":%d,\"asm\":\"rw\"},{\"n\":\"control_tb\",\"v\":%d,\"asm\":\"rw\"}]}},\"opTS\":{\"$date\":%lld}}"
+#define SENSOR_DATA "{\"%s\":{\"%s\":{\"bn\":\"%s\",\"e\":[{\"n\":\"pressure_A\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"temperature_A\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"capacity_A\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"control_pa\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"control_ta\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"pressure_B\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"temperature_B\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"capacity_B\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"control_pb\",\"v\":%d,\"asm\":\"r\"},{\"n\":\"control_tb\",\"v\":%d,\"asm\":\"r\"}]}},\"opTS\":{\"$date\":%lld}}"
 #define DEF_OSINFO_JSON "{\"cagentVersion\":\"%s\",\"cagentType\":\"%s\",\"osVersion\":\"%s\",\"biosVersion\":\"%s\",\"platformName\":\"%s\",\"processorName\":\"%s\",\"osArch\":\"%s\",\"totalPhysMemKB\":%d,\"macs\":\"%s\",\"IP\":\"%s\"}"
 /*User can update g_strServerIP, g_iPort, g_strConnID, g_strConnPW and g_strDeviceID to connect to specific broker*/
 char g_strServerIP[64] = "140.110.5.75"; // MQTT broker URL or IP
@@ -76,7 +76,7 @@ typedef struct {
         int *cap;	// capacity
 } machine;
 
-bool varmap(machine *device, char tag);
+bool varmap(machine *device);
 
 void check_metric(machine *device,
 	          int pdelta,
@@ -687,9 +687,9 @@ void* threadaccessdata(void* args)
 	srand((int) time(0)); //setup random seed.
       	machine device_A = {NULL}, device_B = {NULL};
 
-	assert(varmap(&device_A,'A') &&
+	assert(varmap(&device_A) &&
 	       "Did you implement varmap() ?");
-	assert(varmap(&device_B,'B') &&
+	assert(varmap(&device_B) &&
 	       "Did you implement varmap() ?");
 	*device_A.pres = PRESSURE_LOWER;
         *device_A.temp = TEMPERATURE_LOWER;
@@ -711,13 +711,8 @@ void* threadaccessdata(void* args)
 
 // TODO: You need to implement varmap to map g_iSensor into struct machine.
 // You can free to modify the varmap interface.
-bool varmap(machine *device, char tag){
-	int index = (tag - 'A') * 5;
-	device -> pres = &g_iSensor[index];
-	device -> temp = &g_iSensor[index+1];
-	device -> cap = &g_iSensor[index+2];
-	device -> prate = &g_iSensor[index+3];
-	device -> trate = &g_iSensor[index+4];
+bool varmap(machine *device){
+	
 	
 	if(!(device -> cap))
 		return false;
